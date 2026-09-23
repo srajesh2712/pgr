@@ -1,0 +1,44 @@
+import torch
+import torch.nn as nn
+
+# --- 1. INPUT DATA & TARGETS ---
+X = torch.tensor([[1.0, 2.0]], dtype=torch.float64)
+y = torch.tensor([[1.0]], dtype=torch.float64)
+
+# --- 2. DEFINE THE NETWORK STRUCTURE ---
+model = nn.Sequential(
+    nn.Linear(2, 2, bias=True),  # Layer 1: 2 inputs -> 2 outputs
+    nn.Sigmoid(),
+    nn.Linear(2, 1, bias=True),  # Layer 2: 2 inputs -> 1 output
+    nn.Sigmoid()
+).to(dtype=torch.float64)
+
+# --- 3. OVERRIDE WITH YOUR SPREADSHEET WEIGHTS & BIASES ---
+# Note: PyTorch Linear layers store weight matrices transposed (out_features, in_features)
+with torch.no_grad():
+    # Layer 1 Weights & Biases
+    model[0].weight.copy_(torch.tensor([[0.5, 0.7], 
+                                        [0.9, 0.4]], dtype=torch.float64))
+    model[0].bias.copy_(torch.tensor([0.0, 0.0], dtype=torch.float64))
+
+    # Layer 2 Weights & Biases
+    model[2].weight.copy_(torch.tensor([[0.5, 0.6]], dtype=torch.float64))
+    model[2].bias.copy_(torch.tensor([0.0], dtype=torch.float64))
+
+# --- 4. SINGLE-LINE FORWARD PASS ---
+output = model(X)
+
+# --- 5. LOSS & BACKWARD PASS ---
+criterion = nn.MSELoss(reduction='sum')
+loss = 0.5 * criterion(output, y)
+
+loss.backward()
+
+# --- 6. PRINT RESULTS ---
+print("--- FORWARD PASS ---")
+print("Output:\n", output.detach().numpy())
+print("Loss:\n", loss.item())
+
+print("\n--- GRADIENTS ---")
+print("Layer 2 dW:\n", model[2].weight.grad.numpy().T)
+print("Layer 1 dW:\n", model[0].weight.grad.numpy().T)

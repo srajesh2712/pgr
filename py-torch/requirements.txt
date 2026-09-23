@@ -1,0 +1,19 @@
+
+# PyTorch Core Libraries
+torch
+torchvision
+torchaudio
+
+# Data Handling & Scientific Computing
+numpy
+pandas
+scikit-learn
+
+# Visualization & Logging
+matplotlib
+seaborn
+tensorboard
+
+# Development & Utility Tools
+tqdm
+jupyter

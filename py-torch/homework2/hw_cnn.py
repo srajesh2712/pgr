@@ -76,8 +76,8 @@ test_raw = raw_data[val_split_idx:]
 
 scaler = StandardScaler()
 train_scaled = scaler.fit_transform(train_raw)
-val_scaled = scaler.transform(val_raw)
-test_scaled = scaler.transform(test_raw)
+val_scaled = scaler.transform(val_raw) # we use transform here to ensure the validation data is scaled using the training data's parameters
+test_scaled = scaler.transform(test_raw) 
 
 scaled_features = scaler.transform(raw_data)
 
@@ -85,7 +85,9 @@ scaled_features = scaler.transform(raw_data)
 # =====================================================
 # CREATE SEQUENCES
 # =====================================================
-
+"""
+This function creates sequences of data for the CNN-LSTM model. Each sequence consists of `seq_length` days of features, and the target is the soil temperature on the day immediately following the sequence. The function returns two numpy arrays: `X` containing the input sequences and `y` containing the corresponding target values.
+"""
 
 def create_sequences(data, seq_length, target_idx):
     X, y = [], []
@@ -253,7 +255,7 @@ def inverse_transform_target(
 
 
 # =====================================================
-# PRESENTATION-READY EVALUATION
+#  EVALUATION
 # =====================================================
 
 checkpoint = torch.load(MODEL_PATH, map_location=device)
@@ -328,7 +330,7 @@ print("=" * 60)
 
 
 # =====================================================
-# GENERATE PRESENTATION GRAPH
+# GENERATE GRAPH
 # =====================================================
 
 plt.figure(figsize=(12, 5), dpi=150)

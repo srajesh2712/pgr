@@ -13,7 +13,7 @@ class SatelliteChangeCNN(nn.Module):
     def __init__(self):
         super(SatelliteChangeCNN, self).__init__()
         # Convolutional layer extracts spatial edges, textures, and cloud boundaries
-        self.conv = nn.Conv2d(in_channels=3, out_channels=16, kernel_size=3, padding=1)
+        self.conv = nn.Conv2d(in_channels=1, out_channels=16, kernel_size=3, padding=1)
         self.relu = nn.ReLU()
         
     def forward(self, x):
@@ -26,6 +26,7 @@ class SatelliteChangeCNN(nn.Module):
 # -------------------------------------------------------------------
 transform = T.Compose([
     T.Resize((256, 256)),  # Standardize all satellite images to 256x256
+    T.Grayscale(num_output_channels=1),
     T.ToTensor()           # Convert PIL Image to PyTorch Tensor [3, 256, 256]
 ])
 

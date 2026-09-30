@@ -41,4 +41,4 @@ print("Loss:\n", loss.item())
 
 print("\n--- GRADIENTS ---")
 print("Layer 2 dW:\n", model[2].weight.grad.numpy().T)
-print("Layer 1 dW:\n", model[0].weight.grad.numpy().T)
+print("Layer 1 dW:\n", model[0].weight.grad.numpy().T)  

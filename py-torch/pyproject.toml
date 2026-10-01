@@ -1,0 +1,32 @@
+[project]
+name = "py-torch"
+version = "0.1.0"
+requires-python = ">=3.10,<3.13"
+dependencies = [
+    "torch",
+    "torchaudio",
+    "torchvision",
+    "tinycss2>=1.5.1",
+    "ipykernel>=7.3.0",
+    "xarray>=2025.6.1",
+    "matplotlib>=3.10.9",
+    "seaborn>=0.13.2",
+    "scikit-learn>=1.7.2",
+    "pytorch-lightning>=2.6.6",
+    "convml-tt>=0.13.1",
+    "cartopy>=0.25.0",
+    "rasterio>=1.4.4",
+]
+
+[tool.uv]
+required-environments = ["sys_platform == 'win32' and platform_machine == 'AMD64'"]
+
+[[tool.uv.index]]
+name = "pytorch-cu128"
+url = "https://download.pytorch.org/whl/cu128"
+explicit = true
+
+[tool.uv.sources]
+torch = { index = "pytorch-cu128" }
+torchaudio = { index = "pytorch-cu128" }
+torchvision = { index = "pytorch-cu128" }

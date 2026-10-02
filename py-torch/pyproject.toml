@@ -16,6 +16,7 @@ dependencies = [
     "convml-tt>=0.13.1",
     "cartopy>=0.25.0",
     "rasterio>=1.4.4",
+    "numpy>=2.2.6",
 ]
 
 [tool.uv]

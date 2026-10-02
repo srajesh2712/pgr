@@ -1,0 +1,41 @@
+name: tests
+on: [push, pull_request]
+
+jobs:
+  test:
+    name: Test python ${{ matrix.python-version }} on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    # the notebooks take ~10min to run, fail rather than hang if a process
+    # doesn't exit
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        # not testing on macos since the notebook execution times out for nbval
+        os: [ubuntu-latest, windows-latest]
+        python-version: ["3.12"]
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v10.2.0
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: install dependencies
+        # `--locked` checks that uv.lock is up-to-date with pyproject.toml
+        run: uv sync --locked --extra cpu --group test
+
+      - name: Download test data
+        run: |
+          mkdir -p notebooks/data
+          cd notebooks/data
+          curl -L https://zenodo.org/records/23045530/files/Nx256_s200000.0_N500study_N2000train.tgz --output Nx256_s200000.0_N500study_N2000train.tgz
+          tar zxf Nx256_s200000.0_N500study_N2000train.tgz
+          curl -L https://zenodo.org/records/23045532/files/fixednorm-stage-2.tgz --output fixednorm-stage-2.tgz
+          tar zxf fixednorm-stage-2.tgz
+
+      - name: Test with pytest
+        # `--no-sync` so that uv doesn't re-sync without the `cpu` extra
+        run: uv run --no-sync pytest --nbval-lax

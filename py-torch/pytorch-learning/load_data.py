@@ -66,3 +66,6 @@ class FashionMNISTModel(nn.Module):
 
 model = FashionMNISTModel().to(device)
 print(model)
+
+loss_fn = nn.CrossEntropyLoss()
+optimizer = torch.optim.SGD(model.parameters(), lr=1e-3)

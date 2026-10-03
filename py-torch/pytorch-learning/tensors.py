@@ -44,3 +44,12 @@ print(f"First column: {tensor[:, 0]}")
 print(f"Last column: {tensor[..., -1]}")
 tensor[:, 1] = 0
 print(f"Modified tensor: {tensor}")
+
+
+t1 = torch.cat([tensor, tensor, tensor], dim=1)
+print(f"Concatenated tensor: {t1}")
+
+y1 = tensor @ tensor.T
+y2 = tensor.matmul(tensor.T)
+y3 = torch.rand_like(tensor)
+torch.matmul(tensor, tensor.T, out=y3)

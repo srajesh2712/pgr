@@ -1,0 +1,44 @@
+import torch
+
+# --- 1. INPUT DATA & TARGETS ---
+# Using float64 (double) for exact spreadsheet-level precision
+X = torch.tensor([[1.0, 2.0]], dtype=torch.float64)
+y = torch.tensor([[1.0]], dtype=torch.float64)
+
+# --- 2. WEIGHTS & BIASES (Enable Gradient Tracking) ---
+W1 = torch.tensor([[0.5, 0.9], 
+                  [0.7, 0.4]], dtype=torch.float64, requires_grad=True)
+b1 = torch.tensor([[0.0, 0.0]], dtype=torch.float64, requires_grad=True)
+
+W2 = torch.tensor([[0.5], 
+                  [0.6]], dtype=torch.float64, requires_grad=True)
+b2 = torch.tensor([[0.0]], dtype=torch.float64, requires_grad=True)
+
+# --- 3. FORWARD PASS ---
+# Layer 1
+z1 = torch.matmul(X, W1) + b1
+a1 = torch.sigmoid(z1)
+
+# Layer 2 (Output)
+z2 = torch.matmul(a1, W2) + b2
+a2 = torch.sigmoid(z2)
+
+output = a2
+loss = 0.5 * torch.sum((output - y) ** 2)
+
+# --- 4. BACKWARD PASS (AutoGrad) ---
+loss.backward()
+
+# --- 5. PRINT RESULTS TO COMPARE ---
+print("--- FORWARD PASS ---")
+print("z1:\n", z1.detach().numpy())
+print("a1:\n", a1.detach().numpy())
+print("z2:\n", z2.detach().numpy())
+print("a2 / Output:\n", output.detach().numpy())
+print("Loss:\n", loss.item())
+
+print("\n--- BACKWARD PASS (GRADIENTS) ---")
+print("dW2:\n", W2.grad.numpy())
+print("db2:\n", b2.grad.numpy())
+print("dW1:\n", W1.grad.numpy())
+print("db1:\n", b1.grad.numpy())

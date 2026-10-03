@@ -1,0 +1,60 @@
+Batch size: 32
+Epoch: 1
+Test Accuracy: 59.9%
+Avg loss: 1.928453
+Batch size: 32
+Epoch: 2
+Test Accuracy: 63.3%
+Avg loss: 1.261114
+Batch size: 32
+Epoch: 3
+Test Accuracy: 66.6%
+Avg loss: 0.976162
+Batch size: 32
+Epoch: 4
+Test Accuracy: 68.4%
+Avg loss: 0.852950
+Batch size: 32
+Epoch: 5
+Test Accuracy: 71.0%
+Avg loss: 0.785013
+Batch size: 64
+Epoch: 1
+Test Accuracy: 50.0%
+Avg loss: 2.147014
+Batch size: 64
+Epoch: 2
+Test Accuracy: 59.4%
+Avg loss: 1.866614
+Batch size: 64
+Epoch: 3
+Test Accuracy: 61.4%
+Avg loss: 1.492819
+Batch size: 64
+Epoch: 4
+Test Accuracy: 62.3%
+Avg loss: 1.235443
+Batch size: 64
+Epoch: 5
+Test Accuracy: 64.3%
+Avg loss: 1.080061
+Batch size: 128
+Epoch: 1
+Test Accuracy: 26.6%
+Avg loss: 2.226881
+Batch size: 128
+Epoch: 2
+Test Accuracy: 35.1%
+Avg loss: 2.142587
+Batch size: 128
+Epoch: 3
+Test Accuracy: 45.2%
+Avg loss: 2.025145
+Batch size: 128
+Epoch: 4
+Test Accuracy: 56.2%
+Avg loss: 1.862150
+Batch size: 128
+Epoch: 5
+Test Accuracy: 62.1%
+Avg loss: 1.666114

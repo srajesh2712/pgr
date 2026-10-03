@@ -1,0 +1,11 @@
+#!/bin/bash
+# mybinder (repo2docker) doesn't support uv, so install the dependencies from
+# uv.lock ourselves, into the python environment that binder runs jupyter from
+set -euo pipefail
+
+cd "$(dirname "$0")/.."
+
+python -m pip install --no-cache-dir uv
+# `--inexact` so that the packages binder itself needs (e.g. jupyterhub) are
+# kept even though they aren't in uv.lock
+UV_PROJECT_ENVIRONMENT="${NB_PYTHON_PREFIX}" uv sync --locked --extra cpu --inexact --no-cache

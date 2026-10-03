@@ -29,7 +29,7 @@ test_data = datasets.FashionMNIST(
 print(f"Train data: {len(train_data)}")
 print(f"Test data: {len(test_data)}")
 
-batch_size = 64
+batch_size = 128
 train_dataloader = DataLoader(train_data, batch_size=batch_size, shuffle=True)
 test_dataloader = DataLoader(test_data, batch_size=batch_size, shuffle=False)
 

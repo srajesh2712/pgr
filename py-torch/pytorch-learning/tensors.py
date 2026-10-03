@@ -53,3 +53,15 @@ y1 = tensor @ tensor.T
 y2 = tensor.matmul(tensor.T)
 y3 = torch.rand_like(tensor)
 torch.matmul(tensor, tensor.T, out=y3)
+print(f"Matrix multiplication 1: {y1}")
+print(f"Matrix multiplication 2: {y2}") 
+print(f"Matrix multiplication 3: {y3}")
+
+z1 = tensor * tensor
+z2 = tensor.mul(tensor)
+z3 = torch.rand_like(tensor)
+torch.mul(tensor, tensor, out=z3)
+
+print(f"Element-wise multiplication 1: {z1}")
+print(f"Element-wise multiplication 2: {z2}")
+print(f"Element-wise multiplication 3: {z3}")

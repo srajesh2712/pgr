@@ -65,3 +65,8 @@ torch.mul(tensor, tensor, out=z3)
 print(f"Element-wise multiplication 1: {z1}")
 print(f"Element-wise multiplication 2: {z2}")
 print(f"Element-wise multiplication 3: {z3}")
+
+agg = tensor.sum()
+agg_item = agg.item()
+print(f"Sum of tensor: {agg}")
+print(f"Sum of tensor as item: {agg_item}") 

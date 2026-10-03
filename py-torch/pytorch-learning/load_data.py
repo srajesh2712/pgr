@@ -63,3 +63,6 @@ class FashionMNISTModel(nn.Module):
         x = self.flatten(x)
         logits = self.linear_relu_stack(x)
         return logits
+
+model = FashionMNISTModel().to(device)
+print(model)

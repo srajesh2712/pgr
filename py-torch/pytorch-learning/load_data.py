@@ -105,7 +105,9 @@ def test(dataloader, model, loss_fn):
     test_loss /= num_batches
     correct /= size
     print(f"Test Error: \n Accuracy: {(100*correct):>0.1f}%, Avg loss: {test_loss:>8f} \n") 
-
+    results = [f"Batch size: {batch_size}",f"Epoch: {t+1}", f"Test Accuracy: {(100*correct):>0.1f}%", f"Avg loss: {test_loss:>8f}"]
+    with open("results.txt", "a") as f:
+        f.write("\n".join(results) + "\n")
 
 epochs = 5
 for t in range(epochs):
@@ -113,3 +115,6 @@ for t in range(epochs):
     train(train_dataloader, model, loss_fn, optimizer)
     test(test_dataloader, model, loss_fn)   
 print("Done!")
+
+torch.save(model.state_dict(), "model.pth")
+print("Saved PyTorch Model State to model.pth")

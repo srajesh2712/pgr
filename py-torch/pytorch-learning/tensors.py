@@ -1,6 +1,7 @@
 import torch
 import numpy as np
 
+
 data = [[1, 2], [3, 4]]
 
 x_data = torch.tensor(data, dtype=torch.float32)
@@ -30,3 +31,8 @@ tensor = torch.rand(3, 4)
 print(f"Shape of tensor: {tensor.shape}")
 print(f"Data type of tensor: {tensor.dtype}")
 print(f"Device tensor is stored on: {tensor.device}")
+
+
+if torch.accelerator.is_available():
+    tensor = tensor.to(torch.accelerator.current_accelerator().type)
+    print(f"Device tensor is stored on: {tensor.device}")   

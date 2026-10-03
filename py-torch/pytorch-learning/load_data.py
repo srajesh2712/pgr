@@ -109,12 +109,41 @@ def test(dataloader, model, loss_fn):
     with open("results.txt", "a") as f:
         f.write("\n".join(results) + "\n")
 
-epochs = 5
-for t in range(epochs):
-    print(f"Epoch {t+1}\n-------------------------------")
-    train(train_dataloader, model, loss_fn, optimizer)
-    test(test_dataloader, model, loss_fn)   
-print("Done!")
+def train_model():
+    epochs = 5
+    for t in range(epochs):
+        print(f"Epoch {t+1}\n-------------------------------")
+        train(train_dataloader, model, loss_fn, optimizer)
+        test(test_dataloader, model, loss_fn)   
+    print("Done!")
 
-torch.save(model.state_dict(), "model.pth")
-print("Saved PyTorch Model State to model.pth")
+    torch.save(model.state_dict(), "model.pth")
+    print("Saved PyTorch Model State to model.pth")
+
+
+def predict():
+    classes = [
+        "T-shirt/top",
+        "Trouser",
+        "Pullover",
+        "Dress",
+        "Coat",
+        "Sandal",
+        "Shirt",
+        "Sneaker",
+        "Bag",
+        "Ankle boot"
+    ]
+    model = FashionMNISTModel().to(device)
+    model.load_state_dict(torch.load("model.pth", weights_only=True))
+
+    with torch.no_grad():
+        for x, y in test_dataloader:
+            x, y = x.to(device), y.to(device)
+            pred = model(x)
+            predicted, actual = classes[pred[0].argmax(0)], classes[y[0]]
+            print(f'Predicted: "{predicted}", Actual: "{actual}"')
+            break
+
+
+predict()

@@ -1,0 +1,15 @@
+Request a compute nod : 
+
+salloc -A p201580 -t 00:05:00 -q default -N 1 -p gpu
+
+Load libraries : 
+
+module load GCC MPICH
+
+mpirun -n 64 ./ideal_example
+
+
+non ideal  sbatch  sbatch|_on_ideal.sh
+
+squeueu --me 
+slurm-jobid .out 

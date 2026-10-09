@@ -1,0 +1,1443 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Extratropical Ridges & Troughs (Rossby Waves) with Earth Rotation</title>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        polar: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0284c7',
+                            900: '#0c4a6e',
+                        },
+                        tropical: {
+                            50: '#fff1f2',
+                            100: '#ffe4e6',
+                            500: '#f43f5e',
+                            900: '#881337',
+                        },
+                        jet: {
+                            amber: '#f59e0b',
+                            cyan: '#06b6d4',
+                            emerald: '#10b981'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- FontAwesome & KaTeX for LaTeX Math -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+
+    <style>
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.6);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(51, 65, 85, 0.8);
+            border-radius: 4px;
+        }
+        canvas {
+            touch-action: none;
+        }
+        .glow-jet {
+            box-shadow: 0 0 15px rgba(245, 158, 11, 0.4);
+        }
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.82);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 font-sans min-h-screen flex flex-col antialiased selection:bg-amber-500 selection:text-slate-900">
+
+    <!-- Header Navigation -->
+    <header class="sticky top-0 z-50 glass-panel border-b border-slate-800 px-4 py-3">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-3">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 via-rose-500 to-sky-500 flex items-center justify-center text-slate-950 font-black text-xl shadow-lg">
+                    <i class="fa-solid fa-earth-americas"></i>
+                </div>
+                <div>
+                    <h1 class="text-lg font-bold bg-gradient-to-r from-amber-400 via-rose-300 to-sky-300 bg-clip-text text-transparent">
+                        Extratropical Ridges & Troughs (Rossby Waves)
+                    </h1>
+                    <p class="text-xs text-slate-400">
+                        Section 11.11 • Practical Meteorology (R. Stull) • Earth Rotation Dynamics
+                    </p>
+                </div>
+            </div>
+
+            <!-- Simulation View Mode & Frame Switcher -->
+            <div class="flex flex-wrap items-center gap-2">
+                <!-- Reference Frame Selector -->
+                <div class="flex items-center bg-slate-900/90 p-1 rounded-xl border border-slate-800 text-xs">
+                    <button id="btn-frame-inertial" onclick="switchReferenceFrame('inertial')" class="px-3 py-1.5 rounded-lg font-semibold transition-all bg-sky-500 text-slate-950 shadow-md">
+                        <i class="fa-solid fa-satellite mr-1"></i> Inertial (Space)
+                    </button>
+                    <button id="btn-frame-earth" onclick="switchReferenceFrame('earth')" class="px-3 py-1.5 rounded-lg font-semibold text-slate-400 hover:text-slate-200 transition-all">
+                        <i class="fa-solid fa-person-walking mr-1"></i> Earth-Relative (Ground)
+                    </button>
+                </div>
+
+                <!-- Projection Mode Selector -->
+                <div class="flex items-center bg-slate-900/90 p-1 rounded-xl border border-slate-800 text-xs">
+                    <button id="btn-mode-polar" onclick="switchViewMode('polar')" class="px-3 py-1.5 rounded-lg font-semibold transition-all bg-amber-500 text-slate-950 shadow-md">
+                        <i class="fa-solid fa-globe mr-1"></i> Fig 11.49: Polar View
+                    </button>
+                    <button id="btn-mode-planar" onclick="switchViewMode('planar')" class="px-3 py-1.5 rounded-lg font-semibold text-slate-400 hover:text-slate-200 transition-all">
+                        <i class="fa-solid fa-chart-line mr-1"></i> Fig 11.50: Wave Geometry
+                    </button>
+                </div>
+            </div>
+
+            <!-- Quick Action Links -->
+            <div class="flex items-center gap-2">
+                <a href="#concept-section" class="px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-800 hover:bg-slate-700 text-slate-300 transition-all flex items-center gap-1.5">
+                    <i class="fa-solid fa-book-open text-sky-400"></i>
+                    <span>Theory</span>
+                </a>
+                <a href="#quiz-section" class="px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-800 hover:bg-slate-700 text-slate-300 transition-all flex items-center gap-1.5">
+                    <i class="fa-solid fa-graduation-cap text-amber-400"></i>
+                    <span>Quiz</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Interactive Dashboard -->
+    <main class="flex-1 max-w-7xl w-full mx-auto p-4 md:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
+        
+        <!-- Left / Top Column: Canvas Simulation Display & Parameter Sliders -->
+        <div class="lg:col-span-8 flex flex-col gap-4">
+            <div class="glass-panel rounded-2xl p-4 border border-slate-800 flex flex-col gap-3 relative overflow-hidden">
+                
+                <!-- View Mode Indicator & Quick Info Header -->
+                <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800/80 pb-3">
+                    <div class="flex items-center gap-2">
+                        <span id="view-title-icon" class="text-amber-400 text-base">
+                            <i class="fa-solid fa-globe"></i>
+                        </span>
+                        <h2 id="view-title-text" class="text-sm font-bold text-slate-100">
+                            Polar Projection with Earth Surface Rotation (Fig 11.49)
+                        </h2>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span id="badge-wavenumber" class="px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/20">
+                            Zonal Wavenumber N = 7
+                        </span>
+                        <span id="badge-frame" class="px-2.5 py-1 rounded-full text-xs font-semibold bg-sky-500/10 text-sky-400 border border-sky-500/20">
+                            Space View
+                        </span>
+                        <button id="btn-toggle-anim" onclick="toggleAnimation()" class="px-3 py-1 rounded-lg text-xs font-semibold bg-sky-500 hover:bg-sky-400 text-slate-950 transition-all flex items-center gap-1">
+                            <i id="anim-icon" class="fa-solid fa-pause"></i>
+                            <span id="anim-label">Pause</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Canvas Render Box -->
+                <div class="relative w-full aspect-square md:aspect-[16/10] bg-slate-950 rounded-xl border border-slate-800/80 overflow-hidden flex items-center justify-center">
+                    <canvas id="simCanvas" class="w-full h-full block cursor-crosshair"></canvas>
+                    
+                    <!-- Dynamic On-Canvas Tooltip / Hover Inspector -->
+                    <div id="canvas-tooltip" class="absolute hidden pointer-events-none glass-panel px-3 py-2 rounded-lg text-xs border border-amber-500/30 text-slate-200 shadow-xl transition-all z-20">
+                        <div id="tooltip-title" class="font-bold text-amber-400 mb-0.5">Point Inspection</div>
+                        <div id="tooltip-body" class="text-[11px] text-slate-300">Hover over wave features</div>
+                    </div>
+
+                    <!-- Watermark / Citation Overlay -->
+                    <div class="absolute bottom-2 right-3 pointer-events-none text-[10px] text-slate-500/80 font-mono">
+                        R. Stull • Practical Meteorology Fig <span id="fig-citation">11.49</span>
+                    </div>
+                </div>
+
+                <!-- Interactive Parameter Controls Grid -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 pt-2">
+                    
+                    <!-- Control 1: Zonal Wavenumber -->
+                    <div class="bg-slate-900/80 p-3 rounded-xl border border-slate-800 flex flex-col gap-1.5">
+                        <div class="flex justify-between items-center text-xs">
+                            <label for="slider-wavenumber" class="font-medium text-slate-300 flex items-center gap-1.5">
+                                <i class="fa-solid fa-wave-square text-amber-400"></i>
+                                <span>Wavenumber (N)</span>
+                            </label>
+                            <span id="val-wavenumber" class="font-mono text-amber-400 font-bold">7</span>
+                        </div>
+                        <input type="range" id="slider-wavenumber" min="3" max="13" step="1" value="7" class="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-amber-500" oninput="updateSimParameters()">
+                        <p class="text-[10px] text-slate-400 leading-tight">Waves encircling hemisphere (3 to 13).</p>
+                    </div>
+
+                    <!-- Control 2: Wave Amplitude -->
+                    <div class="bg-slate-900/80 p-3 rounded-xl border border-slate-800 flex flex-col gap-1.5">
+                        <div class="flex justify-between items-center text-xs">
+                            <label for="slider-amplitude" class="font-medium text-slate-300 flex items-center gap-1.5">
+                                <i class="fa-solid fa-arrows-up-down text-rose-400"></i>
+                                <span>Amplitude (A)</span>
+                            </label>
+                            <span id="val-amplitude" class="font-mono text-rose-400 font-bold">45%</span>
+                        </div>
+                        <input type="range" id="slider-amplitude" min="0" max="100" step="1" value="45" class="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-rose-500" oninput="updateSimParameters()">
+                        <p class="text-[10px] text-slate-400 leading-tight">Depth of meanders and troughs.</p>
+                    </div>
+
+                    <!-- Control 3: Jet Stream Wind Speed -->
+                    <div class="bg-slate-900/80 p-3 rounded-xl border border-slate-800 flex flex-col gap-1.5">
+                        <div class="flex justify-between items-center text-xs">
+                            <label for="slider-speed" class="font-medium text-slate-300 flex items-center gap-1.5">
+                                <i class="fa-solid fa-gauge-high text-sky-400"></i>
+                                <span>Jet Speed (U)</span>
+                            </label>
+                            <span id="val-speed" class="font-mono text-sky-400 font-bold">45 m/s</span>
+                        </div>
+                        <input type="range" id="slider-speed" min="10" max="90" step="5" value="45" class="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-sky-500" oninput="updateSimParameters()">
+                        <p class="text-[10px] text-slate-400 leading-tight">Tropopause westerly wind velocity.</p>
+                    </div>
+
+                    <!-- Control 4: Earth Spin Speed -->
+                    <div class="bg-slate-900/80 p-3 rounded-xl border border-slate-800 flex flex-col gap-1.5">
+                        <div class="flex justify-between items-center text-xs">
+                            <label for="slider-spin" class="font-medium text-slate-300 flex items-center gap-1.5">
+                                <i class="fa-solid fa-rotate text-emerald-400"></i>
+                                <span>Earth Spin (&Omega;)</span>
+                            </label>
+                            <span id="val-spin" class="font-mono text-emerald-400 font-bold">1.0x</span>
+                        </div>
+                        <input type="range" id="slider-spin" min="0" max="3" step="0.1" value="1.0" class="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-emerald-500" oninput="updateSimParameters()">
+                        <p class="text-[10px] text-slate-400 leading-tight">Earth rotation rate multiplier.</p>
+                    </div>
+
+                </div>
+
+                <!-- Toggles for Feature Overlays -->
+                <div class="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-slate-800/80 text-xs">
+                    <span class="text-slate-400 font-medium">Overlay Features:</span>
+                    <div class="flex flex-wrap items-center gap-3">
+                        <label class="flex items-center gap-2 cursor-pointer text-slate-300 hover:text-white">
+                            <input type="checkbox" id="chk-earth-grid" checked onchange="render()" class="rounded bg-slate-800 border-slate-700 text-emerald-500 focus:ring-0">
+                            <span>Earth Continents & Grid</span>
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer text-slate-300 hover:text-white">
+                            <input type="checkbox" id="chk-airmass" checked onchange="render()" class="rounded bg-slate-800 border-slate-700 text-amber-500 focus:ring-0">
+                            <span>Air Masses (Cold/Warm)</span>
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer text-slate-300 hover:text-white">
+                            <input type="checkbox" id="chk-axes" checked onchange="render()" class="rounded bg-slate-800 border-slate-700 text-rose-500 focus:ring-0">
+                            <span>Trough / Ridge Axes</span>
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer text-slate-300 hover:text-white">
+                            <input type="checkbox" id="chk-particles" checked onchange="render()" class="rounded bg-slate-800 border-slate-700 text-sky-500 focus:ring-0">
+                            <span>Wind Air Parcels</span>
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer text-slate-300 hover:text-white">
+                            <input type="checkbox" id="chk-vectors" checked onchange="render()" class="rounded bg-slate-800 border-slate-700 text-amber-500 focus:ring-0">
+                            <span>Velocity Vectors</span>
+                        </label>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Right Column: Live Physics Diagnostics, Earth Rotation & Vorticity Calculator -->
+        <div class="lg:col-span-4 flex flex-col gap-4">
+            
+            <!-- Reference Frame & Wave Phase Dynamic Indicator -->
+            <div class="glass-panel rounded-2xl p-4 border border-slate-800 flex flex-col gap-3">
+                <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+                    <h3 class="text-sm font-bold text-emerald-400 flex items-center gap-2">
+                        <i class="fa-solid fa-compass"></i>
+                        <span>Earth Rotation & Dispersion</span>
+                    </h3>
+                    <span id="badge-wave-propagation" class="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                        Prograde (Eastward)
+                    </span>
+                </div>
+
+                <div class="grid grid-cols-2 gap-2 text-xs">
+                    <div class="bg-slate-900/80 p-2.5 rounded-xl border border-slate-800">
+                        <div class="text-[10px] text-slate-400">Earth Spin (&Omega;):</div>
+                        <div id="diag-omega-val" class="font-mono text-emerald-400 font-bold text-sm">7.29 × 10⁻⁵ rad/s</div>
+                    </div>
+                    <div class="bg-slate-900/80 p-2.5 rounded-xl border border-slate-800">
+                        <div class="text-[10px] text-slate-400">Ground Speed (45°N):</div>
+                        <div id="diag-uground-val" class="font-mono text-amber-400 font-bold text-sm">328 m/s (East)</div>
+                    </div>
+                    <div class="bg-slate-900/80 p-2.5 rounded-xl border border-slate-800">
+                        <div class="text-[10px] text-slate-400">Coriolis (f_c):</div>
+                        <div id="diag-fc-val" class="font-mono text-sky-400 font-bold text-sm">1.03 × 10⁻⁴ s⁻¹</div>
+                    </div>
+                    <div class="bg-slate-900/80 p-2.5 rounded-xl border border-slate-800">
+                        <div class="text-[10px] text-slate-400">Beta Factor (&beta;):</div>
+                        <div id="diag-beta-val" class="font-mono text-rose-400 font-bold text-sm">1.62 × 10⁻¹¹ m⁻¹s⁻¹</div>
+                    </div>
+                </div>
+
+                <!-- Phase Speed Calculation Readout -->
+                <div class="p-2.5 bg-slate-950 rounded-xl border border-slate-800 text-xs flex flex-col gap-1">
+                    <div class="flex justify-between items-center text-slate-300">
+                        <span>Relative Phase Speed ($c_{rel}$):</span>
+                        <span id="diag-crel-val" class="font-mono font-bold text-amber-300">+12.4 m/s</span>
+                    </div>
+                    <div class="flex justify-between items-center text-[10px] text-slate-400">
+                        <span>Wavelength ($\lambda$):</span>
+                        <span id="diag-wavelength-val" class="font-mono text-slate-200">4,048 km</span>
+                    </div>
+                    <div class="flex justify-between items-center text-[10px] text-slate-400">
+                        <span>Retrograde Beta Drag ($\beta/k^2$):</span>
+                        <span id="diag-betadrag-val" class="font-mono text-rose-400">-32.6 m/s</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Potential Vorticity & Mathematical Formula Tracker -->
+            <div class="glass-panel rounded-2xl p-4 border border-slate-800 flex flex-col gap-3">
+                <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+                    <h3 class="text-sm font-bold text-amber-400 flex items-center gap-2">
+                        <i class="fa-solid fa-calculator"></i>
+                        <span>Potential Vorticity & Dispersion</span>
+                    </h3>
+                    <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-800 text-slate-400">Section 11.11.1</span>
+                </div>
+
+                <!-- KaTeX Rendered Formula Containers -->
+                <div class="space-y-2">
+                    <div class="p-2.5 bg-slate-900/90 rounded-xl border border-slate-800 text-center text-xs text-amber-300">
+                        <div id="math-pv-equation"></div>
+                    </div>
+                    <div class="p-2.5 bg-slate-900/90 rounded-xl border border-slate-800 text-center text-xs text-sky-300">
+                        <div id="math-dispersion-equation"></div>
+                    </div>
+                </div>
+
+                <!-- Selected Point Diagnostic Readout -->
+                <div class="space-y-1.5 text-xs">
+                    <div class="flex justify-between items-center bg-slate-900/60 p-2 rounded-lg border border-slate-800/80">
+                        <span class="text-slate-400 flex items-center gap-1.5">
+                            <i class="fa-solid fa-location-dot text-rose-400"></i>
+                            <span>Inspected Feature:</span>
+                        </span>
+                        <span id="diag-feature" class="font-bold text-rose-300">Trough Axis (Point c)</span>
+                    </div>
+
+                    <div class="flex justify-between items-center bg-slate-900/60 p-2 rounded-lg border border-slate-800/80">
+                        <span class="text-slate-400">Latitude ($\phi$):</span>
+                        <span id="diag-lat" class="font-mono text-slate-200">38.5° N</span>
+                    </div>
+
+                    <div class="flex justify-between items-center bg-slate-900/60 p-2 rounded-lg border border-slate-800/80">
+                        <span class="text-slate-400">Curvature Vorticity ($M/R$):</span>
+                        <span id="diag-zeta" class="font-mono text-amber-400">+2.45 × 10⁻⁵ s⁻¹</span>
+                    </div>
+
+                    <div class="flex justify-between items-center bg-slate-950 p-2 rounded-lg border border-amber-500/30">
+                        <span class="font-semibold text-slate-200">Absolute Vorticity ($\eta = \zeta + f_c$):</span>
+                        <span id="diag-eta" class="font-mono font-bold text-amber-300">1.27 × 10⁻⁴ s⁻¹</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dynamic Point Key Inspector (Planar Mode Points a, b, c, d) -->
+            <div id="card-points-key" class="glass-panel rounded-2xl p-4 border border-slate-800 flex flex-col gap-2">
+                <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wider mb-1 flex items-center justify-between">
+                    <span>Wave Feature Inspection Points</span>
+                    <i class="fa-solid fa-circle-info text-slate-500"></i>
+                </h4>
+                
+                <div class="grid grid-cols-2 gap-2 text-[11px]">
+                    <button onclick="selectPlanarPoint('a')" class="p-2 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-800 text-left transition-all">
+                        <div class="font-bold text-amber-400">Point a: Ridge Crest</div>
+                        <div class="text-slate-400 text-[10px]">Max latitude, Anticyclonic ($\zeta < 0$), Warm air</div>
+                    </button>
+
+                    <button onclick="selectPlanarPoint('b')" class="p-2 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-800 text-left transition-all">
+                        <div class="font-bold text-sky-400">Point b: Equatorward</div>
+                        <div class="text-slate-400 text-[10px]">Northerly wind ($v < 0$), decreasing $f_c$</div>
+                    </button>
+
+                    <button onclick="selectPlanarPoint('c')" class="p-2 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-800 text-left transition-all">
+                        <div class="font-bold text-rose-400">Point c: Trough Axis</div>
+                        <div class="text-slate-400 text-[10px]">Min latitude, Cyclonic ($\zeta > 0$), Cold air</div>
+                    </button>
+
+                    <button onclick="selectPlanarPoint('d')" class="p-2 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-800 text-left transition-all">
+                        <div class="font-bold text-emerald-400">Point d: Poleward</div>
+                        <div class="text-slate-400 text-[10px]">Southerly wind ($v > 0$), increasing $f_c$</div>
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Theory & Conceptual Deep Dives Section -->
+    <section id="concept-section" class="max-w-7xl w-full mx-auto p-4 md:p-6 my-4">
+        <div class="border-t border-slate-800 pt-6 mb-6">
+            <h2 class="text-xl font-bold bg-gradient-to-r from-amber-400 via-rose-300 to-sky-300 bg-clip-text text-transparent inline-flex items-center gap-2">
+                <i class="fa-solid fa-book-bookmark text-amber-400"></i>
+                <span>Theory Breakdown: Earth Rotation & Rossby Waves</span>
+            </h2>
+            <p class="text-xs text-slate-400 mt-1">
+                Detailed notes from Stull's <em>Practical Meteorology</em>, Section 11.11
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            
+            <!-- Card 1: Thermal Wind & Jet Stream Genesis -->
+            <div class="glass-panel rounded-2xl p-5 border border-slate-800 flex flex-col justify-between hover:border-amber-500/40 transition-all">
+                <div>
+                    <div class="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center text-lg mb-3">
+                        <i class="fa-solid fa-temperature-arrow-up"></i>
+                    </div>
+                    <h3 class="text-sm font-bold text-slate-100 mb-2">1. Thermal Wind Jet</h3>
+                    <p class="text-xs text-slate-300 leading-relaxed">
+                        The poleward temperature gradient ($\partial T/\partial y < 0$) generates an equator-to-pole pressure gradient force that grows stronger with altitude. Combined with Earth's rotation, this forms the fast <strong>westerly jet stream</strong> near the tropopause (~11 km).
+                    </p>
+                </div>
+                <div class="text-[11px] font-mono text-amber-300 pt-3 border-t border-slate-800/80 mt-3">
+                    Jet Speed U ≈ 30 – 80 m/s
+                </div>
+            </div>
+
+            <!-- Card 2: Earth Rotation & Beta Effect Restoring Force -->
+            <div class="glass-panel rounded-2xl p-5 border border-slate-800 flex flex-col justify-between hover:border-emerald-500/40 transition-all">
+                <div>
+                    <div class="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center text-lg mb-3">
+                        <i class="fa-solid fa-rotate"></i>
+                    </div>
+                    <h3 class="text-sm font-bold text-slate-100 mb-2">2. The Beta Restoring Force</h3>
+                    <p class="text-xs text-slate-300 leading-relaxed">
+                        Earth's rotation ($\Omega$) causes the Coriolis parameter $f_c = 2\Omega\sin\phi$ to increase northward. This variation $\beta = \partial f_c/\partial y = 2\Omega\cos\phi/R_E$ acts as a restoring force: moving poleward increases $f_c$, forcing relative vorticity to become anticyclonic and turn back south.
+                    </p>
+                </div>
+                <div class="text-[11px] font-mono text-emerald-300 pt-3 border-t border-slate-800/80 mt-3">
+                    &beta; = 2&Omega; cos(&phi;) / R_E
+                </div>
+            </div>
+
+            <!-- Card 3: Phase Speed & Retrograde Wave Motion -->
+            <div class="glass-panel rounded-2xl p-5 border border-slate-800 flex flex-col justify-between hover:border-sky-500/40 transition-all">
+                <div>
+                    <div class="w-10 h-10 rounded-xl bg-sky-500/10 border border-sky-500/20 text-sky-400 flex items-center justify-center text-lg mb-3">
+                        <i class="fa-solid fa-water-wave"></i>
+                    </div>
+                    <h3 class="text-sm font-bold text-slate-100 mb-2">3. Wave Dispersion Relation</h3>
+                    <p class="text-xs text-slate-300 leading-relaxed">
+                        Relative to the air stream, Rossby waves propagate <strong>westward</strong> at phase speed $-\beta/k^2$. Because the jet stream flows east at speed $U$, the ground-relative phase speed is $c = U - \beta/k^2$. Long waves ($N=3,4$) can move westward relative to Earth!
+                    </p>
+                </div>
+                <div class="text-[11px] font-mono text-sky-300 pt-3 border-t border-slate-800/80 mt-3">
+                    c = U - &beta; / k²
+                </div>
+            </div>
+
+            <!-- Card 4: Potential Vorticity Conservation -->
+            <div class="glass-panel rounded-2xl p-5 border border-slate-800 flex flex-col justify-between hover:border-rose-500/40 transition-all">
+                <div>
+                    <div class="w-10 h-10 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-400 flex items-center justify-center text-lg mb-3">
+                        <i class="fa-solid fa-shield-halved"></i>
+                    </div>
+                    <h3 class="text-sm font-bold text-slate-100 mb-2">4. PV Conservation</h3>
+                    <p class="text-xs text-slate-300 leading-relaxed">
+                        In a barotropic air layer of constant thickness $\Delta z$, total absolute vorticity $\eta = M/R + f_c$ remains conserved along air trajectories. Troughs develop cyclonic curvature ($M/R > 0$) at lower latitudes, while ridges develop anticyclonic curvature ($M/R < 0$) at high latitudes.
+                    </p>
+                </div>
+                <div class="text-[11px] font-mono text-rose-300 pt-3 border-t border-slate-800/80 mt-3">
+                    [M/R + f_c] = const
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Interactive Knowledge Check / Quiz -->
+    <section id="quiz-section" class="max-w-7xl w-full mx-auto p-4 md:p-6 my-4">
+        <div class="glass-panel rounded-2xl p-6 border border-slate-800">
+            
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-slate-800 pb-4 mb-6">
+                <div>
+                    <h2 class="text-lg font-bold text-slate-100 flex items-center gap-2">
+                        <i class="fa-solid fa-graduation-cap text-amber-400"></i>
+                        <span>Earth Rotation & Rossby Wave Mastery Quiz</span>
+                    </h2>
+                    <p class="text-xs text-slate-400 mt-0.5">
+                        Test your understanding of Earth rotation rate ($\Omega$), planetary vorticity ($f_c$), beta parameter ($\beta$), and wave dispersion.
+                    </p>
+                </div>
+                <div id="quiz-score-badge" class="px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-800 text-xs font-mono font-bold text-amber-400">
+                    Score: <span id="quiz-score-val">0</span> / 4
+                </div>
+            </div>
+
+            <!-- Questions Container -->
+            <div id="quiz-container" class="space-y-6">
+                <!-- Dynamically injected via JS -->
+            </div>
+
+            <!-- Quiz Controls -->
+            <div class="mt-6 pt-4 border-t border-slate-800 flex justify-end">
+                <button onclick="resetQuiz()" class="px-4 py-2 rounded-xl text-xs font-bold bg-slate-800 hover:bg-slate-700 text-slate-200 transition-all flex items-center gap-2">
+                    <i class="fa-solid fa-rotate"></i>
+                    <span>Reset Quiz</span>
+                </button>
+            </div>
+
+        </div>
+    </section>
+
+    <footer class="mt-auto border-t border-slate-800/80 bg-slate-950 py-6 text-center text-xs text-slate-500">
+        <div class="max-w-7xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-2">
+            <div>
+                Interactive Educational Companion for <strong>Stull's Practical Meteorology</strong>
+            </div>
+            <div class="font-mono text-[11px] text-slate-600">
+                Designed with Tailwind CSS & HTML5 Canvas • Section 11.11
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Global Simulation State
+        let viewMode = 'polar'; // 'polar' or 'planar'
+        let refFrame = 'inertial'; // 'inertial' or 'earth'
+        let isAnimating = true;
+        let animFrameId = null;
+        let animTime = 0;
+
+        // Physical Constants & Interactive Parameters
+        const R_EARTH = 6371000; // Earth radius in meters
+        const OMEGA_BASE = 7.2921e-5; // Base Earth rotation rate rad/s
+
+        let simParams = {
+            wavenumber: 7,       // N: 3 to 13
+            amplitude: 0.45,     // A: 0 to 1
+            jetSpeed: 45,        // U in m/s
+            spinRate: 1.0,       // Earth rotation multiplier
+            latDeg: 45,          // Mean latitude (45N)
+        };
+
+        // Canvas & Particle System
+        let canvas, ctx;
+        let particles = [];
+        const NUM_PARTICLES = 70;
+
+        // Selected Point for Diagnostics (Planar Mode Point a, b, c, d)
+        let selectedPointKey = 'c'; // Default Trough Axis Point c
+
+        // Continents Geometry Data (Simplified Polar Polygons)
+        const continents = [
+            // North America
+            { name: "North America", coords: [
+                {lat: 25, lon: -100}, {lat: 35, lon: -120}, {lat: 55, lon: -130}, {lat: 70, lon: -160},
+                {lat: 72, lon: -120}, {lat: 75, lon: -90}, {lat: 60, lon: -65}, {lat: 45, lon: -65},
+                {lat: 30, lon: -80}, {lat: 25, lon: -90}
+            ]},
+            // Greenland
+            { name: "Greenland", coords: [
+                {lat: 60, lon: -45}, {lat: 70, lon: -55}, {lat: 82, lon: -30}, {lat: 75, lon: -20}, {lat: 65, lon: -35}
+            ]},
+            // Eurasia
+            { name: "Eurasia", coords: [
+                {lat: 36, lon: -10}, {lat: 45, lon: 0}, {lat: 60, lon: 10}, {lat: 70, lon: 30},
+                {lat: 75, lon: 80}, {lat: 70, lon: 140}, {lat: 60, lon: 170}, {lat: 40, lon: 140},
+                {lat: 30, lon: 120}, {lat: 25, lon: 80}, {lat: 30, lon: 50}, {lat: 30, lon: 35}, {lat: 35, lon: -5}
+            ]},
+            // Africa (Northern part visible)
+            { name: "North Africa", coords: [
+                {lat: 10, lon: -15}, {lat: 30, lon: -10}, {lat: 35, lon: 10}, {lat: 30, lon: 32}, {lat: 12, lon: 43}, {lat: 10, lon: 15}
+            ]}
+        ];
+
+        // KaTeX Formula Initialization
+        function initMath() {
+            if (window.katex) {
+                katex.render(
+                    "\\left[ \\frac{M}{R} + f_c \\right]_{\\text{initial}} = \\left[ \\frac{M}{R} + f_c \\right]_{\\text{later}}",
+                    document.getElementById('math-pv-equation'),
+                    { displayMode: true, throwOnError: false }
+                );
+                katex.render(
+                    "c = U - \\frac{\\beta}{k^2} = U - \\frac{2\\Omega R_E \\cos^3\\phi}{N^2}",
+                    document.getElementById('math-dispersion-equation'),
+                    { displayMode: true, throwOnError: false }
+                );
+            }
+        }
+
+        function initCanvas() {
+            canvas = document.getElementById('simCanvas');
+            ctx = canvas.getContext('2d');
+
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
+
+            initParticles();
+
+            canvas.addEventListener('mousemove', handleCanvasHover);
+            canvas.addEventListener('click', handleCanvasClick);
+        }
+
+        function resizeCanvas() {
+            const rect = canvas.getBoundingClientRect();
+            const dpr = window.devicePixelRatio || 1;
+            canvas.width = rect.width * dpr;
+            canvas.height = rect.height * dpr;
+            ctx.scale(dpr, dpr);
+            render();
+        }
+
+        function initParticles() {
+            particles = [];
+            for (let i = 0; i < NUM_PARTICLES; i++) {
+                particles.push({
+                    s: (i / NUM_PARTICLES), // Position fraction along stream [0, 1]
+                    offset: (Math.random() - 0.5) * 10, // Lateral dispersion across ribbon width
+                    speedMult: 0.88 + Math.random() * 0.24
+                });
+            }
+        }
+
+        function updateSimParameters() {
+            simParams.wavenumber = parseInt(document.getElementById('slider-wavenumber').value);
+            simParams.amplitude = parseInt(document.getElementById('slider-amplitude').value) / 100;
+            simParams.jetSpeed = parseInt(document.getElementById('slider-speed').value);
+            simParams.spinRate = parseFloat(document.getElementById('slider-spin').value);
+
+            // Update DOM text labels
+            document.getElementById('val-wavenumber').innerText = simParams.wavenumber;
+            document.getElementById('badge-wavenumber').innerText = `Zonal Wavenumber N = ${simParams.wavenumber}`;
+            document.getElementById('val-amplitude').innerText = `${Math.round(simParams.amplitude * 100)}%`;
+            document.getElementById('val-speed').innerText = `${simParams.jetSpeed} m/s`;
+            document.getElementById('val-spin').innerText = `${simParams.spinRate.toFixed(1)}x`;
+
+            updateDiagnostics();
+            render();
+        }
+
+        function switchReferenceFrame(frame) {
+            refFrame = frame;
+            const btnInertial = document.getElementById('btn-frame-inertial');
+            const btnEarth = document.getElementById('btn-frame-earth');
+            const badgeFrame = document.getElementById('badge-frame');
+
+            if (frame === 'inertial') {
+                btnInertial.className = "px-3 py-1.5 rounded-lg font-semibold transition-all bg-sky-500 text-slate-950 shadow-md";
+                btnEarth.className = "px-3 py-1.5 rounded-lg font-semibold text-slate-400 hover:text-slate-200 transition-all";
+                badgeFrame.innerText = "Space View";
+                badgeFrame.className = "px-2.5 py-1 rounded-full text-xs font-semibold bg-sky-500/10 text-sky-400 border border-sky-500/20";
+            } else {
+                btnEarth.className = "px-3 py-1.5 rounded-lg font-semibold transition-all bg-emerald-500 text-slate-950 shadow-md";
+                btnInertial.className = "px-3 py-1.5 rounded-lg font-semibold text-slate-400 hover:text-slate-200 transition-all";
+                badgeFrame.innerText = "Ground View";
+                badgeFrame.className = "px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20";
+            }
+
+            render();
+        }
+
+        function switchViewMode(mode) {
+            viewMode = mode;
+            const btnPolar = document.getElementById('btn-mode-polar');
+            const btnPlanar = document.getElementById('btn-mode-planar');
+            const titleText = document.getElementById('view-title-text');
+            const titleIcon = document.getElementById('view-title-icon');
+            const citation = document.getElementById('fig-citation');
+
+            if (mode === 'polar') {
+                btnPolar.className = "px-3 py-1.5 rounded-lg font-semibold transition-all bg-amber-500 text-slate-950 shadow-md";
+                btnPlanar.className = "px-3 py-1.5 rounded-lg font-semibold text-slate-400 hover:text-slate-200 transition-all";
+                titleText.innerText = "Polar Projection with Earth Surface Rotation (Fig 11.49)";
+                titleIcon.innerHTML = '<i class="fa-solid fa-globe"></i>';
+                citation.innerText = "11.49";
+            } else {
+                btnPlanar.className = "px-3 py-1.5 rounded-lg font-semibold transition-all bg-amber-500 text-slate-950 shadow-md";
+                btnPolar.className = "px-3 py-1.5 rounded-lg font-semibold text-slate-400 hover:text-slate-200 transition-all";
+                titleText.innerText = "Planar Wave Geometry & Velocity Vectors (Fig 11.50)";
+                titleIcon.innerHTML = '<i class="fa-solid fa-chart-line"></i>';
+                citation.innerText = "11.50";
+            }
+
+            updateDiagnostics();
+            render();
+        }
+
+        function toggleAnimation() {
+            isAnimating = !isAnimating;
+            const icon = document.getElementById('anim-icon');
+            const label = document.getElementById('anim-label');
+            if (isAnimating) {
+                icon.className = "fa-solid fa-pause";
+                label.innerText = "Pause";
+                animate();
+            } else {
+                icon.className = "fa-solid fa-play";
+                label.innerText = "Play";
+                if (animFrameId) cancelAnimationFrame(animFrameId);
+            }
+        }
+
+        function animate() {
+            if (!isAnimating) return;
+            animTime += 0.012;
+
+            // Advance wind particles along wave stream
+            const particleSpeed = (simParams.jetSpeed / 45) * 0.0035;
+            particles.forEach(p => {
+                p.s = (p.s + particleSpeed * p.speedMult) % 1.0;
+            });
+
+            render();
+            animFrameId = requestAnimationFrame(animate);
+        }
+
+        // Compute Physical Dispersion Properties
+        function getPhysicsData() {
+            const N = simParams.wavenumber;
+            const U = simParams.jetSpeed;
+            const spin = simParams.spinRate;
+            const Omega = OMEGA_BASE * spin;
+            const phiRad = (simParams.latDeg * Math.PI) / 180;
+
+            const uGround = Omega * R_EARTH * Math.cos(phiRad);
+            const fc = 2 * Omega * Math.sin(phiRad);
+            const beta = (2 * Omega * Math.cos(phiRad)) / R_EARTH;
+
+            // Wavelength at 45N
+            const wavelength = (2 * Math.PI * R_EARTH * Math.cos(phiRad)) / N;
+            const k = (2 * Math.PI) / wavelength;
+
+            // Beta drag speed relative to mean flow
+            const betaDrag = beta / (k * k);
+            
+            // Phase speed relative to Earth ground
+            const cRel = U - betaDrag;
+
+            // Absolute phase speed in inertial space frame
+            const cAbs = cRel + uGround;
+
+            return { N, U, spin, Omega, phiRad, uGround, fc, beta, wavelength, k, betaDrag, cRel, cAbs };
+        }
+
+        function render() {
+            if (!ctx || !canvas) return;
+            const rect = canvas.getBoundingClientRect();
+            const w = rect.width;
+            const h = rect.height;
+
+            ctx.clearRect(0, 0, w, h);
+
+            if (viewMode === 'polar') {
+                renderPolarView(w, h);
+            } else {
+                renderPlanarView(w, h);
+            }
+        }
+
+        function renderPolarView(w, h) {
+            const cx = w / 2;
+            const cy = h / 2;
+            const maxR = Math.min(w, h) * 0.44;
+
+            const phys = getPhysicsData();
+            const N = phys.N;
+            const A = simParams.amplitude * 0.28 * maxR;
+            const R0 = maxR * 0.60;
+
+            // Earth surface rotation angle
+            // In Inertial frame: Earth rotates at Omega * t
+            // In Earth frame: Earth background is locked (rotation angle = 0)
+            const earthRotAngle = (refFrame === 'inertial') ? (phys.Omega * animTime * 400) : 0;
+
+            // Wave phase angle
+            // In Inertial frame: moves at cAbs
+            // In Earth frame: moves at cRel
+            const wavePhaseAngle = (refFrame === 'inertial') ? (phys.cAbs * animTime * 0.00008) : (phys.cRel * animTime * 0.00008);
+
+            const showEarthGrid = document.getElementById('chk-earth-grid').checked;
+            const showAirMass = document.getElementById('chk-airmass').checked;
+            const showAxes = document.getElementById('chk-axes').checked;
+            const showParticles = document.getElementById('chk-particles').checked;
+            const showVectors = document.getElementById('chk-vectors').checked;
+
+            // 1. Earth Ocean Sphere & Latitude Concentric Circles
+            ctx.fillStyle = "#020617";
+            ctx.beginPath();
+            ctx.arc(cx, cy, maxR, 0, Math.PI * 2);
+            ctx.fill();
+
+            if (showEarthGrid) {
+                // Draw Latitude Rings (30N, 60N, Equator)
+                ctx.lineWidth = 1;
+                ctx.strokeStyle = "rgba(51, 65, 85, 0.4)";
+                [0.33, 0.66, 1.0].forEach(rRatio => {
+                    ctx.beginPath();
+                    ctx.arc(cx, cy, maxR * rRatio, 0, Math.PI * 2);
+                    ctx.stroke();
+                });
+
+                // Longitude Meridians (Rotating with Earth Surface)
+                ctx.strokeStyle = "rgba(30, 41, 59, 0.6)";
+                for (let deg = 0; deg < 360; deg += 30) {
+                    const rad = (deg * Math.PI / 180) + earthRotAngle;
+                    ctx.beginPath();
+                    ctx.moveTo(cx, cy);
+                    ctx.lineTo(cx + maxR * Math.cos(rad), cy + maxR * Math.sin(rad));
+                    ctx.stroke();
+                }
+
+                // Render Rotating Continents Polygons
+                ctx.fillStyle = "rgba(16, 185, 129, 0.12)";
+                ctx.strokeStyle = "rgba(16, 185, 129, 0.35)";
+                ctx.lineWidth = 1.2;
+
+                continents.forEach(cont => {
+                    ctx.beginPath();
+                    cont.coords.forEach((pt, i) => {
+                        const distR = maxR * (1 - pt.lat / 90);
+                        const angle = (pt.lon * Math.PI / 180) + earthRotAngle;
+                        const px = cx + distR * Math.cos(angle);
+                        const py = cy + distR * Math.sin(angle);
+                        if (i === 0) ctx.moveTo(px, py);
+                        else ctx.lineTo(px, py);
+                    });
+                    ctx.closePath();
+                    ctx.fill();
+                    ctx.stroke();
+                });
+            }
+
+            // 2. Air Mass Background Fill
+            if (showAirMass) {
+                // Equatorial Warm Air Mass Fill
+                const warmGrad = ctx.createRadialGradient(cx, cy, R0 * 0.4, cx, cy, maxR);
+                warmGrad.addColorStop(0, "rgba(244, 63, 94, 0.05)");
+                warmGrad.addColorStop(1, "rgba(244, 63, 94, 0.22)");
+                ctx.fillStyle = warmGrad;
+                ctx.beginPath();
+                ctx.arc(cx, cy, maxR, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Polar Cold Air Mass Fill (Inside Rossby Jet boundary polygon)
+                const polarGrad = ctx.createRadialGradient(cx, cy, 0, cx, cy, maxR * 0.85);
+                polarGrad.addColorStop(0, "rgba(2, 132, 199, 0.55)");
+                polarGrad.addColorStop(1, "rgba(14, 165, 233, 0.18)");
+
+                ctx.beginPath();
+                const steps = 360;
+                for (let i = 0; i <= steps; i++) {
+                    const theta = (i / steps) * Math.PI * 2;
+                    const r = R0 + A * Math.cos(N * (theta - wavePhaseAngle));
+                    const x = cx + r * Math.cos(theta);
+                    const y = cy + r * Math.sin(theta);
+                    if (i === 0) ctx.moveTo(x, y);
+                    else ctx.lineTo(x, y);
+                }
+                ctx.closePath();
+                ctx.fillStyle = polarGrad;
+                ctx.fill();
+            }
+
+            // 3. Center North Pole Marker
+            ctx.fillStyle = "#38bdf8";
+            ctx.beginPath();
+            ctx.arc(cx, cy, 4, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = "#94a3b8";
+            ctx.font = "bold 10px monospace";
+            ctx.textAlign = "center";
+            ctx.fillText("North Pole N", cx, cy - 8);
+
+            // 4. Rossby Jet Stream Ribbon
+            ctx.shadowColor = "rgba(245, 158, 11, 0.6)";
+            ctx.shadowBlur = 12;
+            ctx.strokeStyle = "#f59e0b";
+            ctx.lineWidth = 4;
+
+            ctx.beginPath();
+            const steps = 360;
+            for (let i = 0; i <= steps; i++) {
+                const theta = (i / steps) * Math.PI * 2;
+                const r = R0 + A * Math.cos(N * (theta - wavePhaseAngle));
+                const x = cx + r * Math.cos(theta);
+                const y = cy + r * Math.sin(theta);
+                if (i === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            }
+            ctx.stroke();
+            ctx.shadowBlur = 0;
+
+            // 5. Trough & Ridge Axes
+            if (showAxes && A > 5) {
+                for (let k = 0; k < N; k++) {
+                    const thetaTrough = ( (2 * k + 1) * Math.PI / N ) + wavePhaseAngle;
+                    const rTrough = R0 - A;
+
+                    const thetaRidge = ( (2 * k) * Math.PI / N ) + wavePhaseAngle;
+                    const rRidge = R0 + A;
+
+                    // Trough Axis (Dashed Sky Line)
+                    ctx.setLineDash([4, 4]);
+                    ctx.strokeStyle = "#38bdf8";
+                    ctx.lineWidth = 1.5;
+                    ctx.beginPath();
+                    ctx.moveTo(cx + (rTrough - 15) * Math.cos(thetaTrough), cy + (rTrough - 15) * Math.sin(thetaTrough));
+                    ctx.lineTo(cx + (rTrough + 35) * Math.cos(thetaTrough), cy + (rTrough + 35) * Math.sin(thetaTrough));
+                    ctx.stroke();
+
+                    // Ridge Axis (Zig-zag Rose Line)
+                    ctx.setLineDash([]);
+                    ctx.strokeStyle = "#f43f5e";
+                    ctx.lineWidth = 1.5;
+                    drawZigZagLine(
+                        ctx,
+                        cx + (rRidge - 25) * Math.cos(thetaRidge), cy + (rRidge - 25) * Math.sin(thetaRidge),
+                        cx + (rRidge + 20) * Math.cos(thetaRidge), cy + (rRidge + 20) * Math.sin(thetaRidge)
+                    );
+                }
+                ctx.setLineDash([]);
+            }
+
+            // 6. Animated Wind Air Parcels
+            if (showParticles) {
+                particles.forEach(p => {
+                    const theta = p.s * Math.PI * 2;
+                    const r = R0 + A * Math.cos(N * (theta - wavePhaseAngle)) + p.offset;
+                    const x = cx + r * Math.cos(theta);
+                    const y = cy + r * Math.sin(theta);
+
+                    ctx.fillStyle = "#ffffff";
+                    ctx.beginPath();
+                    ctx.arc(x, y, 2.5, 0, Math.PI * 2);
+                    ctx.fill();
+                });
+            }
+
+            // 7. Earth Rotation & Wind Velocity Vectors
+            if (showVectors) {
+                // Earth Surface Spin Vector at 45N (Counter-Clockwise Arrow)
+                ctx.strokeStyle = "#10b981";
+                ctx.fillStyle = "#10b981";
+                ctx.lineWidth = 2;
+                const vRadius = R0;
+                const vAngle = earthRotAngle + Math.PI / 4;
+                const vx1 = cx + vRadius * Math.cos(vAngle);
+                const vy1 = cy + vRadius * Math.sin(vAngle);
+                
+                // Tangent vector direction
+                const vTangent = vAngle + Math.PI / 2;
+                const vLength = 25 * (phys.spin);
+                const vx2 = vx1 + vLength * Math.cos(vTangent);
+                const vy2 = vy1 + vLength * Math.sin(vTangent);
+
+                drawArrow(ctx, vx1, vy1, vx2, vy2, 6);
+                ctx.font = "bold 10px monospace";
+                ctx.fillText("u_ground (spin)", vx2 + 5, vy2);
+            }
+        }
+
+        function renderPlanarView(w, h) {
+            const marginX = 50;
+            const marginY = 40;
+            const plotW = w - marginX * 2;
+            const plotH = h - marginY * 2;
+
+            const phys = getPhysicsData();
+            const midY = marginY + plotH / 2;
+            const ampY = (simParams.amplitude * 0.35) * (plotH / 2);
+            const wavelengthPixels = plotW / 1.5;
+
+            // Phase Angle for planar wave equation
+            const wavePhase = (refFrame === 'inertial') ? (phys.cAbs * animTime * 0.0003) : (phys.cRel * animTime * 0.0003);
+            const groundScrollX = (refFrame === 'inertial') ? (phys.uGround * animTime * 0.1) % 40 : 0;
+
+            const showEarthGrid = document.getElementById('chk-earth-grid').checked;
+            const showAirMass = document.getElementById('chk-airmass').checked;
+            const showAxes = document.getElementById('chk-axes').checked;
+
+            // 1. Earth Surface Grid & Latitude Reference Lines
+            ctx.strokeStyle = "rgba(51, 65, 85, 0.5)";
+            ctx.lineWidth = 1;
+            ctx.setLineDash([3, 3]);
+
+            [0.15, 0.5, 0.85].forEach((ratio, idx) => {
+                const yPos = marginY + plotH * ratio;
+                ctx.beginPath();
+                ctx.moveTo(marginX, yPos);
+                ctx.lineTo(w - marginX, yPos);
+                ctx.stroke();
+
+                ctx.fillStyle = "#94a3b8";
+                ctx.font = "10px monospace";
+                ctx.textAlign = "right";
+                const latLabel = idx === 0 ? "60°N (Poleward)" : idx === 1 ? "45°N (Jet Axis)" : "30°N (Equatorward)";
+                ctx.fillText(latLabel, marginX - 6, yPos + 3);
+            });
+            ctx.setLineDash([]);
+
+            // Scrolling Ground Grid Marks (Representing Earth surface spin)
+            if (showEarthGrid) {
+                ctx.strokeStyle = "rgba(16, 185, 129, 0.25)";
+                ctx.lineWidth = 1;
+                for (let gx = marginX - 40 + groundScrollX; gx <= w - marginX; gx += 40) {
+                    if (gx >= marginX) {
+                        ctx.beginPath();
+                        ctx.moveTo(gx, marginY);
+                        ctx.lineTo(gx, h - marginY);
+                        ctx.stroke();
+                    }
+                }
+            }
+
+            // Wave Equation: y(x) = midY - ampY * sin(k * x - phase)
+            function getJetY(x) {
+                const kP = (2 * Math.PI) / wavelengthPixels;
+                return midY - ampY * Math.sin(kP * (x - marginX) - wavePhase);
+            }
+
+            // 2. Air Mass Color Shading
+            if (showAirMass) {
+                // Cold Polar Air Mass Fill (Above Jet Curve)
+                ctx.fillStyle = "rgba(2, 132, 199, 0.2)";
+                ctx.beginPath();
+                ctx.moveTo(marginX, marginY);
+                for (let x = marginX; x <= w - marginX; x += 2) {
+                    ctx.lineTo(x, getJetY(x));
+                }
+                ctx.lineTo(w - marginX, marginY);
+                ctx.closePath();
+                ctx.fill();
+
+                // Warm Tropical Air Mass Fill (Below Jet Curve)
+                ctx.fillStyle = "rgba(244, 63, 94, 0.2)";
+                ctx.beginPath();
+                ctx.moveTo(marginX, h - marginY);
+                for (let x = marginX; x <= w - marginX; x += 2) {
+                    ctx.lineTo(x, getJetY(x));
+                }
+                ctx.lineTo(w - marginX, h - marginY);
+                ctx.closePath();
+                ctx.fill();
+            }
+
+            // 3. Render Jet Ribbon
+            ctx.strokeStyle = "#f59e0b";
+            ctx.lineWidth = 4;
+            ctx.shadowColor = "rgba(245, 158, 11, 0.5)";
+            ctx.shadowBlur = 10;
+
+            ctx.beginPath();
+            for (let x = marginX; x <= w - marginX; x += 2) {
+                const y = getJetY(x);
+                if (x === marginX) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            }
+            ctx.stroke();
+            ctx.shadowBlur = 0;
+
+            // 4. Highlight Selected Wave Feature Points (a, b, c, d)
+            const kP = (2 * Math.PI) / wavelengthPixels;
+            const phase = wavePhase;
+
+            const x_a = marginX + ((Math.PI / 2 + phase) / kP) % plotW;
+            const x_b = marginX + ((Math.PI + phase) / kP) % plotW;
+            const x_c = marginX + ((3 * Math.PI / 2 + phase) / kP) % plotW;
+            const x_d = marginX + ((2 * Math.PI + phase) / kP) % plotW;
+
+            const pointsMap = [
+                { key: 'a', x: x_a, name: "Ridge Crest", color: "#f59e0b" },
+                { key: 'b', x: x_b, name: "Equatorward Flow", color: "#38bdf8" },
+                { key: 'c', x: x_c, name: "Trough Axis", color: "#f43f5e" },
+                { key: 'd', x: x_d, name: "Poleward Flow", color: "#34d399" }
+            ];
+
+            pointsMap.forEach(pt => {
+                let px = pt.x;
+                while (px < marginX) px += plotW;
+                while (px > w - marginX) px -= plotW;
+
+                const py = getJetY(px);
+                const isSelected = pt.key === selectedPointKey;
+
+                ctx.fillStyle = pt.color;
+                ctx.beginPath();
+                ctx.arc(px, py, isSelected ? 8 : 5, 0, Math.PI * 2);
+                ctx.fill();
+
+                if (isSelected) {
+                    ctx.strokeStyle = "#ffffff";
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+                }
+
+                ctx.fillStyle = "#ffffff";
+                ctx.font = "bold 12px sans-serif";
+                ctx.textAlign = "center";
+                ctx.fillText(pt.key, px, py - 12);
+            });
+
+            // 5. Wavelength & Amplitude Annotations
+            drawDimensionAnnotations(ctx, marginX, plotW, midY, ampY, h - marginY, phys.wavelength);
+
+            // 6. Trough & Ridge Axes
+            if (showAxes && ampY > 5) {
+                let troughX = x_c;
+                while (troughX < marginX) troughX += plotW;
+                while (troughX > w - marginX) troughX -= plotW;
+
+                ctx.setLineDash([4, 4]);
+                ctx.strokeStyle = "#38bdf8";
+                ctx.lineWidth = 1.5;
+                ctx.beginPath();
+                ctx.moveTo(troughX, marginY);
+                ctx.lineTo(troughX, h - marginY);
+                ctx.stroke();
+
+                let ridgeX = x_a;
+                while (ridgeX < marginX) ridgeX += plotW;
+                while (ridgeX > w - marginX) ridgeX -= plotW;
+
+                ctx.setLineDash([]);
+                ctx.strokeStyle = "#f43f5e";
+                ctx.lineWidth = 1.5;
+                drawZigZagLine(ctx, ridgeX, marginY, ridgeX, h - marginY);
+            }
+        }
+
+        // Helper Canvas Drawing Routines
+        function drawZigZagLine(context, x1, y1, x2, y2) {
+            const steps = 12;
+            const dx = (x2 - x1) / steps;
+            const dy = (y2 - y1) / steps;
+            const amp = 4;
+
+            context.beginPath();
+            context.moveTo(x1, y1);
+            for (let i = 1; i <= steps; i++) {
+                const px = x1 + dx * i + (i % 2 === 0 ? amp : -amp);
+                const py = y1 + dy * i;
+                context.lineTo(px, py);
+            }
+            context.stroke();
+        }
+
+        function drawArrow(context, x1, y1, x2, y2, headLen) {
+            const angle = Math.atan2(y2 - y1, x2 - x1);
+            context.beginPath();
+            context.moveTo(x1, y1);
+            context.lineTo(x2, y2);
+            context.lineTo(x2 - headLen * Math.cos(angle - Math.PI / 6), y2 - headLen * Math.sin(angle - Math.PI / 6));
+            context.moveTo(x2, y2);
+            context.lineTo(x2 - headLen * Math.cos(angle + Math.PI / 6), y2 - headLen * Math.sin(angle + Math.PI / 6));
+            context.stroke();
+        }
+
+        function drawDimensionAnnotations(context, marginX, plotW, midY, ampY, bottomY, wavelengthKm) {
+            context.strokeStyle = "rgba(226, 232, 240, 0.6)";
+            context.fillStyle = "rgba(226, 232, 240, 0.9)";
+            context.font = "11px monospace";
+            context.lineWidth = 1;
+
+            const yLambda = bottomY - 15;
+            const lambdaW = plotW / 1.5;
+            context.beginPath();
+            context.moveTo(marginX, yLambda);
+            context.lineTo(marginX + lambdaW, yLambda);
+            context.stroke();
+
+            context.textAlign = "center";
+            context.fillText(`← wavelength λ ≈ ${Math.round(wavelengthKm).toLocaleString()} km →`, marginX + lambdaW / 2, yLambda - 4);
+
+            if (ampY > 10) {
+                const xAmp = marginX + plotW - 15;
+                context.beginPath();
+                context.moveTo(xAmp, midY - ampY);
+                context.lineTo(xAmp, midY + ampY);
+                context.stroke();
+
+                context.textAlign = "left";
+                context.fillText("2A", xAmp + 4, midY + 4);
+            }
+        }
+
+        function selectPlanarPoint(ptKey) {
+            selectedPointKey = ptKey;
+            updateDiagnostics();
+            render();
+        }
+
+        function updateDiagnostics() {
+            const phys = getPhysicsData();
+
+            document.getElementById('diag-omega-val').innerText = `${(phys.Omega * 1e5).toFixed(2)} × 10⁻⁵ rad/s`;
+            document.getElementById('diag-uground-val').innerText = `${Math.round(phys.uGround)} m/s (East)`;
+            document.getElementById('diag-fc-val').innerText = `${(phys.fc * 1e4).toFixed(2)} × 10⁻⁴ s⁻¹`;
+            document.getElementById('diag-beta-val').innerText = `${(phys.beta * 1e11).toFixed(2)} × 10⁻¹¹ m⁻¹s⁻¹`;
+
+            const crelSign = phys.cRel >= 0 ? "+" : "";
+            document.getElementById('diag-crel-val').innerText = `${crelSign}${phys.cRel.toFixed(1)} m/s`;
+            document.getElementById('diag-wavelength-val').innerText = `${Math.round(phys.wavelength).toLocaleString()} km`;
+            document.getElementById('diag-betadrag-val').innerText = `-${phys.betaDrag.toFixed(1)} m/s`;
+
+            // Propagation direction badge
+            const badgeProp = document.getElementById('badge-wave-propagation');
+            if (phys.cRel > 2) {
+                badgeProp.innerText = "Prograde (Eastward)";
+                badgeProp.className = "text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30";
+            } else if (phys.cRel < -2) {
+                badgeProp.innerText = "Retrograde (Westward)";
+                badgeProp.className = "text-[10px] font-mono px-2 py-0.5 rounded bg-rose-500/20 text-rose-300 border border-rose-500/30";
+            } else {
+                badgeProp.innerText = "Stationary Wave (c ≈ 0)";
+                badgeProp.className = "text-[10px] font-mono px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30";
+            }
+
+            // Feature diagnostic for selected point
+            const diagFeature = document.getElementById('diag-feature');
+            const diagLat = document.getElementById('diag-lat');
+            const diagZeta = document.getElementById('diag-zeta');
+            const diagEta = document.getElementById('diag-eta');
+
+            let latDeg = 45;
+            let relVorticity = 0;
+            let featureText = "";
+
+            if (selectedPointKey === 'a') {
+                featureText = "Ridge Crest (Point a)";
+                latDeg = 45 + simParams.amplitude * 15;
+                relVorticity = -2.2e-5 * (simParams.amplitude + 0.2);
+            } else if (selectedPointKey === 'b') {
+                featureText = "Equatorward Flow (Point b)";
+                latDeg = 45;
+                relVorticity = 0;
+            } else if (selectedPointKey === 'c') {
+                featureText = "Trough Axis (Point c)";
+                latDeg = 45 - simParams.amplitude * 15;
+                relVorticity = +2.45e-5 * (simParams.amplitude + 0.2);
+            } else {
+                featureText = "Poleward Flow (Point d)";
+                latDeg = 45;
+                relVorticity = 0;
+            }
+
+            const latRad = (latDeg * Math.PI) / 180;
+            const ptFc = 2 * phys.Omega * Math.sin(latRad);
+            const eta = ptFc + relVorticity;
+
+            diagFeature.innerText = featureText;
+            diagLat.innerText = `${latDeg.toFixed(1)}° N`;
+            const relSign = relVorticity >= 0 ? "+" : "";
+            diagZeta.innerText = `${relSign}${(relVorticity * 1e5).toFixed(2)} × 10⁻⁵ s⁻¹`;
+            diagEta.innerText = `${(eta * 1e4).toFixed(3)} × 10⁻⁴ s⁻¹`;
+        }
+
+        // Canvas Tooltip & Click Event Listeners
+        function handleCanvasHover(e) {
+            const tooltip = document.getElementById('canvas-tooltip');
+            const rect = canvas.getBoundingClientRect();
+            const mouseX = e.clientX - rect.left;
+
+            if (viewMode === 'planar') {
+                const plotW = rect.width - 100;
+                const wavelengthPixels = plotW / 1.5;
+                const kP = (2 * Math.PI) / wavelengthPixels;
+                const phys = getPhysicsData();
+                const phase = (refFrame === 'inertial') ? (phys.cAbs * animTime * 0.0003) : (phys.cRel * animTime * 0.0003);
+
+                const x_a = 50 + ((Math.PI / 2 + phase) / kP) % plotW;
+                const x_c = 50 + ((3 * Math.PI / 2 + phase) / kP) % plotW;
+
+                if (Math.abs(mouseX - x_a) < 20) {
+                    showTooltip(e, "Point a: Ridge Axis", "High geopotential, warm air poleward, anticyclonic curvature (M/R < 0).");
+                } else if (Math.abs(mouseX - x_c) < 20) {
+                    showTooltip(e, "Point c: Trough Axis", "Low geopotential, cold air equatorward, cyclonic curvature (M/R > 0).");
+                } else {
+                    tooltip.classList.add('hidden');
+                }
+            } else {
+                tooltip.classList.add('hidden');
+            }
+        }
+
+        function showTooltip(e, title, body) {
+            const tooltip = document.getElementById('canvas-tooltip');
+            document.getElementById('tooltip-title').innerText = title;
+            document.getElementById('tooltip-body').innerText = body;
+
+            tooltip.style.left = `${e.clientX - canvas.getBoundingClientRect().left + 15}px`;
+            tooltip.style.top = `${e.clientY - canvas.getBoundingClientRect().top - 10}px`;
+            tooltip.classList.remove('hidden');
+        }
+
+        function handleCanvasClick(e) {
+            if (viewMode === 'planar') {
+                const rect = canvas.getBoundingClientRect();
+                const mouseX = e.clientX - rect.left;
+                const plotW = rect.width - 100;
+                const wavelengthPixels = plotW / 1.5;
+                const kP = (2 * Math.PI) / wavelengthPixels;
+                const phys = getPhysicsData();
+                const phase = (refFrame === 'inertial') ? (phys.cAbs * animTime * 0.0003) : (phys.cRel * animTime * 0.0003);
+
+                const x_a = 50 + ((Math.PI / 2 + phase) / kP) % plotW;
+                const x_b = 50 + ((Math.PI + phase) / kP) % plotW;
+                const x_c = 50 + ((3 * Math.PI / 2 + phase) / kP) % plotW;
+                const x_d = 50 + ((2 * Math.PI + phase) / kP) % plotW;
+
+                const dists = [
+                    { key: 'a', d: Math.abs(mouseX - x_a) },
+                    { key: 'b', d: Math.abs(mouseX - x_b) },
+                    { key: 'c', d: Math.abs(mouseX - x_c) },
+                    { key: 'd', d: Math.abs(mouseX - x_d) }
+                ];
+                dists.sort((p1, p2) => p1.d - p2.d);
+
+                if (dists[0].d < 35) {
+                    selectPlanarPoint(dists[0].key);
+                }
+            }
+        }
+
+        // Quiz Questions Data
+        const quizQuestions = [
+            {
+                q: "What role does Earth's rotation rate (Ω) play in creating the restoring force for Rossby waves?",
+                options: [
+                    "It creates the beta parameter β = ∂f_c/∂y, causing Coriolis forces to increase northward and force poleward-moving air back south.",
+                    "It turns off friction in the upper boundary layer.",
+                    "It prevents thermal wind gradients from forming near the equator.",
+                    "It causes jet stream winds to blow strictly from East to West."
+                ],
+                correct: 0,
+                explanation: "Correct! The variation of Coriolis parameter with latitude (β = 2Ω cos(ϕ)/R_E) acts as the restoring force: air deflected poleward experiences higher f_c, developing anticyclonic curvature that turns it back equatorward."
+            },
+            {
+                q: "Under what condition does a Rossby wave become a Stationary Wave (c = 0) relative to the ground?",
+                options: [
+                    "When the jet stream wind speed U is zero.",
+                    "When eastward jet advection U exactly balances westward beta wave drag (U = β/k²).",
+                    "When Earth stops rotating entirely (Ω = 0).",
+                    "When wavenumber N reaches 100 waves."
+                ],
+                correct: 1,
+                explanation: "Correct! The dispersion relation c = U - β/k² shows that when U = β/k², the wave's westward propagation relative to the air stream exactly cancels eastward advection by the jet stream, creating a stationary wave pattern!"
+            },
+            {
+                q: "According to Potential Vorticity Conservation ([M/R + f_c] = const), what happens as an air parcel moves equatorward towards a Trough Axis (Point c)?",
+                options: [
+                    "Latitude decreases, so f_c decreases, forcing relative curvature vorticity M/R to become positive (cyclonic).",
+                    "Relative vorticity M/R drops to zero and stays constant forever.",
+                    "The Coriolis parameter increases indefinitely.",
+                    "The air parcel evaporates instantly."
+                ],
+                correct: 0,
+                explanation: "Correct! Moving equatorward decreases f_c; to conserve total absolute vorticity (η = M/R + f_c), the parcel generates positive (cyclonic) relative curvature vorticity (M/R > 0)."
+            },
+            {
+                q: "Why do long planetary Rossby waves (low wavenumber N = 3 or 4) often move WESTWARD (retrograde) relative to the Earth's surface?",
+                options: [
+                    "Because long wavelength λ makes wavenumber k small, so β/k² becomes larger than the westerly jet speed U.",
+                    "Because Earth rotates from East to West at high latitudes.",
+                    "Because ocean currents pull the atmosphere backward.",
+                    "Because solar wind overwhelms atmospheric pressure."
+                ],
+                correct: 0,
+                explanation: "Correct! Long wavelengths mean small k, making the retrograde wave phase speed term β/k² larger than U, resulting in negative (westward) phase speed c = U - β/k² relative to Earth."
+            }
+        ];
+
+        let userAnswers = {};
+
+        function renderQuiz() {
+            const container = document.getElementById('quiz-container');
+            container.innerHTML = "";
+
+            quizQuestions.forEach((qObj, qIdx) => {
+                const qCard = document.createElement('div');
+                qCard.className = "bg-slate-900/80 p-4 rounded-xl border border-slate-800 flex flex-col gap-3";
+
+                qCard.innerHTML = `
+                    <div class="text-xs font-bold text-slate-200 flex items-start gap-2">
+                        <span class="px-2 py-0.5 rounded bg-amber-500/20 text-amber-400 font-mono">Q${qIdx + 1}</span>
+                        <span>${qObj.q}</span>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs">
+                        ${qObj.options.map((opt, oIdx) => `
+                            <button onclick="answerQuestion(${qIdx}, ${oIdx})" 
+                                id="btn-q${qIdx}-o${oIdx}"
+                                class="p-2.5 rounded-lg border border-slate-800 bg-slate-950 hover:bg-slate-800 text-left transition-all text-slate-300">
+                                ${String.fromCharCode(65 + oIdx)}. ${opt}
+                            </button>
+                        `).join('')}
+                    </div>
+                    <div id="quiz-explain-${qIdx}" class="hidden p-3 rounded-lg text-xs leading-relaxed"></div>
+                `;
+                container.appendChild(qCard);
+            });
+        }
+
+        function answerQuestion(qIdx, oIdx) {
+            userAnswers[qIdx] = oIdx;
+            const qObj = quizQuestions[qIdx];
+            const explainDiv = document.getElementById(`quiz-explain-${qIdx}`);
+
+            qObj.options.forEach((_, idx) => {
+                const btn = document.getElementById(`btn-q${qIdx}-o${idx}`);
+                if (idx === qObj.correct) {
+                    btn.className = "p-2.5 rounded-lg border border-emerald-500/50 bg-emerald-500/10 text-emerald-300 text-left font-semibold";
+                } else if (idx === oIdx) {
+                    btn.className = "p-2.5 rounded-lg border border-rose-500/50 bg-rose-500/10 text-rose-300 text-left";
+                } else {
+                    btn.className = "p-2.5 rounded-lg border border-slate-800/50 bg-slate-950/40 text-slate-500 text-left opacity-60";
+                }
+            });
+
+            explainDiv.classList.remove('hidden');
+            if (oIdx === qObj.correct) {
+                explainDiv.className = "p-3 rounded-lg text-xs bg-emerald-500/10 border border-emerald-500/30 text-emerald-300";
+                explainDiv.innerHTML = `<i class="fa-solid fa-circle-check mr-1"></i> ${qObj.explanation}`;
+            } else {
+                explainDiv.className = "p-3 rounded-lg text-xs bg-rose-500/10 border border-rose-500/30 text-rose-300";
+                explainDiv.innerHTML = `<i class="fa-solid fa-circle-xmark mr-1"></i> Incorrect. ${qObj.explanation}`;
+            }
+
+            let score = 0;
+            Object.keys(userAnswers).forEach(k => {
+                if (userAnswers[k] === quizQuestions[k].correct) score++;
+            });
+            document.getElementById('quiz-score-val').innerText = score;
+        }
+
+        function resetQuiz() {
+            userAnswers = {};
+            document.getElementById('quiz-score-val').innerText = "0";
+            renderQuiz();
+        }
+
+        window.onload = function() {
+            initMath();
+            initCanvas();
+            updateSimParameters();
+            renderQuiz();
+            animate();
+        };
+    </script>
+</body>
+</html>

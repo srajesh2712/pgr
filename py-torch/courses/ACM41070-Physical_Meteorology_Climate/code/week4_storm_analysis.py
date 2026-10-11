@@ -19,7 +19,7 @@ from matplotlib.animation import FuncAnimation
 
 
 def load_dataset():
-    default_path = Path(__file__).parent / "data" / "week4" / "2f4b34b00ecc91be5a6954d53f379fdb.nc"
+    default_path = Path(__file__).parent / "data" / "week4" / "1e54f08eb13e7d9b9d174498f892d1be.nc"
     if default_path.exists():
         file_path = default_path
     else:

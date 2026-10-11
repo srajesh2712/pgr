@@ -27,7 +27,7 @@ import cartopy.feature as cfeature
 # --------------------------------------------------------------------------
 # Settings
 # --------------------------------------------------------------------------
-DATA_FILE = Path(__file__).parent / "data" / "week4" / "4bc0b7d8457a7070d63b5b44c837ec34.nc"
+DATA_FILE = Path(__file__).parent / "data" / "week4" / "1e54f08eb13e7d9b9d174498f892d1be.nc"
 OUT_DIR = Path(__file__).parent / "output"
 
 DATE = None            # e.g. "2024-11-23" to keep a single day if the file holds several

@@ -28,3 +28,6 @@ experiment-output/
 experiment_outputs/
 *.ckpt
 *.onnx
+*.nc
+*.png
+*.gif

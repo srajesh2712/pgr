@@ -1,42 +1,55 @@
 import xarray as xr
+import numpy as np
 import matplotlib.pyplot as plt
 from pathlib import Path
-import numpy as np
+
 import cartopy.crs as ccrs
 import cartopy.feature as cfeature
 
-file_path = Path(__file__).parent / "data" /"week4" / "2d6b96deddd5146bdc8783ba042ed9b9.nc"
+# ==========================================================
+# LOAD DATA
+# ==========================================================
+
+file_path = (
+    Path(__file__).parent
+    / "data"
+    / "week4"
+    / "1e54f08eb13e7d9b9d174498f892d1be.nc"
+)
+
 ds = xr.open_dataset(file_path)
+
 print(ds)
 
-# Select one hour
-t = 15 # e.g. 12 UTC
+# ==========================================================
+# SELECT TIME
+# ==========================================================
 
-msl = ds["msl"].isel(valid_time=t)
+t = 91
 
-lat = ds["latitude"].values
-lon = ds["longitude"].values
+mslp = ds["msl"].isel(valid_time=t)  # Pa
+u10 = ds["u10"].isel(valid_time=t)
+v10 = ds["v10"].isel(valid_time=t)
 
-# Earth constants
-Omega = 7.292115e-5 # rad/s
-g = 9.81 # m/s²
+lat = ds.latitude.values
+lon = ds.longitude.values
 
-# Convert pressure to geopotential height approximation
-# Z = p/(rho*g)
-# Using rho ≈ 1.225 kg/m³
+# ==========================================================
+# GEOSTROPHIC WIND FROM PRESSURE GRADIENT
+# ==========================================================
+
+Omega = 7.292115e-5
 rho = 1.225
+R = 6371000
 
-Z = msl.values / (rho * g)
-
-# Convert coordinates to radians
 lat_rad = np.deg2rad(lat)
 lon_rad = np.deg2rad(lon)
 
 # Coriolis parameter
+
 f = 2 * Omega * np.sin(lat_rad)
 
-# Grid spacing in metres
-R = 6371000
+# Grid spacing (metres)
 
 dlat = np.gradient(lat_rad)
 dlon = np.gradient(lon_rad)
@@ -44,116 +57,146 @@ dlon = np.gradient(lon_rad)
 dy = dlat[:, None] * R
 dx = dlon[None, :] * R * np.cos(lat_rad[:, None])
 
-# Height gradients
-dZdy, dZdx = np.gradient(Z)
+# Pressure field (Pa)
 
-dZdy = dZdy / dy
-dZdx = dZdx / dx
+p = mslp.values
 
-# Expand f to 2D
-f2d = f[:, None]
+# Pressure gradients
 
-# Avoid division by zero
+dpdy, dpdx = np.gradient(p)
+
+dpdy = dpdy / dy
+dpdx = dpdx / dx
+
+# Expand Coriolis parameter
+
+f2d = f[:, None].astype(float)
+
+# Avoid singularity near equator
+
 f2d[np.abs(f2d) < 1e-5] = np.nan
 
 # Geostrophic wind equations
-ug = -(g / f2d) * dZdy
-vg = (g / f2d) * dZdx
 
-# Geostrophic wind speed
+ug = -(1 / (rho * f2d)) * dpdy
+vg = (1 / (rho * f2d)) * dpdx
+
 Vg = np.sqrt(ug**2 + vg**2)
+print("ug range:", np.nanmin(ug), np.nanmax(ug))
+print("vg range:", np.nanmin(vg), np.nanmax(vg))
+print("f range :", np.nanmin(f2d), np.nanmax(f2d))
+print("dpdx range:", np.nanmin(dpdx), np.nanmax(dpdx))
+print("dpdy range:", np.nanmin(dpdy), np.nanmax(dpdy))
+print(
+    f"Maximum geostrophic wind = {np.nanmax(Vg):.2f} m/s"
+)
+print("95th percentile:", np.nanpercentile(Vg, 95))
+print("99th percentile:", np.nanpercentile(Vg, 99))
+print("99.5th percentile:", np.nanpercentile(Vg, 99.5))
+print("99.9th percentile:", np.nanpercentile(Vg, 99.9))
+print(
+    f"Mean geostrophic wind = {np.nanmean(Vg):.2f} m/s"
+)
 
-print("Maximum geostrophic wind:", np.nanmax(Vg), "m/s")
-print("Mean geostrophic wind:", np.nanmean(Vg), "m/s")
+# ==========================================================
+# ACTUAL WINDS
+# ==========================================================
 
-u10 = ds["u10"].isel(valid_time=12)
-v10 = ds["v10"].isel(valid_time=12)
+wind_speed = np.sqrt(
+    u10.values**2 +
+    v10.values**2
+)
 
-V_actual = np.sqrt(u10**2 + v10**2)
+print(
+    f"Maximum actual wind = {np.nanmax(wind_speed):.2f} m/s"
+)
 
-print("Max actual wind:", float(V_actual.max()))
-print("Mean actual wind:", float(V_actual.mean()))
-t = 13
+print(
+    f"Mean actual wind = {np.nanmean(wind_speed):.2f} m/s"
+)
 
-# Data
-mslp = ds["msl"].isel(valid_time=t) / 100.0  # hPa
-u10 = ds["u10"].isel(valid_time=t)
-v10 = ds["v10"].isel(valid_time=t)
-tcc = ds["tcc"].isel(valid_time=t)           # 0-1
+# ==========================================================
+# STORM CENTRE
+# ==========================================================
 
-wind_speed = np.sqrt(u10**2 + v10**2)
+idx = np.unravel_index(
+    np.argmin(mslp.values),
+    mslp.shape
+)
 
-# -----------------------------
-# Create Figure
-# -----------------------------
+storm_lat = lat[idx[0]]
+storm_lon = lon[idx[1]]
+storm_press = mslp.values[idx] / 100.0
 
-fig = plt.figure(figsize=(14,10))
-ax = plt.axes(projection=ccrs.PlateCarree())
+print(
+    f"Storm Centre: "
+    f"{storm_lat:.2f}N, "
+    f"{storm_lon:.2f}E, "
+    f"{storm_press:.1f} hPa"
+)
 
+# ==========================================================
+# CONVERT MSLP TO hPa FOR PLOTTING
+# ==========================================================
+
+mslp_hpa = mslp / 100.0
+
+# ==========================================================
+# FIGURE
+# ==========================================================
+
+fig = plt.figure(figsize=(15, 10))
+
+ax = plt.axes(
+    projection=ccrs.PlateCarree()
+)
+
+# ==========================================================
+# MAP FEATURES
+# ==========================================================
+
+ax.add_feature(cfeature.LAND, facecolor="lightgrey")
 ax.add_feature(cfeature.COASTLINE, linewidth=1)
 ax.add_feature(cfeature.BORDERS, linewidth=0.5)
-ax.add_feature(cfeature.LAND, facecolor="lightgray")
 
-# -----------------------------
-# Cloud Cover Shading
-# -----------------------------
+# ==========================================================
+# WIND SPEED SHADING
+# ==========================================================
 
-cloud = ax.contourf(
-    ds.longitude,
-    ds.latitude,
-    tcc,
-    levels=np.arange(0, 1.1, 0.1),
-    cmap="Greys",
-    alpha=0.5,
-    transform=ccrs.PlateCarree()
-)
-
-cbar1 = plt.colorbar(
-    cloud,
-    ax=ax,
-    shrink=0.75,
-    pad=0.02
-)
-
-cbar1.set_label("Total Cloud Cover")
-
-# -----------------------------
-# Wind Speed Shading
-# -----------------------------
-
-wind = ax.contourf(
-    ds.longitude,
-    ds.latitude,
+wind_fill = ax.contourf(
+    lon,
+    lat,
     wind_speed,
     levels=np.arange(0, 32, 2),
     cmap="YlOrRd",
-    alpha=0.7,
+    extend="max",
+    alpha=0.8,
     transform=ccrs.PlateCarree()
 )
 
-cbar2 = plt.colorbar(
-    wind,
+cbar = plt.colorbar(
+    wind_fill,
     ax=ax,
-    shrink=0.75,
-    pad=0.08
+    shrink=0.8,
+    pad=0.02
 )
 
-cbar2.set_label("Wind Speed (m/s)")
+cbar.set_label("10 m Wind Speed (m/s)")
 
-# -----------------------------
-# Pressure Contours
-# -----------------------------
+# ==========================================================
+# PRESSURE CONTOURS
+# ==========================================================
 
 levels = np.arange(
-    int(mslp.min()) - 4,
-    int(mslp.max()) + 4,
+    int(mslp_hpa.min()),
+    int(mslp_hpa.max()) + 4,
     4
 )
 
 cs = ax.contour(
-    ds.longitude,
-    ds.latitude,
-    mslp,
+    lon,
+    lat,
+    mslp_hpa,
     levels=levels,
     colors="black",
     linewidths=1.2,
@@ -167,26 +210,42 @@ ax.clabel(
     fmt="%d"
 )
 
-# -----------------------------
-# Wind Vectors
-# -----------------------------
+# ==========================================================
+# ACTUAL WIND VECTORS
+# ==========================================================
 
-skip = 5
+skip = 8
 
 ax.quiver(
-    ds.longitude.values[::skip],
-    ds.latitude.values[::skip],
+    lon[::skip],
+    lat[::skip],
     u10.values[::skip, ::skip],
     v10.values[::skip, ::skip],
     color="navy",
-    scale=350,
+    scale=400,
     width=0.002,
     transform=ccrs.PlateCarree()
 )
 
-# -----------------------------
-# Malin Head
-# -----------------------------
+# ==========================================================
+# GEOSTROPHIC WIND VECTORS
+# ==========================================================
+
+ax.quiver(
+    lon[::skip],
+    lat[::skip],
+    ug[::skip, ::skip],
+    vg[::skip, ::skip],
+    color="cyan",
+    scale=700,
+    width=0.002,
+    alpha=0.9,
+    transform=ccrs.PlateCarree()
+)
+
+# ==========================================================
+# MALIN HEAD
+# ==========================================================
 
 malin_lat = 55.37
 malin_lon = -7.34
@@ -195,7 +254,7 @@ ax.plot(
     malin_lon,
     malin_lat,
     "ro",
-    markersize=8,
+    markersize=7,
     transform=ccrs.PlateCarree()
 )
 
@@ -203,47 +262,38 @@ ax.text(
     malin_lon + 0.5,
     malin_lat,
     "Malin Head",
-    color="red",
     fontsize=10,
+    color="red",
     weight="bold",
     transform=ccrs.PlateCarree()
 )
 
-# -----------------------------
-# Storm Centre
-# -----------------------------
-
-idx = np.unravel_index(
-    np.argmin(mslp.values),
-    mslp.shape
-)
-
-storm_lat = float(mslp.latitude[idx[0]])
-storm_lon = float(mslp.longitude[idx[1]])
-storm_press = float(mslp.min())
+# ==========================================================
+# STORM CENTRE MARKER
+# ==========================================================
 
 ax.plot(
     storm_lon,
     storm_lat,
-    marker='X',
-    color='magenta',
-    markersize=15,
+    marker="X",
+    color="magenta",
+    markersize=14,
     transform=ccrs.PlateCarree()
 )
 
 ax.text(
     storm_lon,
     storm_lat,
-    f"L {storm_press:.0f} hPa",
+    f"L {storm_press:.0f}",
+    fontsize=12,
     color="magenta",
-    fontsize=11,
     weight="bold",
     transform=ccrs.PlateCarree()
 )
 
-# -----------------------------
-# Gridlines
-# -----------------------------
+# ==========================================================
+# GRIDLINES
+# ==========================================================
 
 gl = ax.gridlines(
     draw_labels=True,
@@ -254,15 +304,30 @@ gl = ax.gridlines(
 gl.top_labels = False
 gl.right_labels = False
 
-# -----------------------------
-# Title
-# -----------------------------
+# ==========================================================
+# DOMAIN LIMITS
+# ==========================================================
+
+ax.set_extent(
+    [
+        lon.min(),
+        lon.max(),
+        lat.min(),
+        lat.max()
+    ],
+    crs=ccrs.PlateCarree()
+)
+
+# ==========================================================
+# TITLE
+# ==========================================================
 
 plt.title(
-    f"Storm Bert (23 Nov 2014 {t:02d}:00 UTC)\n"
-    "MSLP, Cloud Cover and 10m Wind Field",
+    f"Storm Bert ({str(ds.valid_time[t].values)[:16]})\n"
+    "MSLP, Actual Wind Field and Geostrophic Wind",
     fontsize=15,
     weight="bold"
 )
 
+plt.tight_layout()
 plt.show()

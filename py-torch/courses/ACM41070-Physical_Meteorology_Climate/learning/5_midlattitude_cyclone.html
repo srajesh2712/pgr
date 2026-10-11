@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Mid-Latitude Cyclone Simulator</title>
+
+<style>
+body{
+    margin:0;
+    background:#0b1220;
+    color:white;
+    font-family:Arial;
+    text-align:center;
+}
+
+h2{
+    margin:10px;
+}
+
+canvas{
+    background:#eef6ff;
+    border:1px solid #444;
+}
+
+.controls{
+    margin:10px;
+}
+
+#info{
+    width:1000px;
+    margin:auto;
+    padding:10px;
+}
+</style>
+</head>
+<body>
+
+<h2>Mid-Latitude Cyclone Simulator</h2>
+
+<div class="controls">
+
+Speed
+
+<input
+id="speed"
+type="range"
+min="1"
+max="10"
+value="5">
+
+<button id="pauseBtn">
+Pause
+</button>
+
+</div>
+
+<canvas
+id="canvas"
+width="1000"
+height="700">
+</canvas>
+
+<div id="info">
+
+Watch:
+
+1. Cold polar air moving southward
+2. Warm subtropical air moving northward
+3. Counterclockwise circulation around low pressure
+4. Warm front ahead of the low
+5. Cold front trailing behind the low
+
+</div>
+
+<script>
+
+const canvas =
+document.getElementById("canvas");
+
+const ctx =
+canvas.getContext("2d");
+
+let paused=false;
+
+let angle=0;
+
+document
+.getElementById("pauseBtn")
+.onclick=()=>{
+
+paused=!paused;
+
+document
+.getElementById("pauseBtn")
+.innerText=
+paused ? "Play" : "Pause";
+};
+
+function drawBackground(){
+
+ctx.fillStyle="#dff4ff";
+ctx.fillRect(0,0,1000,350);
+
+ctx.fillStyle="#ffe8cc";
+ctx.fillRect(0,350,1000,350);
+
+ctx.fillStyle="black";
+ctx.font="24px Arial";
+
+ctx.fillText(
+"Cold Polar Air",
+40,
+120
+);
+
+ctx.fillText(
+"Warm Subtropical Air",
+40,
+620
+);
+}
+
+function drawLow(){
+
+ctx.beginPath();
+
+ctx.arc(
+500,
+350,
+60,
+0,
+Math.PI*2
+);
+
+ctx.fillStyle="#f5f5f5";
+ctx.fill();
+
+ctx.stroke();
+
+ctx.fillStyle="black";
+
+ctx.font="50px Arial";
+
+ctx.fillText(
+"L",
+485,
+368
+);
+}
+
+function drawWarmFront(){
+
+ctx.strokeStyle="red";
+ctx.lineWidth=4;
+
+ctx.beginPath();
+
+ctx.moveTo(520,340);
+ctx.lineTo(780,200);
+
+ctx.stroke();
+
+for(let i=0;i<5;i++){
+
+let x=560+i*45;
+let y=320-i*24;
+
+ctx.beginPath();
+
+ctx.arc(
+x,
+y,
+12,
+Math.PI,
+0
+);
+
+ctx.stroke();
+}
+}
+
+function drawColdFront(){
+
+ctx.strokeStyle="blue";
+ctx.lineWidth=4;
+
+ctx.beginPath();
+
+ctx.moveTo(470,370);
+ctx.lineTo(250,550);
+
+ctx.stroke();
+
+for(let i=0;i<5;i++){
+
+let x=430-i*42;
+let y=395+i*34;
+
+ctx.beginPath();
+
+ctx.moveTo(x,y);
+
+ctx.lineTo(
+x-15,
+y-12
+);
+
+ctx.lineTo(
+x-15,
+y+12
+);
+
+ctx.closePath();
+
+ctx.stroke();
+}
+}
+
+function drawRotation(){
+
+for(let i=0;i<12;i++){
+
+let a=
+angle+i*0.52;
+
+let r=
+130;
+
+let x=
+500+
+Math.cos(a)*r;
+
+let y=
+350+
+Math.sin(a)*r;
+
+ctx.beginPath();
+
+ctx.arc(
+x,
+y,
+7,
+0,
+Math.PI*2
+);
+
+ctx.fillStyle="black";
+ctx.fill();
+
+let dx =
+-Math.sin(a)*20;
+
+let dy =
+ Math.cos(a)*20;
+
+ctx.beginPath();
+
+ctx.moveTo(x,y);
+
+ctx.lineTo(
+x+dx,
+y+dy
+);
+
+ctx.strokeStyle="black";
+ctx.stroke();
+}
+}
+
+function drawWarmSector(){
+
+ctx.beginPath();
+
+ctx.moveTo(500,350);
+
+ctx.lineTo(760,220);
+
+ctx.lineTo(260,550);
+
+ctx.closePath();
+
+ctx.fillStyle=
+"rgba(255,180,100,0.4)";
+
+ctx.fill();
+
+ctx.fillStyle="darkred";
+
+ctx.font="22px Arial";
+
+ctx.fillText(
+"Warm Sector",
+520,
+420
+);
+}
+
+function drawClouds(){
+
+for(let i=0;i<8;i++){
+
+let x=650+i*25;
+let y=170-i*8;
+
+ctx.beginPath();
+
+ctx.arc(
+x,
+y,
+16,
+0,
+Math.PI*2
+);
+
+ctx.fillStyle="white";
+ctx.fill();
+}
+
+ctx.fillStyle="black";
+
+ctx.fillText(
+"Warm Front Clouds",
+650,
+110
+);
+
+for(let i=0;i<6;i++){
+
+let x=260+i*25;
+let y=470-i*5;
+
+ctx.beginPath();
+
+ctx.arc(
+x,
+y,
+16,
+0,
+Math.PI*2
+);
+
+ctx.fillStyle="white";
+ctx.fill();
+}
+
+ctx.fillText(
+"Cold Front Clouds",
+220,
+420
+);
+}
+
+function animate(){
+
+requestAnimationFrame(
+animate
+);
+
+ctx.clearRect(
+0,
+0,
+1000,
+700
+);
+
+if(!paused){
+
+angle +=
+0.01 *
+document
+.getElementById("speed")
+.value;
+}
+
+drawBackground();
+
+drawWarmSector();
+
+drawWarmFront();
+
+drawColdFront();
+
+drawLow();
+
+drawClouds();
+
+drawRotation();
+
+}
+
+animate();
+
+</script>
+
+</body>
+</html>

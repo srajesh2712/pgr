@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Cyclogenesis 3D Explorer</title>
+
+<style>
+body{
+    margin:0;
+    overflow:hidden;
+    background:#08131f;
+    font-family:Arial;
+}
+
+#ui{
+    position:absolute;
+    top:10px;
+    left:10px;
+    z-index:100;
+    color:white;
+    background:rgba(0,0,0,0.8);
+    padding:12px;
+    border-radius:10px;
+}
+
+button{
+    padding:6px 10px;
+    margin:2px;
+}
+
+input[type=range]{
+    width:250px;
+}
+
+#info{
+    margin-top:10px;
+    max-width:320px;
+}
+</style>
+</head>
+
+<body>
+
+<div id="ui">
+
+<button onclick="setView('top')">Top View</button>
+<button onclick="setView('side')">Side View</button>
+<button onclick="setView('iso')">3D View</button>
+
+<br><br>
+
+Stage:
+<br>
+
+<input id="slider"
+type="range"
+min="0"
+max="5"
+value="0">
+
+<div id="info"></div>
+
+</div>
+
+<canvas id="canvas"></canvas>
+
+<script>
+
+const canvas=document.getElementById("canvas");
+const ctx=canvas.getContext("2d");
+
+function resize(){
+ canvas.width=window.innerWidth;
+ canvas.height=window.innerHeight;
+}
+resize();
+
+window.addEventListener("resize",resize);
+
+let stage=0;
+let angle=0;
+
+let view="iso";
+
+let cameraYaw=0.7;
+let cameraPitch=0.6;
+
+slider.oninput=()=>{
+ stage=parseInt(slider.value);
+};
+
+function setView(v){
+
+ view=v;
+
+ if(v==="top"){
+   cameraYaw=0;
+   cameraPitch=1.55;
+ }
+
+ if(v==="side"){
+   cameraYaw=0;
+   cameraPitch=0.05;
+ }
+
+ if(v==="iso"){
+   cameraYaw=0.7;
+   cameraPitch=0.6;
+ }
+}
+
+let dragging=false;
+let lastX,lastY;
+
+canvas.onmousedown=e=>{
+ dragging=true;
+ lastX=e.clientX;
+ lastY=e.clientY;
+};
+
+canvas.onmouseup=()=>dragging=false;
+
+canvas.onmousemove=e=>{
+
+ if(!dragging) return;
+
+ let dx=e.clientX-lastX;
+ let dy=e.clientY-lastY;
+
+ cameraYaw += dx*0.01;
+ cameraPitch += dy*0.01;
+
+ lastX=e.clientX;
+ lastY=e.clientY;
+};
+
+function project(x,y,z){
+
+ let cy=Math.cos(cameraYaw);
+ let sy=Math.sin(cameraYaw);
+
+ let cp=Math.cos(cameraPitch);
+ let sp=Math.sin(cameraPitch);
+
+ let x1=x*cy-z*sy;
+ let z1=x*sy+z*cy;
+
+ let y2=y*cp-z1*sp;
+ let z2=y*sp+z1*cp;
+
+ let scale=500/(z2+600);
+
+ return {
+
+   x:x1*scale+canvas.width/2,
+   y:y2*scale+canvas.height/2,
+   s:scale
+ };
+}
+
+function drawSphere(x,y,z,r,color){
+
+ const p=project(x,y,z);
+
+ ctx.beginPath();
+ ctx.arc(
+   p.x,
+   p.y,
+   r*p.s,
+   0,
+   Math.PI*2
+ );
+
+ ctx.fillStyle=color;
+ ctx.fill();
+}
+
+const descriptions=[
+"Stage 0: Straight front. Warm air south. Cold air north.",
+"Stage 1: A wave develops along the front.",
+"Stage 2: Low pressure develops.",
+"Stage 3: Air spirals inward toward the low.",
+"Stage 4: Warm front and cold front form.",
+"Stage 5: Warm air rises and clouds develop."
+];
+
+function drawGround(){
+
+ for(let x=-300;x<300;x+=30){
+
+   const a=project(x,0,-300);
+   const b=project(x,0,300);
+
+   ctx.strokeStyle="#204060";
+
+   ctx.beginPath();
+   ctx.moveTo(a.x,a.y);
+   ctx.lineTo(b.x,b.y);
+   ctx.stroke();
+ }
+
+ for(let z=-300;z<300;z+=30){
+
+   const a=project(-300,0,z);
+   const b=project(300,0,z);
+
+   ctx.beginPath();
+   ctx.moveTo(a.x,a.y);
+   ctx.lineTo(b.x,b.y);
+   ctx.stroke();
+ }
+}
+
+function animate(){
+
+ requestAnimationFrame(animate);
+
+ angle+=0.01;
+
+ ctx.clearRect(
+ 0,0,
+ canvas.width,
+ canvas.height
+ );
+
+ drawGround();
+
+ if(stage>=2){
+
+   drawSphere(
+   0,5,0,
+   20,
+   "yellow"
+   );
+
+   const p=project(0,30,0);
+
+   ctx.fillStyle="black";
+   ctx.font="20px Arial";
+   ctx.fillText(
+   "L",
+   p.x-6,
+   p.y+6
+   );
+ }
+
+ if(stage>=4){
+
+   ctx.strokeStyle="red";
+   ctx.lineWidth=4;
+
+   let a=project(0,2,0);
+   let b=project(120,2,-100);
+
+   ctx.beginPath();
+   ctx.moveTo(a.x,a.y);
+   ctx.lineTo(b.x,b.y);
+   ctx.stroke();
+
+   ctx.strokeStyle="cyan";
+
+   let c=project(0,2,0);
+   let d=project(80,2,140);
+
+   ctx.beginPath();
+   ctx.moveTo(c.x,c.y);
+   ctx.lineTo(d.x,d.y);
+   ctx.stroke();
+ }
+
+ for(let i=0;i<24;i++){
+
+   let r=150-stage*15;
+
+   if(r<45) r=45;
+
+   let a=angle+i*0.35;
+
+   let x=Math.cos(a)*r;
+   let z=Math.sin(a)*r;
+
+   if(stage>=3){
+
+      x*=0.75;
+      z*=0.75;
+   }
+
+   let y=0;
+
+   let warm=i<12;
+
+   if(
+      stage>=5 &&
+      warm &&
+      x>20
+   ){
+      y=(x-20)*0.8;
+   }
+
+   drawSphere(
+      x,
+      y+8,
+      z,
+      8,
+      warm ? "#ff9933" : "#55ccff"
+   );
+ }
+
+ if(stage>=5){
+
+   for(let i=0;i<7;i++){
+
+      drawSphere(
+         80+i*10,
+         70+i*5,
+         -50+i*4,
+         10,
+         "white"
+      );
+   }
+ }
+
+ document.getElementById("info")
+ .innerHTML=
+ "<b>"+descriptions[stage]+"</b><br><br>" +
+ "🟡 Low Pressure<br>" +
+ "🟠 Warm Air Parcels<br>" +
+ "🔵 Cold Air Parcels<br>" +
+ "🔴 Warm Front<br>" +
+ "🔷 Cold Front<br><br>" +
+ "Drag mouse to rotate view.";
+}
+
+animate();
+
+</script>
+</body>
+</html>

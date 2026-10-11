@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Air Mass Laboratory</title>
+
+<style>
+body{
+    margin:0;
+    background:#081420;
+    color:white;
+    font-family:Arial;
+    overflow:hidden;
+}
+
+#ui{
+    position:absolute;
+    left:10px;
+    top:10px;
+    background:rgba(0,0,0,0.8);
+    padding:15px;
+    border-radius:10px;
+    z-index:100;
+    width:320px;
+}
+
+canvas{
+    display:block;
+}
+
+button{
+    padding:8px 14px;
+    margin-top:10px;
+    cursor:pointer;
+}
+</style>
+</head>
+<body>
+
+<div id="ui">
+
+<h2>Air Mass Laboratory</h2>
+
+<p>
+Drag the red and blue air masses.
+</p>
+
+<label>
+<input
+type="radio"
+name="mode"
+value="warm"
+checked>
+Warm Front
+</label>
+
+<br><br>
+
+<label>
+<input
+type="radio"
+name="mode"
+value="cold">
+Cold Front
+</label>
+
+<br><br>
+
+<button id="resetBtn">
+Reset
+</button>
+
+<hr>
+
+<p>
+
+🔴 Warm Tropical Air<br>
+🔵 Cold Polar Air<br>
+🟡 Rising Air Parcels<br>
+☁ Clouds form where air rises
+
+</p>
+
+</div>
+
+<canvas id="c"></canvas>
+
+<script>
+
+const canvas =
+document.getElementById("c");
+
+const ctx =
+canvas.getContext("2d");
+
+function resize(){
+
+    canvas.width =
+    window.innerWidth;
+
+    canvas.height =
+    window.innerHeight;
+}
+
+resize();
+
+window.addEventListener(
+"resize",
+resize
+);
+
+const warmMass = {
+
+    x:350,
+    y:450,
+    r:140,
+    color:"#ff4d4d"
+};
+
+const coldMass = {
+
+    x:950,
+    y:450,
+    r:140,
+    color:"#4da6ff"
+};
+
+let dragging = null;
+
+function distance(
+x1,y1,
+x2,y2
+){
+
+    return Math.sqrt(
+        (x2-x1)*(x2-x1)+
+        (y2-y1)*(y2-y1)
+    );
+}
+
+canvas.addEventListener(
+"mousedown",
+e=>{
+
+    const rect =
+    canvas.getBoundingClientRect();
+
+    const mx =
+    e.clientX-rect.left;
+
+    const my =
+    e.clientY-rect.top;
+
+    if(
+        distance(
+            mx,my,
+            warmMass.x,
+            warmMass.y
+        ) < warmMass.r
+    ){
+
+        dragging=warmMass;
+    }
+
+    else if(
+        distance(
+            mx,my,
+            coldMass.x,
+            coldMass.y
+        ) < coldMass.r
+    ){
+
+        dragging=coldMass;
+    }
+
+}
+);
+
+canvas.addEventListener(
+"mousemove",
+e=>{
+
+    if(!dragging)
+        return;
+
+    const rect =
+    canvas.getBoundingClientRect();
+
+    dragging.x =
+    e.clientX-rect.left;
+
+    dragging.y =
+    e.clientY-rect.top;
+
+}
+);
+
+window.addEventListener(
+"mouseup",
+()=>{
+    dragging=null;
+}
+);
+
+document
+.getElementById("resetBtn")
+.onclick=()=>{
+
+    warmMass.x=350;
+    warmMass.y=450;
+
+    coldMass.x=950;
+    coldMass.y=450;
+};
+
+function drawMass(m){
+
+    ctx.beginPath();
+
+    ctx.arc(
+        m.x,
+        m.y,
+        m.r,
+        0,
+        Math.PI*2
+    );
+
+    ctx.fillStyle=m.color;
+
+    ctx.globalAlpha=0.65;
+
+    ctx.fill();
+
+    ctx.globalAlpha=1;
+
+    ctx.strokeStyle="white";
+    ctx.lineWidth=2;
+    ctx.stroke();
+}
+
+let frame=0;
+
+function drawCloud(x,y){
+
+    for(let i=0;i<6;i++){
+
+        ctx.beginPath();
+
+        ctx.arc(
+            x+i*20,
+            y+Math.sin(i)*5,
+            18,
+            0,
+            Math.PI*2
+        );
+
+        ctx.fillStyle="white";
+        ctx.fill();
+    }
+}
+
+function drawWarmFront(frontX){
+
+    ctx.strokeStyle="yellow";
+    ctx.lineWidth=5;
+
+    ctx.beginPath();
+
+    ctx.moveTo(frontX,650);
+
+    ctx.lineTo(
+        frontX+240,
+        260
+    );
+
+    ctx.stroke();
+
+    for(let i=0;i<10;i++){
+
+        const px =
+        frontX-200 +
+        ((frame*2)+(i*40))
+        % 250;
+
+        const py =
+        630 -
+        (px-(frontX-200))
+        *1.4;
+
+        ctx.beginPath();
+
+        ctx.arc(
+            px,
+            py,
+            8,
+            0,
+            Math.PI*2
+        );
+
+        ctx.fillStyle=
+        "yellow";
+
+        ctx.fill();
+    }
+
+    drawCloud(
+        frontX+130,
+        220
+    );
+
+    ctx.fillStyle="white";
+
+    ctx.fillText(
+        "Warm air slides upward",
+        frontX+120,
+        160
+    );
+}
+
+function drawColdFront(frontX){
+
+    const coldOnRight =
+    coldMass.x > warmMass.x;
+
+    ctx.strokeStyle="cyan";
+    ctx.lineWidth=5;
+
+    if(coldOnRight){
+
+        // cold air advancing LEFT
+
+        ctx.beginPath();
+        ctx.moveTo(frontX,650);
+        ctx.lineTo(frontX-100,220);
+        ctx.stroke();
+
+        ctx.fillStyle=
+        "rgba(80,180,255,.5)";
+
+        ctx.beginPath();
+        ctx.moveTo(frontX,650);
+        ctx.lineTo(frontX-100,220);
+        ctx.lineTo(frontX+100,650);
+        ctx.closePath();
+        ctx.fill();
+
+        // warm air forced upward
+
+        for(let i=0;i<15;i++){
+
+            ctx.beginPath();
+
+            ctx.arc(
+                frontX+40,
+                620-i*25,
+                7,
+                0,
+                Math.PI*2
+            );
+
+            ctx.fillStyle="yellow";
+            ctx.fill();
+        }
+
+        drawCloud(
+            frontX+40,
+            180
+        );
+
+        ctx.fillStyle="white";
+
+        ctx.fillText(
+            "Cold air pushes LEFT",
+            frontX-80,
+            150
+        );
+
+    } else {
+
+        // cold air advancing RIGHT
+
+        ctx.beginPath();
+        ctx.moveTo(frontX,650);
+        ctx.lineTo(frontX+100,220);
+        ctx.stroke();
+
+        ctx.fillStyle=
+        "rgba(80,180,255,.5)";
+
+        ctx.beginPath();
+        ctx.moveTo(frontX,650);
+        ctx.lineTo(frontX+100,220);
+        ctx.lineTo(frontX-100,650);
+        ctx.closePath();
+        ctx.fill();
+
+        for(let i=0;i<15;i++){
+
+            ctx.beginPath();
+
+            ctx.arc(
+                frontX-40,
+                620-i*25,
+                7,
+                0,
+                Math.PI*2
+            );
+
+            ctx.fillStyle="yellow";
+            ctx.fill();
+        }
+
+        drawCloud(
+            frontX-170,
+            180
+        );
+
+        ctx.fillStyle="white";
+
+        ctx.fillText(
+            "Cold air pushes RIGHT",
+            frontX-80,
+            150
+        );
+    }
+}
+function draw(){
+
+    requestAnimationFrame(draw);
+
+    frame++;
+
+    ctx.clearRect(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+
+    ctx.fillStyle="#155e75";
+
+    ctx.fillRect(
+        0,
+        canvas.height-120,
+        canvas.width,
+        120
+    );
+
+    ctx.fillStyle="white";
+
+    ctx.fillText(
+        "Earth Surface",
+        20,
+        canvas.height-80
+    );
+
+    drawMass(warmMass);
+    drawMass(coldMass);
+
+    const mode =
+    document.querySelector(
+        'input[name="mode"]:checked'
+    ).value;
+
+    const d=
+    distance(
+        warmMass.x,
+        warmMass.y,
+        coldMass.x,
+        coldMass.y
+    );
+
+    const overlap =
+    warmMass.r +
+    coldMass.r -
+    d;
+
+    if(overlap>0){
+
+        const frontX =
+        (warmMass.x+
+        coldMass.x)/2;
+
+        ctx.strokeStyle=
+        "white";
+
+        ctx.lineWidth=4;
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            frontX,
+            120
+        );
+
+        ctx.lineTo(
+            frontX,
+            canvas.height-120
+        );
+
+        ctx.stroke();
+
+        ctx.fillStyle=
+        "white";
+
+        ctx.fillText(
+            "FRONT",
+            frontX+10,
+            120
+        );
+
+        if(mode==="warm"){
+
+            drawWarmFront(
+                frontX
+            );
+
+        }else{
+
+            drawColdFront(
+                frontX
+            );
+        }
+    }
+
+    ctx.fillStyle=
+    "white";
+
+    ctx.fillText(
+        "Warm Air",
+        warmMass.x-40,
+        warmMass.y
+    );
+
+    ctx.fillText(
+        "Cold Air",
+        coldMass.x-40,
+        coldMass.y
+    );
+}
+
+draw();
+
+</script>
+
+</body>
+</html>

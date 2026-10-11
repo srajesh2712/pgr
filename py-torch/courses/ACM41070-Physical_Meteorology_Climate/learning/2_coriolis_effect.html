@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Coriolis Effect Visualizer</title>
+
+<style>
+body{
+    margin:0;
+    background:#081018;
+    color:white;
+    font-family:Arial;
+    text-align:center;
+}
+
+canvas{
+    border:1px solid #444;
+    margin-top:10px;
+}
+
+#panel{
+    padding:10px;
+}
+</style>
+</head>
+<body>
+
+<h2>Coriolis Effect: Air Moving North</h2>
+
+<div id="panel">
+
+Coriolis Strength
+
+<input id="coriolis"
+       type="range"
+       min="0"
+       max="100"
+       value="50"
+       style="width:300px">
+
+</div>
+
+<canvas id="c" width="1000" height="700"></canvas>
+
+<script>
+
+const canvas = document.getElementById("c");
+const ctx = canvas.getContext("2d");
+
+const slider =
+document.getElementById("coriolis");
+
+let trail = [];
+
+let parcel = {
+    x:500,
+    y:620
+};
+
+function resetParcel(){
+
+    parcel.x = 500;
+    parcel.y = 620;
+
+    trail = [];
+}
+
+canvas.onclick = resetParcel;
+
+function drawBackground(){
+
+    ctx.fillStyle="#0b2030";
+    ctx.fillRect(0,0,1000,700);
+
+    // Equator
+
+    ctx.strokeStyle="yellow";
+    ctx.lineWidth=3;
+
+    ctx.beginPath();
+    ctx.moveTo(100,620);
+    ctx.lineTo(900,620);
+    ctx.stroke();
+
+    ctx.fillStyle="yellow";
+    ctx.fillText("Equator",920,625);
+
+    // Pole
+
+    ctx.strokeStyle="cyan";
+
+    ctx.beginPath();
+    ctx.moveTo(500,80);
+    ctx.lineTo(500,620);
+    ctx.stroke();
+
+    ctx.fillStyle="cyan";
+    ctx.fillText("North Pole",520,80);
+}
+
+function drawTrail(){
+
+    if(trail.length<2)
+        return;
+
+    ctx.strokeStyle="white";
+    ctx.lineWidth=2;
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        trail[0].x,
+        trail[0].y
+    );
+
+    for(let p of trail){
+
+        ctx.lineTo(
+            p.x,
+            p.y
+        );
+    }
+
+    ctx.stroke();
+}
+
+function update(){
+
+    const strength =
+    slider.value/100;
+
+    parcel.y -= 1.2;
+
+    // Coriolis bends to RIGHT
+    parcel.x += strength*0.8;
+
+    trail.push({
+        x:parcel.x,
+        y:parcel.y
+    });
+
+    if(parcel.y<80){
+
+        resetParcel();
+    }
+}
+
+function drawParcel(){
+
+    ctx.beginPath();
+
+    ctx.arc(
+        parcel.x,
+        parcel.y,
+        10,
+        0,
+        Math.PI*2
+    );
+
+    ctx.fillStyle="red";
+    ctx.fill();
+
+    ctx.fillStyle="white";
+
+    ctx.fillText(
+        "Air Parcel",
+        parcel.x+15,
+        parcel.y
+    );
+}
+
+function animate(){
+
+    requestAnimationFrame(
+        animate
+    );
+
+    update();
+
+    drawBackground();
+
+    drawTrail();
+
+    drawParcel();
+
+    ctx.fillStyle="white";
+    ctx.fillText(
+        "Move slider. More Coriolis = more turning to the east (right). Click canvas to restart.",
+        250,
+        30
+    );
+}
+
+animate();
+
+</script>
+
+</body>
+</html>

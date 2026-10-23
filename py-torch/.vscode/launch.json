@@ -1,0 +1,29 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Train GNN",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/courses/STAT41140-AI for Weather and Climate/homework4/train-gnn.py",
+            "args": [],
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "Eval only",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/courses/STAT41140-AI for Weather and Climate/homework4/train-gnn.py",
+            "args": ["--eval-only"],
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "Eval + Predict next hour",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/courses/STAT41140-AI for Weather and Climate/homework4/train-gnn.py",
+            "args": ["--eval-only", "--predict"],
+            "console": "integratedTerminal"
+        }
+    ]
+}

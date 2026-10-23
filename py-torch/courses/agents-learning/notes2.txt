@@ -1,0 +1,7 @@
+﻿Team Sync Meeting Notes
+Date: April 2026
+
+Action Items:
+- Sarah: Fix the local caching bug identified in Project Alpha.
+- Alex: Prepare documentation for the local agent tool integrations.
+- Team: Review budget proposals for cloud vs local server hosting by Friday.

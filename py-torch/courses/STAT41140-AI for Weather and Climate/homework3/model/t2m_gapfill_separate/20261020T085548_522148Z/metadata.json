@@ -1,0 +1,2676 @@
+[
+  {
+    "file": "s:\\git-repo\\pgr\\py-torch\\courses\\STAT41140-AI for Weather and Climate\\homework3\\data\\2018_accum.nc",
+    "global": {
+      "GRIB_centre": "ecmf",
+      "GRIB_centreDescription": "European Centre for Medium-Range Weather Forecasts",
+      "GRIB_subCentre": "0",
+      "Conventions": "CF-1.7",
+      "institution": "European Centre for Medium-Range Weather Forecasts",
+      "history": "2026-09-27T12:25 GRIB to CDM+CF via cfgrib-0.9.15.1/ecCodes-2.48.2 with {\"source\": \"tmprwpgmjo1/data.grib\", \"filter_by_keys\": {\"stream\": [\"oper\"], \"stepType\": [\"accum\"]}, \"encode_cf\": [\"parameter\", \"time\", \"geography\", \"vertical\"]}"
+    },
+    "coordinates": {
+      "number": {
+        "dims": [],
+        "attrs": {
+          "long_name": "ensemble member numerical id",
+          "units": "1",
+          "standard_name": "realization"
+        }
+      },
+      "valid_time": {
+        "dims": [
+          "valid_time"
+        ],
+        "attrs": {
+          "long_name": "time",
+          "standard_name": "time"
+        }
+      },
+      "latitude": {
+        "dims": [
+          "latitude"
+        ],
+        "attrs": {
+          "units": "degrees_north",
+          "standard_name": "latitude",
+          "long_name": "latitude",
+          "stored_direction": "decreasing"
+        }
+      },
+      "longitude": {
+        "dims": [
+          "longitude"
+        ],
+        "attrs": {
+          "units": "degrees_east",
+          "standard_name": "longitude",
+          "long_name": "longitude"
+        }
+      },
+      "expver": {
+        "dims": [
+          "valid_time"
+        ],
+        "attrs": {}
+      }
+    },
+    "variables": {
+      "tp": {
+        "attrs": {
+          "GRIB_paramId": "228",
+          "GRIB_dataType": "fc",
+          "GRIB_numberOfPoints": "3649",
+          "GRIB_typeOfLevel": "surface",
+          "GRIB_stepUnits": "1",
+          "GRIB_stepType": "accum",
+          "GRIB_gridType": "regular_ll",
+          "GRIB_uvRelativeToGrid": "0",
+          "GRIB_NV": "0",
+          "GRIB_Nx": "89",
+          "GRIB_Ny": "41",
+          "GRIB_cfName": "unknown",
+          "GRIB_cfVarName": "tp",
+          "GRIB_gridDefinitionDescription": "Latitude/Longitude Grid",
+          "GRIB_iDirectionIncrementInDegrees": 0.25,
+          "GRIB_iScansNegatively": "0",
+          "GRIB_jDirectionIncrementInDegrees": 0.25,
+          "GRIB_jPointsAreConsecutive": "0",
+          "GRIB_jScansPositively": "0",
+          "GRIB_latitudeOfFirstGridPointInDegrees": 58.0,
+          "GRIB_latitudeOfLastGridPointInDegrees": 48.0,
+          "GRIB_longitudeOfFirstGridPointInDegrees": -25.0,
+          "GRIB_longitudeOfLastGridPointInDegrees": -3.0,
+          "GRIB_missingValue": 3.4028234663852886e+38,
+          "GRIB_name": "Total precipitation",
+          "GRIB_shortName": "tp",
+          "GRIB_totalNumber": "0",
+          "GRIB_units": "m",
+          "long_name": "Total precipitation",
+          "units": "m",
+          "standard_name": "unknown",
+          "GRIB_surface": 0.0
+        },
+        "encoding": {
+          "_FillValue": "nan"
+        },
+        "dims": [
+          "valid_time",
+          "latitude",
+          "longitude"
+        ]
+      }
+    }
+  },
+  {
+    "file": "s:\\git-repo\\pgr\\py-torch\\courses\\STAT41140-AI for Weather and Climate\\homework3\\data\\2018_instant.nc",
+    "global": {
+      "GRIB_centre": "ecmf",
+      "GRIB_centreDescription": "European Centre for Medium-Range Weather Forecasts",
+      "GRIB_subCentre": "0",
+      "Conventions": "CF-1.7",
+      "institution": "European Centre for Medium-Range Weather Forecasts",
+      "history": "2026-09-27T12:25 GRIB to CDM+CF via cfgrib-0.9.15.1/ecCodes-2.48.2 with {\"source\": \"tmprwpgmjo1/data.grib\", \"filter_by_keys\": {\"stream\": [\"oper\"], \"stepType\": [\"instant\"]}, \"encode_cf\": [\"parameter\", \"time\", \"geography\", \"vertical\"]}"
+    },
+    "coordinates": {
+      "number": {
+        "dims": [],
+        "attrs": {
+          "long_name": "ensemble member numerical id",
+          "units": "1",
+          "standard_name": "realization"
+        }
+      },
+      "valid_time": {
+        "dims": [
+          "valid_time"
+        ],
+        "attrs": {
+          "long_name": "time",
+          "standard_name": "time"
+        }
+      },
+      "latitude": {
+        "dims": [
+          "latitude"
+        ],
+        "attrs": {
+          "units": "degrees_north",
+          "standard_name": "latitude",
+          "long_name": "latitude",
+          "stored_direction": "decreasing"
+        }
+      },
+      "longitude": {
+        "dims": [
+          "longitude"
+        ],
+        "attrs": {
+          "units": "degrees_east",
+          "standard_name": "longitude",
+          "long_name": "longitude"
+        }
+      },
+      "expver": {
+        "dims": [
+          "valid_time"
+        ],
+        "attrs": {}
+      }
+    },
+    "variables": {
+      "u10": {
+        "attrs": {
+          "GRIB_paramId": "165",
+          "GRIB_dataType": "an",
+          "GRIB_numberOfPoints": "3649",
+          "GRIB_typeOfLevel": "surface",
+          "GRIB_stepUnits": "1",
+          "GRIB_stepType": "instant",
+          "GRIB_gridType": "regular_ll",
+          "GRIB_uvRelativeToGrid": "0",
+          "GRIB_NV": "0",
+          "GRIB_Nx": "89",
+          "GRIB_Ny": "41",
+          "GRIB_cfName": "unknown",
+          "GRIB_cfVarName": "u10",
+          "GRIB_gridDefinitionDescription": "Latitude/Longitude Grid",
+          "GRIB_iDirectionIncrementInDegrees": 0.25,
+          "GRIB_iScansNegatively": "0",
+          "GRIB_jDirectionIncrementInDegrees": 0.25,
+          "GRIB_jPointsAreConsecutive": "0",
+          "GRIB_jScansPositively": "0",
+          "GRIB_latitudeOfFirstGridPointInDegrees": 58.0,
+          "GRIB_latitudeOfLastGridPointInDegrees": 48.0,
+          "GRIB_longitudeOfFirstGridPointInDegrees": -25.0,
+          "GRIB_longitudeOfLastGridPointInDegrees": -3.0,
+          "GRIB_missingValue": 3.4028234663852886e+38,
+          "GRIB_name": "10 metre U wind component",
+          "GRIB_shortName": "10u",
+          "GRIB_totalNumber": "0",
+          "GRIB_units": "m s**-1",
+          "long_name": "10 metre U wind component",
+          "units": "m s**-1",
+          "standard_name": "unknown",
+          "GRIB_surface": 0.0
+        },
+        "encoding": {
+          "_FillValue": "nan"
+        },
+        "dims": [
+          "valid_time",
+          "latitude",
+          "longitude"
+        ]
+      },
+      "v10": {
+        "attrs": {
+          "GRIB_paramId": "166",
+          "GRIB_dataType": "an",
+          "GRIB_numberOfPoints": "3649",
+          "GRIB_typeOfLevel": "surface",
+          "GRIB_stepUnits": "1",
+          "GRIB_stepType": "instant",
+          "GRIB_gridType": "regular_ll",
+          "GRIB_uvRelativeToGrid": "0",
+          "GRIB_NV": "0",
+          "GRIB_Nx": "89",
+          "GRIB_Ny": "41",
+          "GRIB_cfName": "unknown",
+          "GRIB_cfVarName": "v10",
+          "GRIB_gridDefinitionDescription": "Latitude/Longitude Grid",
+          "GRIB_iDirectionIncrementInDegrees": 0.25,
+          "GRIB_iScansNegatively": "0",
+          "GRIB_jDirectionIncrementInDegrees": 0.25,
+          "GRIB_jPointsAreConsecutive": "0",
+          "GRIB_jScansPositively": "0",
+          "GRIB_latitudeOfFirstGridPointInDegrees": 58.0,
+          "GRIB_latitudeOfLastGridPointInDegrees": 48.0,
+          "GRIB_longitudeOfFirstGridPointInDegrees": -25.0,
+          "GRIB_longitudeOfLastGridPointInDegrees": -3.0,
+          "GRIB_missingValue": 3.4028234663852886e+38,
+          "GRIB_name": "10 metre V wind component",
+          "GRIB_shortName": "10v",
+          "GRIB_totalNumber": "0",
+          "GRIB_units": "m s**-1",
+          "long_name": "10 metre V wind component",
+          "units": "m s**-1",
+          "standard_name": "unknown",
+          "GRIB_surface": 0.0
+        },
+        "encoding": {
+          "_FillValue": "nan"
+        },
+        "dims": [
+          "valid_time",
+          "latitude",
+          "longitude"
+        ]
+      },
+      "d2m": {
+        "attrs": {
+          "GRIB_paramId": "168",
+          "GRIB_dataType": "an",
+          "GRIB_numberOfPoints": "3649",
+          "GRIB_typeOfLevel": "surface",
+          "GRIB_stepUnits": "1",
+          "GRIB_stepType": "instant",
+          "GRIB_gridType": "regular_ll",
+          "GRIB_uvRelativeToGrid": "0",
+          "GRIB_NV": "0",
+          "GRIB_Nx": "89",
+          "GRIB_Ny": "41",
+          "GRIB_cfName": "unknown",
+          "GRIB_cfVarName": "d2m",
+          "GRIB_gridDefinitionDescription": "Latitude/Longitude Grid",
+          "GRIB_iDirectionIncrementInDegrees": 0.25,
+          "GRIB_iScansNegatively": "0",
+          "GRIB_jDirectionIncrementInDegrees": 0.25,
+          "GRIB_jPointsAreConsecutive": "0",
+          "GRIB_jScansPositively": "0",
+          "GRIB_latitudeOfFirstGridPointInDegrees": 58.0,
+          "GRIB_latitudeOfLastGridPointInDegrees": 48.0,
+          "GRIB_longitudeOfFirstGridPointInDegrees": -25.0,
+          "GRIB_longitudeOfLastGridPointInDegrees": -3.0,
+          "GRIB_missingValue": 3.4028234663852886e+38,
+          "GRIB_name": "2 metre dewpoint temperature",
+          "GRIB_shortName": "2d",
+          "GRIB_totalNumber": "0",
+          "GRIB_units": "K",
+          "long_name": "2 metre dewpoint temperature",
+          "units": "K",
+          "standard_name": "unknown",
+          "GRIB_surface": 0.0
+        },
+        "encoding": {
+          "_FillValue": "nan"
+        },
+        "dims": [
+          "valid_time",
+          "latitude",
+          "longitude"
+        ]
+      },
+      "t2m": {
+        "attrs": {
+          "GRIB_paramId": "167",
+          "GRIB_dataType": "an",
+          "GRIB_numberOfPoints": "3649",
+          "GRIB_typeOfLevel": "surface",
+          "GRIB_stepUnits": "1",
+          "GRIB_stepType": "instant",
+          "GRIB_gridType": "regular_ll",
+          "GRIB_uvRelativeToGrid": "0",
+          "GRIB_NV": "0",
+          "GRIB_Nx": "89",
+          "GRIB_Ny": "41",
+          "GRIB_cfName": "unknown",
+          "GRIB_cfVarName": "t2m",
+          "GRIB_gridDefinitionDescription": "Latitude/Longitude Grid",
+          "GRIB_iDirectionIncrementInDegrees": 0.25,
+          "GRIB_iScansNegatively": "0",
+          "GRIB_jDirectionIncrementInDegrees": 0.25,
+          "GRIB_jPointsAreConsecutive": "0",
+          "GRIB_jScansPositively": "0",
+          "GRIB_latitudeOfFirstGridPointInDegrees": 58.0,
+          "GRIB_latitudeOfLastGridPointInDegrees": 48.0,
+          "GRIB_longitudeOfFirstGridPointInDegrees": -25.0,
+          "GRIB_longitudeOfLastGridPointInDegrees": -3.0,
+          "GRIB_missingValue": 3.4028234663852886e+38,
+          "GRIB_name": "2 metre temperature",
+          "GRIB_shortName": "2t",
+          "GRIB_totalNumber": "0",
+          "GRIB_units": "K",
+          "long_name": "2 metre temperature",
+          "units": "K",
+          "standard_name": "unknown",
+          "GRIB_surface": 0.0
+        },
+        "encoding": {
+          "_FillValue": "nan"
+        },
+        "dims": [
+          "valid_time",
+          "latitude",
+          "longitude"
+        ]
+      },
+      "msl": {
+        "attrs": {
+          "GRIB_paramId": "151",
+          "GRIB_dataType": "an",
+          "GRIB_numberOfPoints": "3649",
+          "GRIB_typeOfLevel": "surface",
+          "GRIB_stepUnits": "1",
+          "GRIB_stepType": "instant",
+          "GRIB_gridType": "regular_ll",
+          "GRIB_uvRelativeToGrid": "0",
+          "GRIB_NV": "0",
+          "GRIB_Nx": "89",
+          "GRIB_Ny": "41",
+          "GRIB_cfName": "air_pressure_at_mean_sea_level",
+          "GRIB_cfVarName": "msl",
+          "GRIB_gridDefinitionDescription": "Latitude/Longitude Grid",
+          "GRIB_iDirectionIncrementInDegrees": 0.25,
+          "GRIB_iScansNegatively": "0",
+          "GRIB_jDirectionIncrementInDegrees": 0.25,
+          "GRIB_jPointsAreConsecutive": "0",
+          "GRIB_jScansPositively": "0",
+          "GRIB_latitudeOfFirstGridPointInDegrees": 58.0,
+          "GRIB_latitudeOfLastGridPointInDegrees": 48.0,
+          "GRIB_longitudeOfFirstGridPointInDegrees": -25.0,
+          "GRIB_longitudeOfLastGridPointInDegrees": -3.0,
+          "GRIB_missingValue": 3.4028234663852886e+38,
+          "GRIB_name": "Mean sea level pressure",
+          "GRIB_shortName": "msl",
+          "GRIB_totalNumber": "0",
+          "GRIB_units": "Pa",
+          "long_name": "Mean sea level pressure",
+          "units": "Pa",
+          "standard_name": "air_pressure_at_mean_sea_level",
+          "GRIB_surface": 0.0
+        },
+        "encoding": {
+          "_FillValue": "nan"
+        },
+        "dims": [
+          "valid_time",
+          "latitude",
+          "longitude"
+        ]
+      }
+    }
+  },
+  {
+    "file": "s:\\git-repo\\pgr\\py-torch\\courses\\STAT41140-AI for Weather and Climate\\homework3\\data\\2019_accum.nc",
+    "global": {
+      "GRIB_centre": "ecmf",
+      "GRIB_centreDescription": "European Centre for Medium-Range Weather Forecasts",
+      "GRIB_subCentre": "0",
+      "Conventions": "CF-1.7",
+      "institution": "European Centre for Medium-Range Weather Forecasts",
+      "history": "2026-09-27T12:47 GRIB to CDM+CF via cfgrib-0.9.15.1/ecCodes-2.48.2 with {\"source\": \"tmpt7vr90wf/data.grib\", \"filter_by_keys\": {\"stream\": [\"oper\"], \"stepType\": [\"accum\"]}, \"encode_cf\": [\"parameter\", \"time\", \"geography\", \"vertical\"]}"
+    },
+    "coordinates": {
+      "number": {
+        "dims": [],
+        "attrs": {
+          "long_name": "ensemble member numerical id",
+          "units": "1",
+          "standard_name": "realization"
+        }
+      },
+      "valid_time": {
+        "dims": [
+          "valid_time"
+        ],
+        "attrs": {
+          "long_name": "time",
+          "standard_name": "time"
+        }
+      },
+      "latitude": {
+        "dims": [
+          "latitude"
+        ],
+        "attrs": {
+          "units": "degrees_north",
+          "standard_name": "latitude",
+          "long_name": "latitude",
+          "stored_direction": "decreasing"
+        }
+      },
+      "longitude": {
+        "dims": [
+          "longitude"
+        ],
+        "attrs": {
+          "units": "degrees_east",
+          "standard_name": "longitude",
+          "long_name": "longitude"
+        }
+      },
+      "expver": {
+        "dims": [
+          "valid_time"
+        ],
+        "attrs": {}
+      }
+    },
+    "variables": {
+      "tp": {
+        "attrs": {
+          "GRIB_paramId": "228",
+          "GRIB_dataType": "fc",
+          "GRIB_numberOfPoints": "3649",
+          "GRIB_typeOfLevel": "surface",
+          "GRIB_stepUnits": "1",
+          "GRIB_stepType": "accum",
+          "GRIB_gridType": "regular_ll",
+          "GRIB_uvRelativeToGrid": "0",
+          "GRIB_NV": "0",
+          "GRIB_Nx": "89",
+          "GRIB_Ny": "41",
+          "GRIB_cfName": "unknown",
+          "GRIB_cfVarName": "tp",
+          "GRIB_gridDefinitionDescription": "Latitude/Longitude Grid",
+          "GRIB_iDirectionIncrementInDegrees": 0.25,
+          "GRIB_iScansNegatively": "0",
+          "GRIB_jDirectionIncrementInDegrees": 0.25,
+          "GRIB_jPointsAreConsecutive": "0",
+          "GRIB_jScansPositively": "0",
+          "GRIB_latitudeOfFirstGridPointInDegrees": 58.0,
+          "GRIB_latitudeOfLastGridPointInDegrees": 48.0,
+          "GRIB_longitudeOfFirstGridPointInDegrees": -25.0,
+          "GRIB_longitudeOfLastGridPointInDegrees": -3.0,
+          "GRIB_missingValue": 3.4028234663852886e+38,
+          "GRIB_name": "Total precipitation",
+          "GRIB_shortName": "tp",
+          "GRIB_totalNumber": "0",
+          "GRIB_units": "m",
+          "long_name": "Total precipitation",
+          "units": "m",
+          "standard_name": "unknown",
+          "GRIB_surface": 0.0
+        },
+        "encoding": {
+          "_FillValue": "nan"
+        },
+        "dims": [
+          "valid_time",
+          "latitude",
+          "longitude"
+        ]
+      }
+    }
+  },
+  {
+    "file": "s:\\git-repo\\pgr\\py-torch\\courses\\STAT41140-AI for Weather and Climate\\homework3\\data\\2019_instant.nc",
+    "global": {
+      "GRIB_centre": "ecmf",
+      "GRIB_centreDescription": "European Centre for Medium-Range Weather Forecasts",
+      "GRIB_subCentre": "0",
+      "Conventions": "CF-1.7",
+      "institution": "European Centre for Medium-Range Weather Forecasts",
+      "history": "2026-09-27T12:47 GRIB to CDM+CF via cfgrib-0.9.15.1/ecCodes-2.48.2 with {\"source\": \"tmpt7vr90wf/data.grib\", \"filter_by_keys\": {\"stream\": [\"oper\"], \"stepType\": [\"instant\"]}, \"encode_cf\": [\"parameter\", \"time\", \"geography\", \"vertical\"]}"
+    },
+    "coordinates": {
+      "number": {
+        "dims": [],
+        "attrs": {
+          "long_name": "ensemble member numerical id",
+          "units": "1",
+          "standard_name": "realization"
+        }
+      },
+      "valid_time": {
+        "dims": [
+          "valid_time"
+        ],
+        "attrs": {
+          "long_name": "time",
+          "standard_name": "time"
+        }
+      },
+      "latitude": {
+        "dims": [
+          "latitude"
+        ],
+        "attrs": {
+          "units": "degrees_north",
+          "standard_name": "latitude",
+          "long_name": "latitude",
+          "stored_direction": "decreasing"
+        }
+      },
+      "longitude": {
+        "dims": [
+          "longitude"
+        ],
+        "attrs": {
+          "units": "degrees_east",
+          "standard_name": "longitude",
+          "long_name": "longitude"
+        }
+      },
+      "expver": {
+        "dims": [
+          "valid_time"
+        ],
+        "attrs": {}
+      }
+    },
+    "variables": {
+      "u10": {
+        "attrs": {
+          "GRIB_paramId": "165",
+          "GRIB_dataType": "an",
+          "GRIB_numberOfPoints": "3649",
+          "GRIB_typeOfLevel": "surface",
+          "GRIB_stepUnits": "1",
+          "GRIB_stepType": "instant",
+          "GRIB_gridType": "regular_ll",
+          "GRIB_uvRelativeToGrid": "0",
+          "GRIB_NV": "0",
+          "GRIB_Nx": "89",
+          "GRIB_Ny": "41",
+          "GRIB_cfName": "unknown",
+          "GRIB_cfVarName": "u10",
+          "GRIB_gridDefinitionDescription": "Latitude/Longitude Grid",
+          "GRIB_iDirectionIncrementInDegrees": 0.25,
+          "GRIB_iScansNegatively": "0",
+          "GRIB_jDirectionIncrementInDegrees": 0.25,
+          "GRIB_jPointsAreConsecutive": "0",
+          "GRIB_jScansPositively": "0",
+          "GRIB_latitudeOfFirstGridPointInDegrees": 58.0,
+          "GRIB_latitudeOfLastGridPointInDegrees": 48.0,
+          "GRIB_longitudeOfFirstGridPointInDegrees": -25.0,
+          "GRIB_longitudeOfLastGridPointInDegrees": -3.0,
+          "GRIB_missingValue": 3.4028234663852886e+38,
+          "GRIB_name": "10 metre U wind component",
+          "GRIB_shortName": "10u",
+          "GRIB_totalNumber": "0",
+          "GRIB_units": "m s**-1",
+          "long_name": "10 metre U wind component",
+          "units": "m s**-1",
+          "standard_name": "unknown",
+          "GRIB_surface": 0.0
+        },
+        "encoding": {
+          "_FillValue": "nan"
+        },
+        "dims": [
+          "valid_time",
+          "latitude",
+          "longitude"
+        ]
+      },
+      "v10": {
+        "attrs": {
+          "GRIB_paramId": "166",
+          "GRIB_dataType": "an",
+          "GRIB_numberOfPoints": "3649",
+          "GRIB_typeOfLevel": "surface",
+          "GRIB_stepUnits": "1",
+          "GRIB_stepType": "instant",
+          "GRIB_gridType": "regular_ll",
+          "GRIB_uvRelativeToGrid": "0",
+          "GRIB_NV": "0",
+          "GRIB_Nx": "89",
+          "GRIB_Ny": "41",
+          "GRIB_cfName": "unknown",
+          "GRIB_cfVarName": "v10",
+          "GRIB_gridDefinitionDescription": "Latitude/Longitude Grid",
+          "GRIB_iDirectionIncrementInDegrees": 0.25,
+          "GRIB_iScansNegatively": "0",
+          "GRIB_jDirectionIncrementInDegrees": 0.25,
+          "GRIB_jPointsAreConsecutive": "0",
+          "GRIB_jScansPositively": "0",
+          "GRIB_latitudeOfFirstGridPointInDegrees": 58.0,
+          "GRIB_latitudeOfLastGridPointInDegrees": 48.0,
+          "GRIB_longitudeOfFirstGridPointInDegrees": -25.0,
+          "GRIB_longitudeOfLastGridPointInDegrees": -3.0,
+          "GRIB_missingValue": 3.4028234663852886e+38,
+          "GRIB_name": "10 metre V wind component",
+          "GRIB_shortName": "10v",
+          "GRIB_totalNumber": "0",
+          "GRIB_units": "m s**-1",
+          "long_name": "10 metre V wind component",
+          "units": "m s**-1",
+          "standard_name": "unknown",
+          "GRIB_surface": 0.0
+        },
+        "encoding": {
+          "_FillValue": "nan"
+        },
+        "dims": [
+          "valid_time",
+          "latitude",
+          "longitude"
+        ]
+      },
+      "d2m": {
+        "attrs": {
+          "GRIB_paramId": "168",
+          "GRIB_dataType": "an",
+          "GRIB_numberOfPoints": "3649",
+          "GRIB_typeOfLevel": "surface",
+          "GRIB_stepUnits": "1",
+          "GRIB_stepType": "instant",
+          "GRIB_gridType": "regular_ll",
+          "GRIB_uvRelativeToGrid": "0",
+          "GRIB_NV": "0",
+          "GRIB_Nx": "89",
+          "GRIB_Ny": "41",
+          "GRIB_cfName": "unknown",
+          "GRIB_cfVarName": "d2m",
+          "GRIB_gridDefinitionDescription": "Latitude/Longitude Grid",
+          "GRIB_iDirectionIncrementInDegrees": 0.25,
+          "GRIB_iScansNegatively": "0",
+          "GRIB_jDirectionIncrementInDegrees": 0.25,
+          "GRIB_jPointsAreConsecutive": "0",
+          "GRIB_jScansPositively": "0",
+          "GRIB_latitudeOfFirstGridPointInDegrees": 58.0,
+          "GRIB_latitudeOfLastGridPointInDegrees": 48.0,
+          "GRIB_longitudeOfFirstGridPointInDegrees": -25.0,
+          "GRIB_longitudeOfLastGridPointInDegrees": -3.0,
+          "GRIB_missingValue": 3.4028234663852886e+38,
+          "GRIB_name": "2 metre dewpoint temperature",
+          "GRIB_shortName": "2d",
+          "GRIB_totalNumber": "0",
+          "GRIB_units": "K",
+          "long_name": "2 metre dewpoint temperature",
+          "units": "K",
+          "standard_name": "unknown",
+          "GRIB_surface": 0.0
+        },
+        "encoding": {
+          "_FillValue": "nan"
+        },
+        "dims": [
+          "valid_time",
+          "latitude",
+          "longitude"
+        ]
+      },
+      "t2m": {
+        "attrs": {
+          "GRIB_paramId": "167",
+          "GRIB_dataType": "an",
+          "GRIB_numberOfPoints": "3649",
+          "GRIB_typeOfLevel": "surface",
+          "GRIB_stepUnits": "1",
+          "GRIB_stepType": "instant",
+          "GRIB_gridType": "regular_ll",
+          "GRIB_uvRelativeToGrid": "0",
+          "GRIB_NV": "0",
+          "GRIB_Nx": "89",
+          "GRIB_Ny": "41",
+          "GRIB_cfName": "unknown",
+          "GRIB_cfVarName": "t2m",
+          "GRIB_gridDefinitionDescription": "Latitude/Longitude Grid",
+          "GRIB_iDirectionIncrementInDegrees": 0.25,
+          "GRIB_iScansNegatively": "0",
+          "GRIB_jDirectionIncrementInDegrees": 0.25,
+          "GRIB_jPointsAreConsecutive": "0",
+          "GRIB_jScansPositively": "0",
+          "GRIB_latitudeOfFirstGridPointInDegrees": 58.0,
+          "GRIB_latitudeOfLastGridPointInDegrees": 48.0,
+          "GRIB_longitudeOfFirstGridPointInDegrees": -25.0,
+          "GRIB_longitudeOfLastGridPointInDegrees": -3.0,
+          "GRIB_missingValue": 3.4028234663852886e+38,
+          "GRIB_name": "2 metre temperature",
+          "GRIB_shortName": "2t",
+          "GRIB_totalNumber": "0",
+          "GRIB_units": "K",
+          "long_name": "2 metre temperature",
+          "units": "K",
+          "standard_name": "unknown",
+          "GRIB_surface": 0.0
+        },
+        "encoding": {
+          "_FillValue": "nan"
+        },
+        "dims": [
+          "valid_time",
+          "latitude",
+          "longitude"
+        ]
+      },
+      "msl": {
+        "attrs": {
+          "GRIB_paramId": "151",
+          "GRIB_dataType": "an",
+          "GRIB_numberOfPoints": "3649",
+          "GRIB_typeOfLevel": "surface",
+          "GRIB_stepUnits": "1",
+          "GRIB_stepType": "instant",
+          "GRIB_gridType": "regular_ll",
+          "GRIB_uvRelativeToGrid": "0",
+          "GRIB_NV": "0",
+          "GRIB_Nx": "89",
+          "GRIB_Ny": "41",
+          "GRIB_cfName": "air_pressure_at_mean_sea_level",
+          "GRIB_cfVarName": "msl",
+          "GRIB_gridDefinitionDescription": "Latitude/Longitude Grid",
+          "GRIB_iDirectionIncrementInDegrees": 0.25,
+          "GRIB_iScansNegatively": "0",
+          "GRIB_jDirectionIncrementInDegrees": 0.25,
+          "GRIB_jPointsAreConsecutive": "0",
+          "GRIB_jScansPositively": "0",
+          "GRIB_latitudeOfFirstGridPointInDegrees": 58.0,
+          "GRIB_latitudeOfLastGridPointInDegrees": 48.0,
+          "GRIB_longitudeOfFirstGridPointInDegrees": -25.0,
+          "GRIB_longitudeOfLastGridPointInDegrees": -3.0,
+          "GRIB_missingValue": 3.4028234663852886e+38,
+          "GRIB_name": "Mean sea level pressure",
+          "GRIB_shortName": "msl",
+          "GRIB_totalNumber": "0",
+          "GRIB_units": "Pa",
+          "long_name": "Mean sea level pressure",
+          "units": "Pa",
+          "standard_name": "air_pressure_at_mean_sea_level",
+          "GRIB_surface": 0.0
+        },
+        "encoding": {
+          "_FillValue": "nan"
+        },
+        "dims": [
+          "valid_time",
+          "latitude",
+          "longitude"
+        ]
+      }
+    }
+  },
+  {
+    "file": "s:\\git-repo\\pgr\\py-torch\\courses\\STAT41140-AI for Weather and Climate\\homework3\\data\\2020_accum.nc",
+    "global": {
+      "GRIB_centre": "ecmf",
+      "GRIB_centreDescription": "European Centre for Medium-Range Weather Forecasts",
+      "GRIB_subCentre": "0",
+      "Conventions": "CF-1.7",
+      "institution": "European Centre for Medium-Range Weather Forecasts",
+      "history": "2026-09-27T13:48 GRIB to CDM+CF via cfgrib-0.9.15.1/ecCodes-2.48.2 with {\"source\": \"tmpeeibdzqi/data.grib\", \"filter_by_keys\": {\"stream\": [\"oper\"], \"stepType\": [\"accum\"]}, \"encode_cf\": [\"parameter\", \"time\", \"geography\", \"vertical\"]}"
+    },
+    "coordinates": {
+      "number": {
+        "dims": [],
+        "attrs": {
+          "long_name": "ensemble member numerical id",
+          "units": "1",
+          "standard_name": "realization"
+        }
+      },
+      "valid_time": {
+        "dims": [
+          "valid_time"
+        ],
+        "attrs": {
+          "long_name": "time",
+          "standard_name": "time"
+        }
+      },
+      "latitude": {
+        "dims": [
+          "latitude"
+        ],
+        "attrs": {
+          "units": "degrees_north",
+          "standard_name": "latitude",
+          "long_name": "latitude",
+          "stored_direction": "decreasing"
+        }
+      },
+      "longitude": {
+        "dims": [
+          "longitude"
+        ],
+        "attrs": {
+          "units": "degrees_east",
+          "standard_name": "longitude",
+          "long_name": "longitude"
+        }
+      },
+      "expver": {
+        "dims": [
+          "valid_time"
+        ],
+        "attrs": {}
+      }
+    },
+    "variables": {
+      "tp": {
+        "attrs": {
+          "GRIB_paramId": "228",
+          "GRIB_dataType": "fc",
+          "GRIB_numberOfPoints": "3649",
+          "GRIB_typeOfLevel": "surface",
+          "GRIB_stepUnits": "1",
+          "GRIB_stepType": "accum",
+          "GRIB_gridType": "regular_ll",
+          "GRIB_uvRelativeToGrid": "0",
+          "GRIB_NV": "0",
+          "GRIB_Nx": "89",
+          "GRIB_Ny": "41",
+          "GRIB_cfName": "unknown",
+          "GRIB_cfVarName": "tp",
+          "GRIB_gridDefinitionDescription": "Latitude/Longitude Grid",
+          "GRIB_iDirectionIncrementInDegrees": 0.25,
+          "GRIB_iScansNegatively": "0",
+          "GRIB_jDirectionIncrementInDegrees": 0.25,
+          "GRIB_jPointsAreConsecutive": "0",
+          "GRIB_jScansPositively": "0",
+          "GRIB_latitudeOfFirstGridPointInDegrees": 58.0,
+          "GRIB_latitudeOfLastGridPointInDegrees": 48.0,
+          "GRIB_longitudeOfFirstGridPointInDegrees": -25.0,
+          "GRIB_longitudeOfLastGridPointInDegrees": -3.0,
+          "GRIB_missingValue": 3.4028234663852886e+38,
+          "GRIB_name": "Total precipitation",
+          "GRIB_shortName": "tp",
+          "GRIB_totalNumber": "0",
+          "GRIB_units": "m",
+          "long_name": "Total precipitation",
+          "units": "m",
+          "standard_name": "unknown",
+          "GRIB_surface": 0.0
+        },
+        "encoding": {
+          "_FillValue": "nan"
+        },
+        "dims": [
+          "valid_time",
+          "latitude",
+          "longitude"
+        ]
+      }
+    }
+  },
+  {
+    "file": "s:\\git-repo\\pgr\\py-torch\\courses\\STAT41140-AI for Weather and Climate\\homework3\\data\\2020_instant.nc",
+    "global": {
+      "GRIB_centre": "ecmf",
+      "GRIB_centreDescription": "European Centre for Medium-Range Weather Forecasts",
+      "GRIB_subCentre": "0",
+      "Conventions": "CF-1.7",
+      "institution": "European Centre for Medium-Range Weather Forecasts",
+      "history": "2026-09-27T13:48 GRIB to CDM+CF via cfgrib-0.9.15.1/ecCodes-2.48.2 with {\"source\": \"tmpeeibdzqi/data.grib\", \"filter_by_keys\": {\"stream\": [\"oper\"], \"stepType\": [\"instant\"]}, \"encode_cf\": [\"parameter\", \"time\", \"geography\", \"vertical\"]}"
+    },
+    "coordinates": {
+      "number": {
+        "dims": [],
+        "attrs": {
+          "long_name": "ensemble member numerical id",
+          "units": "1",
+          "standard_name": "realization"
+        }
+      },
+      "valid_time": {
+        "dims": [
+          "valid_time"
+        ],
+        "attrs": {
+          "long_name": "time",
+          "standard_name": "time"
+        }
+      },
+      "latitude": {
+        "dims": [
+          "latitude"
+        ],
+        "attrs": {
+          "units": "degrees_north",
+          "standard_name": "latitude",
+          "long_name": "latitude",
+          "stored_direction": "decreasing"
+        }
+      },
+      "longitude": {
+        "dims": [
+          "longitude"
+        ],
+        "attrs": {
+          "units": "degrees_east",
+          "standard_name": "longitude",
+          "long_name": "longitude"
+        }
+      },
+      "expver": {
+        "dims": [
+          "valid_time"
+        ],
+        "attrs": {}
+      }
+    },
+    "variables": {
+      "u10": {
+        "attrs": {
+          "GRIB_paramId": "165",
+          "GRIB_dataType": "an",
+          "GRIB_numberOfPoints": "3649",
+          "GRIB_typeOfLevel": "surface",
+          "GRIB_stepUnits": "1",
+          "GRIB_stepType": "instant",
+          "GRIB_gridType": "regular_ll",
+          "GRIB_uvRelativeToGrid": "0",
+          "GRIB_NV": "0",
+          "GRIB_Nx": "89",
+          "GRIB_Ny": "41",
+          "GRIB_cfName": "unknown",
+          "GRIB_cfVarName": "u10",
+          "GRIB_gridDefinitionDescription": "Latitude/Longitude Grid",
+          "GRIB_iDirectionIncrementInDegrees": 0.25,
+          "GRIB_iScansNegatively": "0",
+          "GRIB_jDirectionIncrementInDegrees": 0.25,
+          "GRIB_jPointsAreConsecutive": "0",
+          "GRIB_jScansPositively": "0",
+          "GRIB_latitudeOfFirstGridPointInDegrees": 58.0,
+          "GRIB_latitudeOfLastGridPointInDegrees": 48.0,
+          "GRIB_longitudeOfFirstGridPointInDegrees": -25.0,
+          "GRIB_longitudeOfLastGridPointInDegrees": -3.0,
+          "GRIB_missingValue": 3.4028234663852886e+38,
+          "GRIB_name": "10 metre U wind component",
+          "GRIB_shortName": "10u",
+          "GRIB_totalNumber": "0",
+          "GRIB_units": "m s**-1",
+          "long_name": "10 metre U wind component",
+          "units": "m s**-1",
+          "standard_name": "unknown",
+          "GRIB_surface": 0.0
+        },
+        "encoding": {
+          "_FillValue": "nan"
+        },
+        "dims": [
+          "valid_time",
+          "latitude",
+          "longitude"
+        ]
+      },
+      "v10": {
+        "attrs": {
+          "GRIB_paramId": "166",
+          "GRIB_dataType": "an",
+          "GRIB_numberOfPoints": "3649",
+          "GRIB_typeOfLevel": "surface",
+          "GRIB_stepUnits": "1",
+          "GRIB_stepType": "instant",
+          "GRIB_gridType": "regular_ll",
+          "GRIB_uvRelativeToGrid": "0",
+          "GRIB_NV": "0",
+          "GRIB_Nx": "89",
+          "GRIB_Ny": "41",
+          "GRIB_cfName": "unknown",
+          "GRIB_cfVarName": "v10",
+          "GRIB_gridDefinitionDescription": "Latitude/Longitude Grid",
+          "GRIB_iDirectionIncrementInDegrees": 0.25,
+          "GRIB_iScansNegatively": "0",
+          "GRIB_jDirectionIncrementInDegrees": 0.25,
+          "GRIB_jPointsAreConsecutive": "0",
+          "GRIB_jScansPositively": "0",
+          "GRIB_latitudeOfFirstGridPointInDegrees": 58.0,
+          "GRIB_latitudeOfLastGridPointInDegrees": 48.0,
+          "GRIB_longitudeOfFirstGridPointInDegrees": -25.0,
+          "GRIB_longitudeOfLastGridPointInDegrees": -3.0,
+          "GRIB_missingValue": 3.4028234663852886e+38,
+          "GRIB_name": "10 metre V wind component",
+          "GRIB_shortName": "10v",
+          "GRIB_totalNumber": "0",
+          "GRIB_units": "m s**-1",
+          "long_name": "10 metre V wind component",
+          "units": "m s**-1",
+          "standard_name": "unknown",
+          "GRIB_surface": 0.0
+        },
+        "encoding": {
+          "_FillValue": "nan"
+        },
+        "dims": [
+          "valid_time",
+          "latitude",
+          "longitude"
+        ]
+      },
+      "d2m": {
+        "attrs": {
+          "GRIB_paramId": "168",
+          "GRIB_dataType": "an",
+          "GRIB_numberOfPoints": "3649",
+          "GRIB_typeOfLevel": "surface",
+          "GRIB_stepUnits": "1",
+          "GRIB_stepType": "instant",
+          "GRIB_gridType": "regular_ll",
+          "GRIB_uvRelativeToGrid": "0",
+          "GRIB_NV": "0",
+          "GRIB_Nx": "89",
+          "GRIB_Ny": "41",
+          "GRIB_cfName": "unknown",
+          "GRIB_cfVarName": "d2m",
+          "GRIB_gridDefinitionDescription": "Latitude/Longitude Grid",
+          "GRIB_iDirectionIncrementInDegrees": 0.25,
+          "GRIB_iScansNegatively": "0",
+          "GRIB_jDirectionIncrementInDegrees": 0.25,
+          "GRIB_jPointsAreConsecutive": "0",
+          "GRIB_jScansPositively": "0",
+          "GRIB_latitudeOfFirstGridPointInDegrees": 58.0,
+          "GRIB_latitudeOfLastGridPointInDegrees": 48.0,
+          "GRIB_longitudeOfFirstGridPointInDegrees": -25.0,
+          "GRIB_longitudeOfLastGridPointInDegrees": -3.0,
+          "GRIB_missingValue": 3.4028234663852886e+38,
+          "GRIB_name": "2 metre dewpoint temperature",
+          "GRIB_shortName": "2d",
+          "GRIB_totalNumber": "0",
+          "GRIB_units": "K",
+          "long_name": "2 metre dewpoint temperature",
+          "units": "K",
+          "standard_name": "unknown",
+          "GRIB_surface": 0.0
+        },
+        "encoding": {
+          "_FillValue": "nan"
+        },
+        "dims": [
+          "valid_time",
+          "latitude",
+          "longitude"
+        ]
+      },
+      "t2m": {
+        "attrs": {
+          "GRIB_paramId": "167",
+          "GRIB_dataType": "an",
+          "GRIB_numberOfPoints": "3649",
+          "GRIB_typeOfLevel": "surface",
+          "GRIB_stepUnits": "1",
+          "GRIB_stepType": "instant",
+          "GRIB_gridType": "regular_ll",
+          "GRIB_uvRelativeToGrid": "0",
+          "GRIB_NV": "0",
+          "GRIB_Nx": "89",
+          "GRIB_Ny": "41",
+          "GRIB_cfName": "unknown",
+          "GRIB_cfVarName": "t2m",
+          "GRIB_gridDefinitionDescription": "Latitude/Longitude Grid",
+          "GRIB_iDirectionIncrementInDegrees": 0.25,
+          "GRIB_iScansNegatively": "0",
+          "GRIB_jDirectionIncrementInDegrees": 0.25,
+          "GRIB_jPointsAreConsecutive": "0",
+          "GRIB_jScansPositively": "0",
+          "GRIB_latitudeOfFirstGridPointInDegrees": 58.0,
+          "GRIB_latitudeOfLastGridPointInDegrees": 48.0,
+          "GRIB_longitudeOfFirstGridPointInDegrees": -25.0,
+          "GRIB_longitudeOfLastGridPointInDegrees": -3.0,
+          "GRIB_missingValue": 3.4028234663852886e+38,
+          "GRIB_name": "2 metre temperature",
+          "GRIB_shortName": "2t",
+          "GRIB_totalNumber": "0",
+          "GRIB_units": "K",
+          "long_name": "2 metre temperature",
+          "units": "K",
+          "standard_name": "unknown",
+          "GRIB_surface": 0.0
+        },
+        "encoding": {
+          "_FillValue": "nan"
+        },
+        "dims": [
+          "valid_time",
+          "latitude",
+          "longitude"
+        ]
+      },
+      "msl": {
+        "attrs": {
+          "GRIB_paramId": "151",
+          "GRIB_dataType": "an",
+          "GRIB_numberOfPoints": "3649",
+          "GRIB_typeOfLevel": "surface",
+          "GRIB_stepUnits": "1",
+          "GRIB_stepType": "instant",
+          "GRIB_gridType": "regular_ll",
+          "GRIB_uvRelativeToGrid": "0",
+          "GRIB_NV": "0",
+          "GRIB_Nx": "89",
+          "GRIB_Ny": "41",
+          "GRIB_cfName": "air_pressure_at_mean_sea_level",
+          "GRIB_cfVarName": "msl",
+          "GRIB_gridDefinitionDescription": "Latitude/Longitude Grid",
+          "GRIB_iDirectionIncrementInDegrees": 0.25,
+          "GRIB_iScansNegatively": "0",
+          "GRIB_jDirectionIncrementInDegrees": 0.25,
+          "GRIB_jPointsAreConsecutive": "0",
+          "GRIB_jScansPositively": "0",
+          "GRIB_latitudeOfFirstGridPointInDegrees": 58.0,
+          "GRIB_latitudeOfLastGridPointInDegrees": 48.0,
+          "GRIB_longitudeOfFirstGridPointInDegrees": -25.0,
+          "GRIB_longitudeOfLastGridPointInDegrees": -3.0,
+          "GRIB_missingValue": 3.4028234663852886e+38,
+          "GRIB_name": "Mean sea level pressure",
+          "GRIB_shortName": "msl",
+          "GRIB_totalNumber": "0",
+          "GRIB_units": "Pa",
+          "long_name": "Mean sea level pressure",
+          "units": "Pa",
+          "standard_name": "air_pressure_at_mean_sea_level",
+          "GRIB_surface": 0.0
+        },
+        "encoding": {
+          "_FillValue": "nan"
+        },
+        "dims": [
+          "valid_time",
+          "latitude",
+          "longitude"
+        ]
+      }
+    }
+  },
+  {
+    "file": "s:\\git-repo\\pgr\\py-torch\\courses\\STAT41140-AI for Weather and Climate\\homework3\\data\\2021_accum.nc",
+    "global": {
+      "GRIB_centre": "ecmf",
+      "GRIB_centreDescription": "European Centre for Medium-Range Weather Forecasts",
+      "GRIB_subCentre": "0",
+      "Conventions": "CF-1.7",
+      "institution": "European Centre for Medium-Range Weather Forecasts",
+      "history": "2026-09-27T13:03 GRIB to CDM+CF via cfgrib-0.9.15.1/ecCodes-2.48.2 with {\"source\": \"tmph981fd6z/data.grib\", \"filter_by_keys\": {\"stream\": [\"oper\"], \"stepType\": [\"accum\"]}, \"encode_cf\": [\"parameter\", \"time\", \"geography\", \"vertical\"]}"
+    },
+    "coordinates": {
+      "number": {
+        "dims": [],
+        "attrs": {
+          "long_name": "ensemble member numerical id",
+          "units": "1",
+          "standard_name": "realization"
+        }
+      },
+      "valid_time": {
+        "dims": [
+          "valid_time"
+        ],
+        "attrs": {
+          "long_name": "time",
+          "standard_name": "time"
+        }
+      },
+      "latitude": {
+        "dims": [
+          "latitude"
+        ],
+        "attrs": {
+          "units": "degrees_north",
+          "standard_name": "latitude",
+          "long_name": "latitude",
+          "stored_direction": "decreasing"
+        }
+      },
+      "longitude": {
+        "dims": [
+          "longitude"
+        ],
+        "attrs": {
+          "units": "degrees_east",
+          "standard_name": "longitude",
+          "long_name": "longitude"
+        }
+      },
+      "expver": {
+        "dims": [
+          "valid_time"
+        ],
+        "attrs": {}
+      }
+    },
+    "variables": {
+      "tp": {
+        "attrs": {
+          "GRIB_paramId": "228",
+          "GRIB_dataType": "fc",
+          "GRIB_numberOfPoints": "3649",
+          "GRIB_typeOfLevel": "surface",
+          "GRIB_stepUnits": "1",
+          "GRIB_stepType": "accum",
+          "GRIB_gridType": "regular_ll",
+          "GRIB_uvRelativeToGrid": "0",
+          "GRIB_NV": "0",
+          "GRIB_Nx": "89",
+          "GRIB_Ny": "41",
+          "GRIB_cfName": "unknown",
+          "GRIB_cfVarName": "tp",
+          "GRIB_gridDefinitionDescription": "Latitude/Longitude Grid",
+          "GRIB_iDirectionIncrementInDegrees": 0.25,
+          "GRIB_iScansNegatively": "0",
+          "GRIB_jDirectionIncrementInDegrees": 0.25,
+          "GRIB_jPointsAreConsecutive": "0",
+          "GRIB_jScansPositively": "0",
+          "GRIB_latitudeOfFirstGridPointInDegrees": 58.0,
+          "GRIB_latitudeOfLastGridPointInDegrees": 48.0,
+          "GRIB_longitudeOfFirstGridPointInDegrees": -25.0,
+          "GRIB_longitudeOfLastGridPointInDegrees": -3.0,
+          "GRIB_missingValue": 3.4028234663852886e+38,
+          "GRIB_name": "Total precipitation",
+          "GRIB_shortName": "tp",
+          "GRIB_totalNumber": "0",
+          "GRIB_units": "m",
+          "long_name": "Total precipitation",
+          "units": "m",
+          "standard_name": "unknown",
+          "GRIB_surface": 0.0
+        },
+        "encoding": {
+          "_FillValue": "nan"
+        },
+        "dims": [
+          "valid_time",
+          "latitude",
+          "longitude"
+        ]
+      }
+    }
+  },
+  {
+    "file": "s:\\git-repo\\pgr\\py-torch\\courses\\STAT41140-AI for Weather and Climate\\homework3\\data\\2021_instant.nc",
+    "global": {
+      "GRIB_centre": "ecmf",
+      "GRIB_centreDescription": "European Centre for Medium-Range Weather Forecasts",
+      "GRIB_subCentre": "0",
+      "Conventions": "CF-1.7",
+      "institution": "European Centre for Medium-Range Weather Forecasts",
+      "history": "2026-09-27T13:03 GRIB to CDM+CF via cfgrib-0.9.15.1/ecCodes-2.48.2 with {\"source\": \"tmph981fd6z/data.grib\", \"filter_by_keys\": {\"stream\": [\"oper\"], \"stepType\": [\"instant\"]}, \"encode_cf\": [\"parameter\", \"time\", \"geography\", \"vertical\"]}"
+    },
+    "coordinates": {
+      "number": {
+        "dims": [],
+        "attrs": {
+          "long_name": "ensemble member numerical id",
+          "units": "1",
+          "standard_name": "realization"
+        }
+      },
+      "valid_time": {
+        "dims": [
+          "valid_time"
+        ],
+        "attrs": {
+          "long_name": "time",
+          "standard_name": "time"
+        }
+      },
+      "latitude": {
+        "dims": [
+          "latitude"
+        ],
+        "attrs": {
+          "units": "degrees_north",
+          "standard_name": "latitude",
+          "long_name": "latitude",
+          "stored_direction": "decreasing"
+        }
+      },
+      "longitude": {
+        "dims": [
+          "longitude"
+        ],
+        "attrs": {
+          "units": "degrees_east",
+          "standard_name": "longitude",
+          "long_name": "longitude"
+        }
+      },
+      "expver": {
+        "dims": [
+          "valid_time"
+        ],
+        "attrs": {}
+      }
+    },
+    "variables": {
+      "u10": {
+        "attrs": {
+          "GRIB_paramId": "165",
+          "GRIB_dataType": "an",
+          "GRIB_numberOfPoints": "3649",
+          "GRIB_typeOfLevel": "surface",
+          "GRIB_stepUnits": "1",
+          "GRIB_stepType": "instant",
+          "GRIB_gridType": "regular_ll",
+          "GRIB_uvRelativeToGrid": "0",
+          "GRIB_NV": "0",
+          "GRIB_Nx": "89",
+          "GRIB_Ny": "41",
+          "GRIB_cfName": "unknown",
+          "GRIB_cfVarName": "u10",
+          "GRIB_gridDefinitionDescription": "Latitude/Longitude Grid",
+          "GRIB_iDirectionIncrementInDegrees": 0.25,
+          "GRIB_iScansNegatively": "0",
+          "GRIB_jDirectionIncrementInDegrees": 0.25,
+          "GRIB_jPointsAreConsecutive": "0",
+          "GRIB_jScansPositively": "0",
+          "GRIB_latitudeOfFirstGridPointInDegrees": 58.0,
+          "GRIB_latitudeOfLastGridPointInDegrees": 48.0,
+          "GRIB_longitudeOfFirstGridPointInDegrees": -25.0,
+          "GRIB_longitudeOfLastGridPointInDegrees": -3.0,
+          "GRIB_missingValue": 3.4028234663852886e+38,
+          "GRIB_name": "10 metre U wind component",
+          "GRIB_shortName": "10u",
+          "GRIB_totalNumber": "0",
+          "GRIB_units": "m s**-1",
+          "long_name": "10 metre U wind component",
+          "units": "m s**-1",
+          "standard_name": "unknown",
+          "GRIB_surface": 0.0
+        },
+        "encoding": {
+          "_FillValue": "nan"
+        },
+        "dims": [
+          "valid_time",
+          "latitude",
+          "longitude"
+        ]
+      },
+      "v10": {
+        "attrs": {
+          "GRIB_paramId": "166",
+          "GRIB_dataType": "an",
+          "GRIB_numberOfPoints": "3649",
+          "GRIB_typeOfLevel": "surface",
+          "GRIB_stepUnits": "1",
+          "GRIB_stepType": "instant",
+          "GRIB_gridType": "regular_ll",
+          "GRIB_uvRelativeToGrid": "0",
+          "GRIB_NV": "0",
+          "GRIB_Nx": "89",
+          "GRIB_Ny": "41",
+          "GRIB_cfName": "unknown",
+          "GRIB_cfVarName": "v10",
+          "GRIB_gridDefinitionDescription": "Latitude/Longitude Grid",
+          "GRIB_iDirectionIncrementInDegrees": 0.25,
+          "GRIB_iScansNegatively": "0",
+          "GRIB_jDirectionIncrementInDegrees": 0.25,
+          "GRIB_jPointsAreConsecutive": "0",
+          "GRIB_jScansPositively": "0",
+          "GRIB_latitudeOfFirstGridPointInDegrees": 58.0,
+          "GRIB_latitudeOfLastGridPointInDegrees": 48.0,
+          "GRIB_longitudeOfFirstGridPointInDegrees": -25.0,
+          "GRIB_longitudeOfLastGridPointInDegrees": -3.0,
+          "GRIB_missingValue": 3.4028234663852886e+38,
+          "GRIB_name": "10 metre V wind component",
+          "GRIB_shortName": "10v",
+          "GRIB_totalNumber": "0",
+          "GRIB_units": "m s**-1",
+          "long_name": "10 metre V wind component",
+          "units": "m s**-1",
+          "standard_name": "unknown",
+          "GRIB_surface": 0.0
+        },
+        "encoding": {
+          "_FillValue": "nan"
+        },
+        "dims": [
+          "valid_time",
+          "latitude",
+          "longitude"
+        ]
+      },
+      "d2m": {
+        "attrs": {
+          "GRIB_paramId": "168",
+          "GRIB_dataType": "an",
+          "GRIB_numberOfPoints": "3649",
+          "GRIB_typeOfLevel": "surface",
+          "GRIB_stepUnits": "1",
+          "GRIB_stepType": "instant",
+          "GRIB_gridType": "regular_ll",
+          "GRIB_uvRelativeToGrid": "0",
+          "GRIB_NV": "0",
+          "GRIB_Nx": "89",
+          "GRIB_Ny": "41",
+          "GRIB_cfName": "unknown",
+          "GRIB_cfVarName": "d2m",
+          "GRIB_gridDefinitionDescription": "Latitude/Longitude Grid",
+          "GRIB_iDirectionIncrementInDegrees": 0.25,
+          "GRIB_iScansNegatively": "0",
+          "GRIB_jDirectionIncrementInDegrees": 0.25,
+          "GRIB_jPointsAreConsecutive": "0",
+          "GRIB_jScansPositively": "0",
+          "GRIB_latitudeOfFirstGridPointInDegrees": 58.0,
+          "GRIB_latitudeOfLastGridPointInDegrees": 48.0,
+          "GRIB_longitudeOfFirstGridPointInDegrees": -25.0,
+          "GRIB_longitudeOfLastGridPointInDegrees": -3.0,
+          "GRIB_missingValue": 3.4028234663852886e+38,
+          "GRIB_name": "2 metre dewpoint temperature",
+          "GRIB_shortName": "2d",
+          "GRIB_totalNumber": "0",
+          "GRIB_units": "K",
+          "long_name": "2 metre dewpoint temperature",
+          "units": "K",
+          "standard_name": "unknown",
+          "GRIB_surface": 0.0
+        },
+        "encoding": {
+          "_FillValue": "nan"
+        },
+        "dims": [
+          "valid_time",
+          "latitude",
+          "longitude"
+        ]
+      },
+      "t2m": {
+        "attrs": {
+          "GRIB_paramId": "167",
+          "GRIB_dataType": "an",
+          "GRIB_numberOfPoints": "3649",
+          "GRIB_typeOfLevel": "surface",
+          "GRIB_stepUnits": "1",
+          "GRIB_stepType": "instant",
+          "GRIB_gridType": "regular_ll",
+          "GRIB_uvRelativeToGrid": "0",
+          "GRIB_NV": "0",
+          "GRIB_Nx": "89",
+          "GRIB_Ny": "41",
+          "GRIB_cfName": "unknown",
+          "GRIB_cfVarName": "t2m",
+          "GRIB_gridDefinitionDescription": "Latitude/Longitude Grid",
+          "GRIB_iDirectionIncrementInDegrees": 0.25,
+          "GRIB_iScansNegatively": "0",
+          "GRIB_jDirectionIncrementInDegrees": 0.25,
+          "GRIB_jPointsAreConsecutive": "0",
+          "GRIB_jScansPositively": "0",
+          "GRIB_latitudeOfFirstGridPointInDegrees": 58.0,
+          "GRIB_latitudeOfLastGridPointInDegrees": 48.0,
+          "GRIB_longitudeOfFirstGridPointInDegrees": -25.0,
+          "GRIB_longitudeOfLastGridPointInDegrees": -3.0,
+          "GRIB_missingValue": 3.4028234663852886e+38,
+          "GRIB_name": "2 metre temperature",
+          "GRIB_shortName": "2t",
+          "GRIB_totalNumber": "0",
+          "GRIB_units": "K",
+          "long_name": "2 metre temperature",
+          "units": "K",
+          "standard_name": "unknown",
+          "GRIB_surface": 0.0
+        },
+        "encoding": {
+          "_FillValue": "nan"
+        },
+        "dims": [
+          "valid_time",
+          "latitude",
+          "longitude"
+        ]
+      },
+      "msl": {
+        "attrs": {
+          "GRIB_paramId": "151",
+          "GRIB_dataType": "an",
+          "GRIB_numberOfPoints": "3649",
+          "GRIB_typeOfLevel": "surface",
+          "GRIB_stepUnits": "1",
+          "GRIB_stepType": "instant",
+          "GRIB_gridType": "regular_ll",
+          "GRIB_uvRelativeToGrid": "0",
+          "GRIB_NV": "0",
+          "GRIB_Nx": "89",
+          "GRIB_Ny": "41",
+          "GRIB_cfName": "air_pressure_at_mean_sea_level",
+          "GRIB_cfVarName": "msl",
+          "GRIB_gridDefinitionDescription": "Latitude/Longitude Grid",
+          "GRIB_iDirectionIncrementInDegrees": 0.25,
+          "GRIB_iScansNegatively": "0",
+          "GRIB_jDirectionIncrementInDegrees": 0.25,
+          "GRIB_jPointsAreConsecutive": "0",
+          "GRIB_jScansPositively": "0",
+          "GRIB_latitudeOfFirstGridPointInDegrees": 58.0,
+          "GRIB_latitudeOfLastGridPointInDegrees": 48.0,
+          "GRIB_longitudeOfFirstGridPointInDegrees": -25.0,
+          "GRIB_longitudeOfLastGridPointInDegrees": -3.0,
+          "GRIB_missingValue": 3.4028234663852886e+38,
+          "GRIB_name": "Mean sea level pressure",
+          "GRIB_shortName": "msl",
+          "GRIB_totalNumber": "0",
+          "GRIB_units": "Pa",
+          "long_name": "Mean sea level pressure",
+          "units": "Pa",
+          "standard_name": "air_pressure_at_mean_sea_level",
+          "GRIB_surface": 0.0
+        },
+        "encoding": {
+          "_FillValue": "nan"
+        },
+        "dims": [
+          "valid_time",
+          "latitude",
+          "longitude"
+        ]
+      }
+    }
+  },
+  {
+    "file": "s:\\git-repo\\pgr\\py-torch\\courses\\STAT41140-AI for Weather and Climate\\homework3\\data\\2022_accum.nc",
+    "global": {
+      "GRIB_centre": "ecmf",
+      "GRIB_centreDescription": "European Centre for Medium-Range Weather Forecasts",
+      "GRIB_subCentre": "0",
+      "Conventions": "CF-1.7",
+      "institution": "European Centre for Medium-Range Weather Forecasts",
+      "history": "2026-09-27T14:20 GRIB to CDM+CF via cfgrib-0.9.15.1/ecCodes-2.48.2 with {\"source\": \"tmpmxsi5ewo/data.grib\", \"filter_by_keys\": {\"stream\": [\"oper\"], \"stepType\": [\"accum\"]}, \"encode_cf\": [\"parameter\", \"time\", \"geography\", \"vertical\"]}"
+    },
+    "coordinates": {
+      "number": {
+        "dims": [],
+        "attrs": {
+          "long_name": "ensemble member numerical id",
+          "units": "1",
+          "standard_name": "realization"
+        }
+      },
+      "valid_time": {
+        "dims": [
+          "valid_time"
+        ],
+        "attrs": {
+          "long_name": "time",
+          "standard_name": "time"
+        }
+      },
+      "latitude": {
+        "dims": [
+          "latitude"
+        ],
+        "attrs": {
+          "units": "degrees_north",
+          "standard_name": "latitude",
+          "long_name": "latitude",
+          "stored_direction": "decreasing"
+        }
+      },
+      "longitude": {
+        "dims": [
+          "longitude"
+        ],
+        "attrs": {
+          "units": "degrees_east",
+          "standard_name": "longitude",
+          "long_name": "longitude"
+        }
+      },
+      "expver": {
+        "dims": [
+          "valid_time"
+        ],
+        "attrs": {}
+      }
+    },
+    "variables": {
+      "tp": {
+        "attrs": {
+          "GRIB_paramId": "228",
+          "GRIB_dataType": "fc",
+          "GRIB_numberOfPoints": "3649",
+          "GRIB_typeOfLevel": "surface",
+          "GRIB_stepUnits": "1",
+          "GRIB_stepType": "accum",
+          "GRIB_gridType": "regular_ll",
+          "GRIB_uvRelativeToGrid": "0",
+          "GRIB_NV": "0",
+          "GRIB_Nx": "89",
+          "GRIB_Ny": "41",
+          "GRIB_cfName": "unknown",
+          "GRIB_cfVarName": "tp",
+          "GRIB_gridDefinitionDescription": "Latitude/Longitude Grid",
+          "GRIB_iDirectionIncrementInDegrees": 0.25,
+          "GRIB_iScansNegatively": "0",
+          "GRIB_jDirectionIncrementInDegrees": 0.25,
+          "GRIB_jPointsAreConsecutive": "0",
+          "GRIB_jScansPositively": "0",
+          "GRIB_latitudeOfFirstGridPointInDegrees": 58.0,
+          "GRIB_latitudeOfLastGridPointInDegrees": 48.0,
+          "GRIB_longitudeOfFirstGridPointInDegrees": -25.0,
+          "GRIB_longitudeOfLastGridPointInDegrees": -3.0,
+          "GRIB_missingValue": 3.4028234663852886e+38,
+          "GRIB_name": "Total precipitation",
+          "GRIB_shortName": "tp",
+          "GRIB_totalNumber": "0",
+          "GRIB_units": "m",
+          "long_name": "Total precipitation",
+          "units": "m",
+          "standard_name": "unknown",
+          "GRIB_surface": 0.0
+        },
+        "encoding": {
+          "_FillValue": "nan"
+        },
+        "dims": [
+          "valid_time",
+          "latitude",
+          "longitude"
+        ]
+      }
+    }
+  },
+  {
+    "file": "s:\\git-repo\\pgr\\py-torch\\courses\\STAT41140-AI for Weather and Climate\\homework3\\data\\2022_instant.nc",
+    "global": {
+      "GRIB_centre": "ecmf",
+      "GRIB_centreDescription": "European Centre for Medium-Range Weather Forecasts",
+      "GRIB_subCentre": "0",
+      "Conventions": "CF-1.7",
+      "institution": "European Centre for Medium-Range Weather Forecasts",
+      "history": "2026-09-27T14:20 GRIB to CDM+CF via cfgrib-0.9.15.1/ecCodes-2.48.2 with {\"source\": \"tmpmxsi5ewo/data.grib\", \"filter_by_keys\": {\"stream\": [\"oper\"], \"stepType\": [\"instant\"]}, \"encode_cf\": [\"parameter\", \"time\", \"geography\", \"vertical\"]}"
+    },
+    "coordinates": {
+      "number": {
+        "dims": [],
+        "attrs": {
+          "long_name": "ensemble member numerical id",
+          "units": "1",
+          "standard_name": "realization"
+        }
+      },
+      "valid_time": {
+        "dims": [
+          "valid_time"
+        ],
+        "attrs": {
+          "long_name": "time",
+          "standard_name": "time"
+        }
+      },
+      "latitude": {
+        "dims": [
+          "latitude"
+        ],
+        "attrs": {
+          "units": "degrees_north",
+          "standard_name": "latitude",
+          "long_name": "latitude",
+          "stored_direction": "decreasing"
+        }
+      },
+      "longitude": {
+        "dims": [
+          "longitude"
+        ],
+        "attrs": {
+          "units": "degrees_east",
+          "standard_name": "longitude",
+          "long_name": "longitude"
+        }
+      },
+      "expver": {
+        "dims": [
+          "valid_time"
+        ],
+        "attrs": {}
+      }
+    },
+    "variables": {
+      "u10": {
+        "attrs": {
+          "GRIB_paramId": "165",
+          "GRIB_dataType": "an",
+          "GRIB_numberOfPoints": "3649",
+          "GRIB_typeOfLevel": "surface",
+          "GRIB_stepUnits": "1",
+          "GRIB_stepType": "instant",
+          "GRIB_gridType": "regular_ll",
+          "GRIB_uvRelativeToGrid": "0",
+          "GRIB_NV": "0",
+          "GRIB_Nx": "89",
+          "GRIB_Ny": "41",
+          "GRIB_cfName": "unknown",
+          "GRIB_cfVarName": "u10",
+          "GRIB_gridDefinitionDescription": "Latitude/Longitude Grid",
+          "GRIB_iDirectionIncrementInDegrees": 0.25,
+          "GRIB_iScansNegatively": "0",
+          "GRIB_jDirectionIncrementInDegrees": 0.25,
+          "GRIB_jPointsAreConsecutive": "0",
+          "GRIB_jScansPositively": "0",
+          "GRIB_latitudeOfFirstGridPointInDegrees": 58.0,
+          "GRIB_latitudeOfLastGridPointInDegrees": 48.0,
+          "GRIB_longitudeOfFirstGridPointInDegrees": -25.0,
+          "GRIB_longitudeOfLastGridPointInDegrees": -3.0,
+          "GRIB_missingValue": 3.4028234663852886e+38,
+          "GRIB_name": "10 metre U wind component",
+          "GRIB_shortName": "10u",
+          "GRIB_totalNumber": "0",
+          "GRIB_units": "m s**-1",
+          "long_name": "10 metre U wind component",
+          "units": "m s**-1",
+          "standard_name": "unknown",
+          "GRIB_surface": 0.0
+        },
+        "encoding": {
+          "_FillValue": "nan"
+        },
+        "dims": [
+          "valid_time",
+          "latitude",
+          "longitude"
+        ]
+      },
+      "v10": {
+        "attrs": {
+          "GRIB_paramId": "166",
+          "GRIB_dataType": "an",
+          "GRIB_numberOfPoints": "3649",
+          "GRIB_typeOfLevel": "surface",
+          "GRIB_stepUnits": "1",
+          "GRIB_stepType": "instant",
+          "GRIB_gridType": "regular_ll",
+          "GRIB_uvRelativeToGrid": "0",
+          "GRIB_NV": "0",
+          "GRIB_Nx": "89",
+          "GRIB_Ny": "41",
+          "GRIB_cfName": "unknown",
+          "GRIB_cfVarName": "v10",
+          "GRIB_gridDefinitionDescription": "Latitude/Longitude Grid",
+          "GRIB_iDirectionIncrementInDegrees": 0.25,
+          "GRIB_iScansNegatively": "0",
+          "GRIB_jDirectionIncrementInDegrees": 0.25,
+          "GRIB_jPointsAreConsecutive": "0",
+          "GRIB_jScansPositively": "0",
+          "GRIB_latitudeOfFirstGridPointInDegrees": 58.0,
+          "GRIB_latitudeOfLastGridPointInDegrees": 48.0,
+          "GRIB_longitudeOfFirstGridPointInDegrees": -25.0,
+          "GRIB_longitudeOfLastGridPointInDegrees": -3.0,
+          "GRIB_missingValue": 3.4028234663852886e+38,
+          "GRIB_name": "10 metre V wind component",
+          "GRIB_shortName": "10v",
+          "GRIB_totalNumber": "0",
+          "GRIB_units": "m s**-1",
+          "long_name": "10 metre V wind component",
+          "units": "m s**-1",
+          "standard_name": "unknown",
+          "GRIB_surface": 0.0
+        },
+        "encoding": {
+          "_FillValue": "nan"
+        },
+        "dims": [
+          "valid_time",
+          "latitude",
+          "longitude"
+        ]
+      },
+      "d2m": {
+        "attrs": {
+          "GRIB_paramId": "168",
+          "GRIB_dataType": "an",
+          "GRIB_numberOfPoints": "3649",
+          "GRIB_typeOfLevel": "surface",
+          "GRIB_stepUnits": "1",
+          "GRIB_stepType": "instant",
+          "GRIB_gridType": "regular_ll",
+          "GRIB_uvRelativeToGrid": "0",
+          "GRIB_NV": "0",
+          "GRIB_Nx": "89",
+          "GRIB_Ny": "41",
+          "GRIB_cfName": "unknown",
+          "GRIB_cfVarName": "d2m",
+          "GRIB_gridDefinitionDescription": "Latitude/Longitude Grid",
+          "GRIB_iDirectionIncrementInDegrees": 0.25,
+          "GRIB_iScansNegatively": "0",
+          "GRIB_jDirectionIncrementInDegrees": 0.25,
+          "GRIB_jPointsAreConsecutive": "0",
+          "GRIB_jScansPositively": "0",
+          "GRIB_latitudeOfFirstGridPointInDegrees": 58.0,
+          "GRIB_latitudeOfLastGridPointInDegrees": 48.0,
+          "GRIB_longitudeOfFirstGridPointInDegrees": -25.0,
+          "GRIB_longitudeOfLastGridPointInDegrees": -3.0,
+          "GRIB_missingValue": 3.4028234663852886e+38,
+          "GRIB_name": "2 metre dewpoint temperature",
+          "GRIB_shortName": "2d",
+          "GRIB_totalNumber": "0",
+          "GRIB_units": "K",
+          "long_name": "2 metre dewpoint temperature",
+          "units": "K",
+          "standard_name": "unknown",
+          "GRIB_surface": 0.0
+        },
+        "encoding": {
+          "_FillValue": "nan"
+        },
+        "dims": [
+          "valid_time",
+          "latitude",
+          "longitude"
+        ]
+      },
+      "t2m": {
+        "attrs": {
+          "GRIB_paramId": "167",
+          "GRIB_dataType": "an",
+          "GRIB_numberOfPoints": "3649",
+          "GRIB_typeOfLevel": "surface",
+          "GRIB_stepUnits": "1",
+          "GRIB_stepType": "instant",
+          "GRIB_gridType": "regular_ll",
+          "GRIB_uvRelativeToGrid": "0",
+          "GRIB_NV": "0",
+          "GRIB_Nx": "89",
+          "GRIB_Ny": "41",
+          "GRIB_cfName": "unknown",
+          "GRIB_cfVarName": "t2m",
+          "GRIB_gridDefinitionDescription": "Latitude/Longitude Grid",
+          "GRIB_iDirectionIncrementInDegrees": 0.25,
+          "GRIB_iScansNegatively": "0",
+          "GRIB_jDirectionIncrementInDegrees": 0.25,
+          "GRIB_jPointsAreConsecutive": "0",
+          "GRIB_jScansPositively": "0",
+          "GRIB_latitudeOfFirstGridPointInDegrees": 58.0,
+          "GRIB_latitudeOfLastGridPointInDegrees": 48.0,
+          "GRIB_longitudeOfFirstGridPointInDegrees": -25.0,
+          "GRIB_longitudeOfLastGridPointInDegrees": -3.0,
+          "GRIB_missingValue": 3.4028234663852886e+38,
+          "GRIB_name": "2 metre temperature",
+          "GRIB_shortName": "2t",
+          "GRIB_totalNumber": "0",
+          "GRIB_units": "K",
+          "long_name": "2 metre temperature",
+          "units": "K",
+          "standard_name": "unknown",
+          "GRIB_surface": 0.0
+        },
+        "encoding": {
+          "_FillValue": "nan"
+        },
+        "dims": [
+          "valid_time",
+          "latitude",
+          "longitude"
+        ]
+      },
+      "msl": {
+        "attrs": {
+          "GRIB_paramId": "151",
+          "GRIB_dataType": "an",
+          "GRIB_numberOfPoints": "3649",
+          "GRIB_typeOfLevel": "surface",
+          "GRIB_stepUnits": "1",
+          "GRIB_stepType": "instant",
+          "GRIB_gridType": "regular_ll",
+          "GRIB_uvRelativeToGrid": "0",
+          "GRIB_NV": "0",
+          "GRIB_Nx": "89",
+          "GRIB_Ny": "41",
+          "GRIB_cfName": "air_pressure_at_mean_sea_level",
+          "GRIB_cfVarName": "msl",
+          "GRIB_gridDefinitionDescription": "Latitude/Longitude Grid",
+          "GRIB_iDirectionIncrementInDegrees": 0.25,
+          "GRIB_iScansNegatively": "0",
+          "GRIB_jDirectionIncrementInDegrees": 0.25,
+          "GRIB_jPointsAreConsecutive": "0",
+          "GRIB_jScansPositively": "0",
+          "GRIB_latitudeOfFirstGridPointInDegrees": 58.0,
+          "GRIB_latitudeOfLastGridPointInDegrees": 48.0,
+          "GRIB_longitudeOfFirstGridPointInDegrees": -25.0,
+          "GRIB_longitudeOfLastGridPointInDegrees": -3.0,
+          "GRIB_missingValue": 3.4028234663852886e+38,
+          "GRIB_name": "Mean sea level pressure",
+          "GRIB_shortName": "msl",
+          "GRIB_totalNumber": "0",
+          "GRIB_units": "Pa",
+          "long_name": "Mean sea level pressure",
+          "units": "Pa",
+          "standard_name": "air_pressure_at_mean_sea_level",
+          "GRIB_surface": 0.0
+        },
+        "encoding": {
+          "_FillValue": "nan"
+        },
+        "dims": [
+          "valid_time",
+          "latitude",
+          "longitude"
+        ]
+      }
+    }
+  },
+  {
+    "file": "s:\\git-repo\\pgr\\py-torch\\courses\\STAT41140-AI for Weather and Climate\\homework3\\data\\2023_accum.nc",
+    "global": {
+      "GRIB_centre": "ecmf",
+      "GRIB_centreDescription": "European Centre for Medium-Range Weather Forecasts",
+      "GRIB_subCentre": "0",
+      "Conventions": "CF-1.7",
+      "institution": "European Centre for Medium-Range Weather Forecasts",
+      "history": "2026-09-27T13:31 GRIB to CDM+CF via cfgrib-0.9.15.1/ecCodes-2.48.2 with {\"source\": \"tmp2w8wp_l1/data.grib\", \"filter_by_keys\": {\"stream\": [\"oper\"], \"stepType\": [\"accum\"]}, \"encode_cf\": [\"parameter\", \"time\", \"geography\", \"vertical\"]}"
+    },
+    "coordinates": {
+      "number": {
+        "dims": [],
+        "attrs": {
+          "long_name": "ensemble member numerical id",
+          "units": "1",
+          "standard_name": "realization"
+        }
+      },
+      "valid_time": {
+        "dims": [
+          "valid_time"
+        ],
+        "attrs": {
+          "long_name": "time",
+          "standard_name": "time"
+        }
+      },
+      "latitude": {
+        "dims": [
+          "latitude"
+        ],
+        "attrs": {
+          "units": "degrees_north",
+          "standard_name": "latitude",
+          "long_name": "latitude",
+          "stored_direction": "decreasing"
+        }
+      },
+      "longitude": {
+        "dims": [
+          "longitude"
+        ],
+        "attrs": {
+          "units": "degrees_east",
+          "standard_name": "longitude",
+          "long_name": "longitude"
+        }
+      },
+      "expver": {
+        "dims": [
+          "valid_time"
+        ],
+        "attrs": {}
+      }
+    },
+    "variables": {
+      "tp": {
+        "attrs": {
+          "GRIB_paramId": "228",
+          "GRIB_dataType": "fc",
+          "GRIB_numberOfPoints": "3649",
+          "GRIB_typeOfLevel": "surface",
+          "GRIB_stepUnits": "1",
+          "GRIB_stepType": "accum",
+          "GRIB_gridType": "regular_ll",
+          "GRIB_uvRelativeToGrid": "0",
+          "GRIB_NV": "0",
+          "GRIB_Nx": "89",
+          "GRIB_Ny": "41",
+          "GRIB_cfName": "unknown",
+          "GRIB_cfVarName": "tp",
+          "GRIB_gridDefinitionDescription": "Latitude/Longitude Grid",
+          "GRIB_iDirectionIncrementInDegrees": 0.25,
+          "GRIB_iScansNegatively": "0",
+          "GRIB_jDirectionIncrementInDegrees": 0.25,
+          "GRIB_jPointsAreConsecutive": "0",
+          "GRIB_jScansPositively": "0",
+          "GRIB_latitudeOfFirstGridPointInDegrees": 58.0,
+          "GRIB_latitudeOfLastGridPointInDegrees": 48.0,
+          "GRIB_longitudeOfFirstGridPointInDegrees": -25.0,
+          "GRIB_longitudeOfLastGridPointInDegrees": -3.0,
+          "GRIB_missingValue": 3.4028234663852886e+38,
+          "GRIB_name": "Total precipitation",
+          "GRIB_shortName": "tp",
+          "GRIB_totalNumber": "0",
+          "GRIB_units": "m",
+          "long_name": "Total precipitation",
+          "units": "m",
+          "standard_name": "unknown",
+          "GRIB_surface": 0.0
+        },
+        "encoding": {
+          "_FillValue": "nan"
+        },
+        "dims": [
+          "valid_time",
+          "latitude",
+          "longitude"
+        ]
+      }
+    }
+  },
+  {
+    "file": "s:\\git-repo\\pgr\\py-torch\\courses\\STAT41140-AI for Weather and Climate\\homework3\\data\\2023_instant.nc",
+    "global": {
+      "GRIB_centre": "ecmf",
+      "GRIB_centreDescription": "European Centre for Medium-Range Weather Forecasts",
+      "GRIB_subCentre": "0",
+      "Conventions": "CF-1.7",
+      "institution": "European Centre for Medium-Range Weather Forecasts",
+      "history": "2026-09-27T13:31 GRIB to CDM+CF via cfgrib-0.9.15.1/ecCodes-2.48.2 with {\"source\": \"tmp2w8wp_l1/data.grib\", \"filter_by_keys\": {\"stream\": [\"oper\"], \"stepType\": [\"instant\"]}, \"encode_cf\": [\"parameter\", \"time\", \"geography\", \"vertical\"]}"
+    },
+    "coordinates": {
+      "number": {
+        "dims": [],
+        "attrs": {
+          "long_name": "ensemble member numerical id",
+          "units": "1",
+          "standard_name": "realization"
+        }
+      },
+      "valid_time": {
+        "dims": [
+          "valid_time"
+        ],
+        "attrs": {
+          "long_name": "time",
+          "standard_name": "time"
+        }
+      },
+      "latitude": {
+        "dims": [
+          "latitude"
+        ],
+        "attrs": {
+          "units": "degrees_north",
+          "standard_name": "latitude",
+          "long_name": "latitude",
+          "stored_direction": "decreasing"
+        }
+      },
+      "longitude": {
+        "dims": [
+          "longitude"
+        ],
+        "attrs": {
+          "units": "degrees_east",
+          "standard_name": "longitude",
+          "long_name": "longitude"
+        }
+      },
+      "expver": {
+        "dims": [
+          "valid_time"
+        ],
+        "attrs": {}
+      }
+    },
+    "variables": {
+      "u10": {
+        "attrs": {
+          "GRIB_paramId": "165",
+          "GRIB_dataType": "an",
+          "GRIB_numberOfPoints": "3649",
+          "GRIB_typeOfLevel": "surface",
+          "GRIB_stepUnits": "1",
+          "GRIB_stepType": "instant",
+          "GRIB_gridType": "regular_ll",
+          "GRIB_uvRelativeToGrid": "0",
+          "GRIB_NV": "0",
+          "GRIB_Nx": "89",
+          "GRIB_Ny": "41",
+          "GRIB_cfName": "unknown",
+          "GRIB_cfVarName": "u10",
+          "GRIB_gridDefinitionDescription": "Latitude/Longitude Grid",
+          "GRIB_iDirectionIncrementInDegrees": 0.25,
+          "GRIB_iScansNegatively": "0",
+          "GRIB_jDirectionIncrementInDegrees": 0.25,
+          "GRIB_jPointsAreConsecutive": "0",
+          "GRIB_jScansPositively": "0",
+          "GRIB_latitudeOfFirstGridPointInDegrees": 58.0,
+          "GRIB_latitudeOfLastGridPointInDegrees": 48.0,
+          "GRIB_longitudeOfFirstGridPointInDegrees": -25.0,
+          "GRIB_longitudeOfLastGridPointInDegrees": -3.0,
+          "GRIB_missingValue": 3.4028234663852886e+38,
+          "GRIB_name": "10 metre U wind component",
+          "GRIB_shortName": "10u",
+          "GRIB_totalNumber": "0",
+          "GRIB_units": "m s**-1",
+          "long_name": "10 metre U wind component",
+          "units": "m s**-1",
+          "standard_name": "unknown",
+          "GRIB_surface": 0.0
+        },
+        "encoding": {
+          "_FillValue": "nan"
+        },
+        "dims": [
+          "valid_time",
+          "latitude",
+          "longitude"
+        ]
+      },
+      "v10": {
+        "attrs": {
+          "GRIB_paramId": "166",
+          "GRIB_dataType": "an",
+          "GRIB_numberOfPoints": "3649",
+          "GRIB_typeOfLevel": "surface",
+          "GRIB_stepUnits": "1",
+          "GRIB_stepType": "instant",
+          "GRIB_gridType": "regular_ll",
+          "GRIB_uvRelativeToGrid": "0",
+          "GRIB_NV": "0",
+          "GRIB_Nx": "89",
+          "GRIB_Ny": "41",
+          "GRIB_cfName": "unknown",
+          "GRIB_cfVarName": "v10",
+          "GRIB_gridDefinitionDescription": "Latitude/Longitude Grid",
+          "GRIB_iDirectionIncrementInDegrees": 0.25,
+          "GRIB_iScansNegatively": "0",
+          "GRIB_jDirectionIncrementInDegrees": 0.25,
+          "GRIB_jPointsAreConsecutive": "0",
+          "GRIB_jScansPositively": "0",
+          "GRIB_latitudeOfFirstGridPointInDegrees": 58.0,
+          "GRIB_latitudeOfLastGridPointInDegrees": 48.0,
+          "GRIB_longitudeOfFirstGridPointInDegrees": -25.0,
+          "GRIB_longitudeOfLastGridPointInDegrees": -3.0,
+          "GRIB_missingValue": 3.4028234663852886e+38,
+          "GRIB_name": "10 metre V wind component",
+          "GRIB_shortName": "10v",
+          "GRIB_totalNumber": "0",
+          "GRIB_units": "m s**-1",
+          "long_name": "10 metre V wind component",
+          "units": "m s**-1",
+          "standard_name": "unknown",
+          "GRIB_surface": 0.0
+        },
+        "encoding": {
+          "_FillValue": "nan"
+        },
+        "dims": [
+          "valid_time",
+          "latitude",
+          "longitude"
+        ]
+      },
+      "d2m": {
+        "attrs": {
+          "GRIB_paramId": "168",
+          "GRIB_dataType": "an",
+          "GRIB_numberOfPoints": "3649",
+          "GRIB_typeOfLevel": "surface",
+          "GRIB_stepUnits": "1",
+          "GRIB_stepType": "instant",
+          "GRIB_gridType": "regular_ll",
+          "GRIB_uvRelativeToGrid": "0",
+          "GRIB_NV": "0",
+          "GRIB_Nx": "89",
+          "GRIB_Ny": "41",
+          "GRIB_cfName": "unknown",
+          "GRIB_cfVarName": "d2m",
+          "GRIB_gridDefinitionDescription": "Latitude/Longitude Grid",
+          "GRIB_iDirectionIncrementInDegrees": 0.25,
+          "GRIB_iScansNegatively": "0",
+          "GRIB_jDirectionIncrementInDegrees": 0.25,
+          "GRIB_jPointsAreConsecutive": "0",
+          "GRIB_jScansPositively": "0",
+          "GRIB_latitudeOfFirstGridPointInDegrees": 58.0,
+          "GRIB_latitudeOfLastGridPointInDegrees": 48.0,
+          "GRIB_longitudeOfFirstGridPointInDegrees": -25.0,
+          "GRIB_longitudeOfLastGridPointInDegrees": -3.0,
+          "GRIB_missingValue": 3.4028234663852886e+38,
+          "GRIB_name": "2 metre dewpoint temperature",
+          "GRIB_shortName": "2d",
+          "GRIB_totalNumber": "0",
+          "GRIB_units": "K",
+          "long_name": "2 metre dewpoint temperature",
+          "units": "K",
+          "standard_name": "unknown",
+          "GRIB_surface": 0.0
+        },
+        "encoding": {
+          "_FillValue": "nan"
+        },
+        "dims": [
+          "valid_time",
+          "latitude",
+          "longitude"
+        ]
+      },
+      "t2m": {
+        "attrs": {
+          "GRIB_paramId": "167",
+          "GRIB_dataType": "an",
+          "GRIB_numberOfPoints": "3649",
+          "GRIB_typeOfLevel": "surface",
+          "GRIB_stepUnits": "1",
+          "GRIB_stepType": "instant",
+          "GRIB_gridType": "regular_ll",
+          "GRIB_uvRelativeToGrid": "0",
+          "GRIB_NV": "0",
+          "GRIB_Nx": "89",
+          "GRIB_Ny": "41",
+          "GRIB_cfName": "unknown",
+          "GRIB_cfVarName": "t2m",
+          "GRIB_gridDefinitionDescription": "Latitude/Longitude Grid",
+          "GRIB_iDirectionIncrementInDegrees": 0.25,
+          "GRIB_iScansNegatively": "0",
+          "GRIB_jDirectionIncrementInDegrees": 0.25,
+          "GRIB_jPointsAreConsecutive": "0",
+          "GRIB_jScansPositively": "0",
+          "GRIB_latitudeOfFirstGridPointInDegrees": 58.0,
+          "GRIB_latitudeOfLastGridPointInDegrees": 48.0,
+          "GRIB_longitudeOfFirstGridPointInDegrees": -25.0,
+          "GRIB_longitudeOfLastGridPointInDegrees": -3.0,
+          "GRIB_missingValue": 3.4028234663852886e+38,
+          "GRIB_name": "2 metre temperature",
+          "GRIB_shortName": "2t",
+          "GRIB_totalNumber": "0",
+          "GRIB_units": "K",
+          "long_name": "2 metre temperature",
+          "units": "K",
+          "standard_name": "unknown",
+          "GRIB_surface": 0.0
+        },
+        "encoding": {
+          "_FillValue": "nan"
+        },
+        "dims": [
+          "valid_time",
+          "latitude",
+          "longitude"
+        ]
+      },
+      "msl": {
+        "attrs": {
+          "GRIB_paramId": "151",
+          "GRIB_dataType": "an",
+          "GRIB_numberOfPoints": "3649",
+          "GRIB_typeOfLevel": "surface",
+          "GRIB_stepUnits": "1",
+          "GRIB_stepType": "instant",
+          "GRIB_gridType": "regular_ll",
+          "GRIB_uvRelativeToGrid": "0",
+          "GRIB_NV": "0",
+          "GRIB_Nx": "89",
+          "GRIB_Ny": "41",
+          "GRIB_cfName": "air_pressure_at_mean_sea_level",
+          "GRIB_cfVarName": "msl",
+          "GRIB_gridDefinitionDescription": "Latitude/Longitude Grid",
+          "GRIB_iDirectionIncrementInDegrees": 0.25,
+          "GRIB_iScansNegatively": "0",
+          "GRIB_jDirectionIncrementInDegrees": 0.25,
+          "GRIB_jPointsAreConsecutive": "0",
+          "GRIB_jScansPositively": "0",
+          "GRIB_latitudeOfFirstGridPointInDegrees": 58.0,
+          "GRIB_latitudeOfLastGridPointInDegrees": 48.0,
+          "GRIB_longitudeOfFirstGridPointInDegrees": -25.0,
+          "GRIB_longitudeOfLastGridPointInDegrees": -3.0,
+          "GRIB_missingValue": 3.4028234663852886e+38,
+          "GRIB_name": "Mean sea level pressure",
+          "GRIB_shortName": "msl",
+          "GRIB_totalNumber": "0",
+          "GRIB_units": "Pa",
+          "long_name": "Mean sea level pressure",
+          "units": "Pa",
+          "standard_name": "air_pressure_at_mean_sea_level",
+          "GRIB_surface": 0.0
+        },
+        "encoding": {
+          "_FillValue": "nan"
+        },
+        "dims": [
+          "valid_time",
+          "latitude",
+          "longitude"
+        ]
+      }
+    }
+  },
+  {
+    "file": "s:\\git-repo\\pgr\\py-torch\\courses\\STAT41140-AI for Weather and Climate\\homework3\\data\\2024_accum.nc",
+    "global": {
+      "GRIB_centre": "ecmf",
+      "GRIB_centreDescription": "European Centre for Medium-Range Weather Forecasts",
+      "GRIB_subCentre": "0",
+      "Conventions": "CF-1.7",
+      "institution": "European Centre for Medium-Range Weather Forecasts",
+      "history": "2026-09-27T14:03 GRIB to CDM+CF via cfgrib-0.9.15.1/ecCodes-2.48.2 with {\"source\": \"tmpzn4qb3if/data.grib\", \"filter_by_keys\": {\"stream\": [\"oper\"], \"stepType\": [\"accum\"]}, \"encode_cf\": [\"parameter\", \"time\", \"geography\", \"vertical\"]}"
+    },
+    "coordinates": {
+      "number": {
+        "dims": [],
+        "attrs": {
+          "long_name": "ensemble member numerical id",
+          "units": "1",
+          "standard_name": "realization"
+        }
+      },
+      "valid_time": {
+        "dims": [
+          "valid_time"
+        ],
+        "attrs": {
+          "long_name": "time",
+          "standard_name": "time"
+        }
+      },
+      "latitude": {
+        "dims": [
+          "latitude"
+        ],
+        "attrs": {
+          "units": "degrees_north",
+          "standard_name": "latitude",
+          "long_name": "latitude",
+          "stored_direction": "decreasing"
+        }
+      },
+      "longitude": {
+        "dims": [
+          "longitude"
+        ],
+        "attrs": {
+          "units": "degrees_east",
+          "standard_name": "longitude",
+          "long_name": "longitude"
+        }
+      },
+      "expver": {
+        "dims": [
+          "valid_time"
+        ],
+        "attrs": {}
+      }
+    },
+    "variables": {
+      "tp": {
+        "attrs": {
+          "GRIB_paramId": "228",
+          "GRIB_dataType": "fc",
+          "GRIB_numberOfPoints": "3649",
+          "GRIB_typeOfLevel": "surface",
+          "GRIB_stepUnits": "1",
+          "GRIB_stepType": "accum",
+          "GRIB_gridType": "regular_ll",
+          "GRIB_uvRelativeToGrid": "0",
+          "GRIB_NV": "0",
+          "GRIB_Nx": "89",
+          "GRIB_Ny": "41",
+          "GRIB_cfName": "unknown",
+          "GRIB_cfVarName": "tp",
+          "GRIB_gridDefinitionDescription": "Latitude/Longitude Grid",
+          "GRIB_iDirectionIncrementInDegrees": 0.25,
+          "GRIB_iScansNegatively": "0",
+          "GRIB_jDirectionIncrementInDegrees": 0.25,
+          "GRIB_jPointsAreConsecutive": "0",
+          "GRIB_jScansPositively": "0",
+          "GRIB_latitudeOfFirstGridPointInDegrees": 58.0,
+          "GRIB_latitudeOfLastGridPointInDegrees": 48.0,
+          "GRIB_longitudeOfFirstGridPointInDegrees": -25.0,
+          "GRIB_longitudeOfLastGridPointInDegrees": -3.0,
+          "GRIB_missingValue": 3.4028234663852886e+38,
+          "GRIB_name": "Total precipitation",
+          "GRIB_shortName": "tp",
+          "GRIB_totalNumber": "0",
+          "GRIB_units": "m",
+          "long_name": "Total precipitation",
+          "units": "m",
+          "standard_name": "unknown",
+          "GRIB_surface": 0.0
+        },
+        "encoding": {
+          "_FillValue": "nan"
+        },
+        "dims": [
+          "valid_time",
+          "latitude",
+          "longitude"
+        ]
+      }
+    }
+  },
+  {
+    "file": "s:\\git-repo\\pgr\\py-torch\\courses\\STAT41140-AI for Weather and Climate\\homework3\\data\\2024_instant.nc",
+    "global": {
+      "GRIB_centre": "ecmf",
+      "GRIB_centreDescription": "European Centre for Medium-Range Weather Forecasts",
+      "GRIB_subCentre": "0",
+      "Conventions": "CF-1.7",
+      "institution": "European Centre for Medium-Range Weather Forecasts",
+      "history": "2026-09-27T14:03 GRIB to CDM+CF via cfgrib-0.9.15.1/ecCodes-2.48.2 with {\"source\": \"tmpzn4qb3if/data.grib\", \"filter_by_keys\": {\"stream\": [\"oper\"], \"stepType\": [\"instant\"]}, \"encode_cf\": [\"parameter\", \"time\", \"geography\", \"vertical\"]}"
+    },
+    "coordinates": {
+      "number": {
+        "dims": [],
+        "attrs": {
+          "long_name": "ensemble member numerical id",
+          "units": "1",
+          "standard_name": "realization"
+        }
+      },
+      "valid_time": {
+        "dims": [
+          "valid_time"
+        ],
+        "attrs": {
+          "long_name": "time",
+          "standard_name": "time"
+        }
+      },
+      "latitude": {
+        "dims": [
+          "latitude"
+        ],
+        "attrs": {
+          "units": "degrees_north",
+          "standard_name": "latitude",
+          "long_name": "latitude",
+          "stored_direction": "decreasing"
+        }
+      },
+      "longitude": {
+        "dims": [
+          "longitude"
+        ],
+        "attrs": {
+          "units": "degrees_east",
+          "standard_name": "longitude",
+          "long_name": "longitude"
+        }
+      },
+      "expver": {
+        "dims": [
+          "valid_time"
+        ],
+        "attrs": {}
+      }
+    },
+    "variables": {
+      "u10": {
+        "attrs": {
+          "GRIB_paramId": "165",
+          "GRIB_dataType": "an",
+          "GRIB_numberOfPoints": "3649",
+          "GRIB_typeOfLevel": "surface",
+          "GRIB_stepUnits": "1",
+          "GRIB_stepType": "instant",
+          "GRIB_gridType": "regular_ll",
+          "GRIB_uvRelativeToGrid": "0",
+          "GRIB_NV": "0",
+          "GRIB_Nx": "89",
+          "GRIB_Ny": "41",
+          "GRIB_cfName": "unknown",
+          "GRIB_cfVarName": "u10",
+          "GRIB_gridDefinitionDescription": "Latitude/Longitude Grid",
+          "GRIB_iDirectionIncrementInDegrees": 0.25,
+          "GRIB_iScansNegatively": "0",
+          "GRIB_jDirectionIncrementInDegrees": 0.25,
+          "GRIB_jPointsAreConsecutive": "0",
+          "GRIB_jScansPositively": "0",
+          "GRIB_latitudeOfFirstGridPointInDegrees": 58.0,
+          "GRIB_latitudeOfLastGridPointInDegrees": 48.0,
+          "GRIB_longitudeOfFirstGridPointInDegrees": -25.0,
+          "GRIB_longitudeOfLastGridPointInDegrees": -3.0,
+          "GRIB_missingValue": 3.4028234663852886e+38,
+          "GRIB_name": "10 metre U wind component",
+          "GRIB_shortName": "10u",
+          "GRIB_totalNumber": "0",
+          "GRIB_units": "m s**-1",
+          "long_name": "10 metre U wind component",
+          "units": "m s**-1",
+          "standard_name": "unknown",
+          "GRIB_surface": 0.0
+        },
+        "encoding": {
+          "_FillValue": "nan"
+        },
+        "dims": [
+          "valid_time",
+          "latitude",
+          "longitude"
+        ]
+      },
+      "v10": {
+        "attrs": {
+          "GRIB_paramId": "166",
+          "GRIB_dataType": "an",
+          "GRIB_numberOfPoints": "3649",
+          "GRIB_typeOfLevel": "surface",
+          "GRIB_stepUnits": "1",
+          "GRIB_stepType": "instant",
+          "GRIB_gridType": "regular_ll",
+          "GRIB_uvRelativeToGrid": "0",
+          "GRIB_NV": "0",
+          "GRIB_Nx": "89",
+          "GRIB_Ny": "41",
+          "GRIB_cfName": "unknown",
+          "GRIB_cfVarName": "v10",
+          "GRIB_gridDefinitionDescription": "Latitude/Longitude Grid",
+          "GRIB_iDirectionIncrementInDegrees": 0.25,
+          "GRIB_iScansNegatively": "0",
+          "GRIB_jDirectionIncrementInDegrees": 0.25,
+          "GRIB_jPointsAreConsecutive": "0",
+          "GRIB_jScansPositively": "0",
+          "GRIB_latitudeOfFirstGridPointInDegrees": 58.0,
+          "GRIB_latitudeOfLastGridPointInDegrees": 48.0,
+          "GRIB_longitudeOfFirstGridPointInDegrees": -25.0,
+          "GRIB_longitudeOfLastGridPointInDegrees": -3.0,
+          "GRIB_missingValue": 3.4028234663852886e+38,
+          "GRIB_name": "10 metre V wind component",
+          "GRIB_shortName": "10v",
+          "GRIB_totalNumber": "0",
+          "GRIB_units": "m s**-1",
+          "long_name": "10 metre V wind component",
+          "units": "m s**-1",
+          "standard_name": "unknown",
+          "GRIB_surface": 0.0
+        },
+        "encoding": {
+          "_FillValue": "nan"
+        },
+        "dims": [
+          "valid_time",
+          "latitude",
+          "longitude"
+        ]
+      },
+      "d2m": {
+        "attrs": {
+          "GRIB_paramId": "168",
+          "GRIB_dataType": "an",
+          "GRIB_numberOfPoints": "3649",
+          "GRIB_typeOfLevel": "surface",
+          "GRIB_stepUnits": "1",
+          "GRIB_stepType": "instant",
+          "GRIB_gridType": "regular_ll",
+          "GRIB_uvRelativeToGrid": "0",
+          "GRIB_NV": "0",
+          "GRIB_Nx": "89",
+          "GRIB_Ny": "41",
+          "GRIB_cfName": "unknown",
+          "GRIB_cfVarName": "d2m",
+          "GRIB_gridDefinitionDescription": "Latitude/Longitude Grid",
+          "GRIB_iDirectionIncrementInDegrees": 0.25,
+          "GRIB_iScansNegatively": "0",
+          "GRIB_jDirectionIncrementInDegrees": 0.25,
+          "GRIB_jPointsAreConsecutive": "0",
+          "GRIB_jScansPositively": "0",
+          "GRIB_latitudeOfFirstGridPointInDegrees": 58.0,
+          "GRIB_latitudeOfLastGridPointInDegrees": 48.0,
+          "GRIB_longitudeOfFirstGridPointInDegrees": -25.0,
+          "GRIB_longitudeOfLastGridPointInDegrees": -3.0,
+          "GRIB_missingValue": 3.4028234663852886e+38,
+          "GRIB_name": "2 metre dewpoint temperature",
+          "GRIB_shortName": "2d",
+          "GRIB_totalNumber": "0",
+          "GRIB_units": "K",
+          "long_name": "2 metre dewpoint temperature",
+          "units": "K",
+          "standard_name": "unknown",
+          "GRIB_surface": 0.0
+        },
+        "encoding": {
+          "_FillValue": "nan"
+        },
+        "dims": [
+          "valid_time",
+          "latitude",
+          "longitude"
+        ]
+      },
+      "t2m": {
+        "attrs": {
+          "GRIB_paramId": "167",
+          "GRIB_dataType": "an",
+          "GRIB_numberOfPoints": "3649",
+          "GRIB_typeOfLevel": "surface",
+          "GRIB_stepUnits": "1",
+          "GRIB_stepType": "instant",
+          "GRIB_gridType": "regular_ll",
+          "GRIB_uvRelativeToGrid": "0",
+          "GRIB_NV": "0",
+          "GRIB_Nx": "89",
+          "GRIB_Ny": "41",
+          "GRIB_cfName": "unknown",
+          "GRIB_cfVarName": "t2m",
+          "GRIB_gridDefinitionDescription": "Latitude/Longitude Grid",
+          "GRIB_iDirectionIncrementInDegrees": 0.25,
+          "GRIB_iScansNegatively": "0",
+          "GRIB_jDirectionIncrementInDegrees": 0.25,
+          "GRIB_jPointsAreConsecutive": "0",
+          "GRIB_jScansPositively": "0",
+          "GRIB_latitudeOfFirstGridPointInDegrees": 58.0,
+          "GRIB_latitudeOfLastGridPointInDegrees": 48.0,
+          "GRIB_longitudeOfFirstGridPointInDegrees": -25.0,
+          "GRIB_longitudeOfLastGridPointInDegrees": -3.0,
+          "GRIB_missingValue": 3.4028234663852886e+38,
+          "GRIB_name": "2 metre temperature",
+          "GRIB_shortName": "2t",
+          "GRIB_totalNumber": "0",
+          "GRIB_units": "K",
+          "long_name": "2 metre temperature",
+          "units": "K",
+          "standard_name": "unknown",
+          "GRIB_surface": 0.0
+        },
+        "encoding": {
+          "_FillValue": "nan"
+        },
+        "dims": [
+          "valid_time",
+          "latitude",
+          "longitude"
+        ]
+      },
+      "msl": {
+        "attrs": {
+          "GRIB_paramId": "151",
+          "GRIB_dataType": "an",
+          "GRIB_numberOfPoints": "3649",
+          "GRIB_typeOfLevel": "surface",
+          "GRIB_stepUnits": "1",
+          "GRIB_stepType": "instant",
+          "GRIB_gridType": "regular_ll",
+          "GRIB_uvRelativeToGrid": "0",
+          "GRIB_NV": "0",
+          "GRIB_Nx": "89",
+          "GRIB_Ny": "41",
+          "GRIB_cfName": "air_pressure_at_mean_sea_level",
+          "GRIB_cfVarName": "msl",
+          "GRIB_gridDefinitionDescription": "Latitude/Longitude Grid",
+          "GRIB_iDirectionIncrementInDegrees": 0.25,
+          "GRIB_iScansNegatively": "0",
+          "GRIB_jDirectionIncrementInDegrees": 0.25,
+          "GRIB_jPointsAreConsecutive": "0",
+          "GRIB_jScansPositively": "0",
+          "GRIB_latitudeOfFirstGridPointInDegrees": 58.0,
+          "GRIB_latitudeOfLastGridPointInDegrees": 48.0,
+          "GRIB_longitudeOfFirstGridPointInDegrees": -25.0,
+          "GRIB_longitudeOfLastGridPointInDegrees": -3.0,
+          "GRIB_missingValue": 3.4028234663852886e+38,
+          "GRIB_name": "Mean sea level pressure",
+          "GRIB_shortName": "msl",
+          "GRIB_totalNumber": "0",
+          "GRIB_units": "Pa",
+          "long_name": "Mean sea level pressure",
+          "units": "Pa",
+          "standard_name": "air_pressure_at_mean_sea_level",
+          "GRIB_surface": 0.0
+        },
+        "encoding": {
+          "_FillValue": "nan"
+        },
+        "dims": [
+          "valid_time",
+          "latitude",
+          "longitude"
+        ]
+      }
+    }
+  }
+]

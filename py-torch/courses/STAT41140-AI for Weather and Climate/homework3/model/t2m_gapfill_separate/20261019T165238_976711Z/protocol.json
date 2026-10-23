@@ -1,0 +1,106 @@
+{
+  "run_id": "20261019T165238_976711Z",
+  "fingerprint": "5bf930b2860808b65fcd71de36506f0bca52270778ca7fad45b53244c62260f9",
+  "checkpoint_integrity": "training reload and pre-test physical validation must agree",
+  "task": "same-day t2m spatial map gap filling",
+  "methods": [
+    "Interpolation",
+    "PCA/EOF",
+    "ConvAE",
+    "Spatial Transformer"
+  ],
+  "variable": "t2m",
+  "units": "degrees Celsius",
+  "train_years": [
+    2018,
+    2019,
+    2020,
+    2021,
+    2022
+  ],
+  "validation_year": 2023,
+  "test_year": 2024,
+  "retained_days": {
+    "train": 1826,
+    "validation": 365,
+    "test": 366
+  },
+  "daily_hours": [
+    0,
+    3,
+    6,
+    9,
+    12,
+    15,
+    18,
+    21
+  ],
+  "climatology_window": 31,
+  "leap_day": "Feb29 shares Feb28 slot; later leap dates shifted",
+  "training_anomaly_std": 1.550985477373739,
+  "mask_seed": 12000,
+  "mask_draws": 3,
+  "mask_specs": {
+    "small": [
+      6,
+      9,
+      13,
+      19
+    ],
+    "large": [
+      10,
+      13,
+      22,
+      30
+    ]
+  },
+  "seed": 42,
+  "conv_latent_dims": [
+    8,
+    16,
+    32,
+    64,
+    128
+  ],
+  "selected_conv_k": 64,
+  "eof_k_values": [
+    8,
+    16,
+    32,
+    64,
+    128
+  ],
+  "selected_eof_k": 32,
+  "eof_ridge": 1e-06,
+  "eof_fit": "training maps only; exact full SVD; equal grid-cell weights",
+  "eof_inference": "ridge coefficients from visible pixels only; not DINEOF",
+  "spatial_transformer": {
+    "patch_size": 4,
+    "d": 64,
+    "nhead": 4,
+    "nlayers": 2,
+    "d_ff": 128
+  },
+  "attention": "spatial patches within one day, not temporal forecasting",
+  "learning_rates": {
+    "ConvAE": 0.001,
+    "Spatial Transformer": 0.0003
+  },
+  "max_epochs": 40,
+  "patience": 7,
+  "interpolation_tolerance_C": 0.0001,
+  "interpolation_max_iterations": 10000,
+  "bootstrap_draws": 1000,
+  "bootstrap_block_days": 7,
+  "bootstrap_seed": 45001,
+  "fixed_test_index": 0,
+  "display_gap": "large",
+  "display_draw": 0,
+  "selection": "ConvAE k and best epochs selected by fixed-mask validation hidden-cell MSE; no test tuning",
+  "software": {
+    "torch": "2.11.0+cu128",
+    "numpy": "2.5.3",
+    "python": "3.12.10",
+    "device": "cpu"
+  }
+}

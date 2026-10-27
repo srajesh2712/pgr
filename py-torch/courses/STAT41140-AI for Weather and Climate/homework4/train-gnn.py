@@ -4,7 +4,7 @@ train_gnn.py  –  Spatio-Temporal GNN for Irish Weather Station Next-Hour Predi
 Architecture : ST-GCN (Spatial Graph Conv + Temporal GRU)
 Task         : Given the last N hours of features at all stations,
                predict the next hour's features at all stations.
-Dataset      : edge_matrices/edge_matrices.npz  (built by build_edge_matrices.py)
+Dataset      : edge_matrices/distance_adj.npy   (static 25×25, built by build_distance_edges.py)
                homework4/data/*.csv              (raw station CSVs, for node features)
 
 Usage:
@@ -30,7 +30,7 @@ warnings.filterwarnings("ignore", category=UserWarning)
 
 _HERE      = Path(__file__).parent          # homework4/
 DATA_DIR   = _HERE / "data"               # homework4/data/
-NPZ_PATH   = DATA_DIR / "edge_matrices" / "edge_matrices.npz"   # homework4/edge_matrices/
+ADJ_PATH   = DATA_DIR / "edge_matrices" / "distance_adj.npy"    # static 25×25
 MODEL_PATH = DATA_DIR / "edge_matrices" / "gnn_model.pt"
 
 # Features to use as node inputs (must exist in station CSVs)
@@ -45,7 +45,7 @@ GRU_HIDDEN   = 128    # GRU hidden size
 NUM_GCN_LAYERS = 2
 EPOCHS       = 30
 LR           = 5e-4
-BATCH_SIZE   = 32
+BATCH_SIZE   = 256
 VAL_SPLIT    = 0.15
 TEST_SPLIT   = 0.10
 DROPOUT      = 0.2
@@ -67,6 +67,8 @@ def get_args():
     p.add_argument("--batch",    type=int,   default=BATCH_SIZE)
     p.add_argument("--predict",   action="store_true", help="run inference after training")
     p.add_argument("--eval-only", action="store_true", help="skip training, load saved model and evaluate")
+    p.add_argument("--resume",    action="store_true", help="resume training from saved checkpoint")
+    p.add_argument("--workers",   type=int, default=4,  help="DataLoader num_workers")
     p.add_argument("--no-gpu",    action="store_true", help="force CPU")
     return p.parse_args()
 
@@ -129,11 +131,11 @@ def parse_header(filepath):
 def build_node_features(stations, data, all_hours, features):
     """
     Returns feat (H, S, F) float32 — one row per hour per station.
+    Uses vectorised reindex instead of iterrows — ~100× faster.
     Missing values are forward-filled then backward-filled per station.
     """
     H, S, F = len(all_hours), len(stations), len(features)
     feat = np.full((H, S, F), np.nan, dtype=np.float32)
-    hour_idx = {ts: i for i, ts in enumerate(all_hours)}
 
     for s_idx, station in enumerate(stations):
         df = data.get(station["name"])
@@ -142,28 +144,18 @@ def build_node_features(stations, data, all_hours, features):
         avail = [c for c in features if c in df.columns]
         if not avail:
             continue
-        # resample to hourly mean
+        # resample to hourly mean, then reindex to the common timeline in one shot
         hourly = df[avail].resample("1h").mean()
-        for ts, row in hourly.iterrows():
-            ts_floor = ts.floor("h")
-            if ts_floor in hour_idx:
-                h = hour_idx[ts_floor]
-                for fi, col in enumerate(avail):
-                    feat[h, s_idx, fi] = float(row[col]) if not np.isnan(row[col]) else np.nan
+        hourly = hourly.reindex(all_hours)          # vectorised align, no Python loop
+        vals = hourly.values.astype(np.float32)     # (H, len(avail))
+        for fi, col in enumerate(avail):
+            col_i = avail.index(col)
+            feat[:, s_idx, fi] = vals[:, col_i]
 
-        # fill missing within this station column by column
-        for fi in range(F):
-            col_vals = feat[:, s_idx, fi]
-            mask = ~np.isnan(col_vals)
-            if mask.sum() == 0:
-                continue
-            idxs = np.where(mask)[0]
-            # forward fill
-            for k in range(len(idxs)-1):
-                feat[idxs[k]+1:idxs[k+1], s_idx, fi] = col_vals[idxs[k]]
-            feat[idxs[-1]+1:, s_idx, fi] = col_vals[idxs[-1]]
-            # backward fill
-            feat[:idxs[0], s_idx, fi] = col_vals[idxs[0]]
+        # forward-fill then backward-fill per feature using pandas (vectorised)
+        tmp = pd.DataFrame(feat[:, s_idx, :])       # (H, F)
+        tmp = tmp.ffill().bfill()
+        feat[:, s_idx, :] = tmp.values.astype(np.float32)
 
     # z-score normalise globally per feature
     flat = feat.reshape(-1, F)
@@ -255,51 +247,40 @@ def build_model(in_dim, out_dim, hidden, gru_hidden, num_gcn, dropout, device):
 
 # ── Dataset ────────────────────────────────────────────────────────────────────
 
-def make_sequences_gpu(feat, adj, seq_len, target_feat_indices, device):
+class WeatherDataset:
     """
-    GPU-accelerated sliding window using torch.unfold / as_strided.
-    feat : (H, S, F)  numpy float32
-    adj  : (H, S, S)  numpy float32
-    Returns torch tensors on CPU ready for TensorDataset.
+    On-the-fly sliding window dataset.
+    Stores only feat (H, S, F) — ~540 MB.
+    Slices each window when the DataLoader asks for it; never materialises
+    the full (N, T, S, F) tensor.
     """
-    import torch
-    H, S, F = feat.shape
-    F_out = len(target_feat_indices)
+    def __init__(self, feat_t, seq_len, target_idx, start, end):
+        """
+        feat_t     : torch.Tensor (H, S, F) on CPU
+        seq_len    : int
+        target_idx : list[int]
+        start, end : index range of valid window starts
+        """
+        self.feat      = feat_t          # shared, one copy
+        self.seq_len   = seq_len
+        self.tgt_idx   = target_idx
+        self.positions = list(range(start, end))
 
-    feat_t = torch.tensor(feat, dtype=torch.float32, device=device)  # (H, S, F)
-    adj_t  = torch.tensor(adj,  dtype=torch.float32, device=device)  # (H, S, S)
+    def __len__(self):
+        return len(self.positions)
 
-    # sliding windows via unfold on the time dimension
-    # feat_t.permute(1,2,0) → (S, F, H) → unfold → (S, F, N, T)
-    feat_unf = feat_t.permute(1, 2, 0).unfold(-1, seq_len, 1)   # (S, F, N+1, T)
-    feat_unf = feat_unf.permute(2, 3, 0, 1)                      # (N+1, T, S, F)
-
-    adj_unf  = adj_t.permute(1, 2, 0).unfold(-1, seq_len, 1)    # (S, S, N+1, T)
-    adj_unf  = adj_unf.permute(2, 3, 0, 1)                       # (N+1, T, S, S)
-
-    # target is the hour immediately after each window — drop last window (no target)
-    feat_unf = feat_unf[:-1]                                      # (N, T, S, F)
-    adj_unf  = adj_unf[:-1]                                       # (N, T, S, S)
-
-    tgt_idx  = torch.tensor(target_feat_indices, device=device)
-    N = H - seq_len
-    Y        = feat_t[seq_len:, :, :][:, :, tgt_idx]             # (N, S, F_out)
-
-    # drop samples where any target is NaN
-    valid = ~Y.isnan().any(dim=-1).any(dim=-1)                    # (N,)
-    feat_unf = feat_unf[valid]
-    adj_unf  = adj_unf[valid]
-    Y        = Y[valid]
-
-    print(f"  {valid.sum().item()} valid samples  (dropped {(~valid).sum().item()} with NaN targets)")
-    return feat_unf.cpu(), adj_unf.cpu(), Y.cpu()
+    def __getitem__(self, i):
+        h = self.positions[i]
+        x = self.feat[h : h + self.seq_len]                # (T, S, F)
+        y = self.feat[h + self.seq_len, :, :][:, self.tgt_idx]  # (S, F_out)
+        return x, y
 
 # ── Training loop ──────────────────────────────────────────────────────────────
 
 def train(args):
     import torch
     import torch.nn as nn
-    from torch.utils.data import TensorDataset, DataLoader
+    from torch.utils.data import DataLoader
 
     device = torch.device("cpu" if args.no_gpu or not torch.cuda.is_available()
                           else "cuda")
@@ -310,14 +291,12 @@ def train(args):
     print(f"  Seq len: {args.seq_len}  |  Epochs: {args.epochs}  |  LR: {args.lr}")
     print(f"{'='*60}\n")
 
-    # 1. Load edge matrices
-    print("Loading edge matrices …")
-    d = np.load(NPZ_PATH, allow_pickle=True)
-    adj_all    = d["adj"]          # (H, S, S)
-    timestamps = [t.decode() if isinstance(t, bytes) else t for t in d["timestamps"]]
-    names      = [s.decode() if isinstance(s, bytes) else s for s in d["station_names"]]
-    H, S, _ = adj_all.shape
-    print(f"  {H} hours,  {S} stations: {names}")
+    # 1. Load static adjacency matrix
+    print("Loading static distance adjacency …")
+    adj_static = np.load(ADJ_PATH).astype(np.float32)   # (S, S)
+    S = adj_static.shape[0]
+    # station names come from the CSV header; populated after loading CSVs
+    print(f"  Adjacency shape: {adj_static.shape}")
 
     # 2. Load and align node features
     print("\nLoading station CSVs …")
@@ -334,9 +313,7 @@ def train(args):
         except Exception as e:
             print(f"  [SKIP] {fp.name}: {e}")
 
-    # keep only stations that appear in the edge matrix
-    stations = [s for s in stations if s["name"] in names]
-    stations.sort(key=lambda s: names.index(s["name"]))
+    names = [s["name"] for s in stations]
 
     all_times = pd.DatetimeIndex(
         pd.concat([pd.Series(index=df.index, dtype=float) for df in data.values()]).index
@@ -356,30 +333,27 @@ def train(args):
     F_out   = len(tgt_idx)
     F_in    = len(NODE_FEATURES)
 
-    print(f"\nBuilding sequences on GPU (seq_len={args.seq_len}) …")
-    X, A, Y = make_sequences_gpu(feat_aligned, adj_all, args.seq_len, tgt_idx, device)
-    N = len(X)
-    print(f"  {N} samples  |  X:{X.shape}  A:{A.shape}  Y:{Y.shape}")
+    # 3. Build feat tensor (CPU, shared) and on-the-fly dataset
+    print(f"\nBuilding on-the-fly dataset (seq_len={args.seq_len}) …")
+    feat_t = torch.tensor(feat_aligned, dtype=torch.float32)   # (H, S, F) ~540 MB
+    adj_t  = torch.tensor(adj_static,   dtype=torch.float32)   # (S, S)
 
-    # 3. Train / val / test split (chronological)
-    n_test = max(1, int(N * TEST_SPLIT))
-    n_val  = max(1, int(N * VAL_SPLIT))
+    H = feat_t.shape[0]
+    N = H - args.seq_len
+    n_test  = max(1, int(N * TEST_SPLIT))
+    n_val   = max(1, int(N * VAL_SPLIT))
     n_train = N - n_val - n_test
+    print(f"  {N} windows  |  Train:{n_train}  Val:{n_val}  Test:{n_test}")
+    print(f"  feat tensor: {feat_t.shape}  ({feat_t.nbytes/1e9:.2f} GB)")
 
-    X_tr, A_tr, Y_tr = X[:n_train], A[:n_train], Y[:n_train]
-    X_v,  A_v,  Y_v  = X[n_train:n_train+n_val], A[n_train:n_train+n_val], Y[n_train:n_train+n_val]
-    X_te, A_te, Y_te = X[-n_test:], A[-n_test:], Y[-n_test:]
-    print(f"  Train:{n_train}  Val:{n_val}  Test:{n_test}")
-
-    to_t = lambda a: torch.tensor(a, dtype=torch.float32)
-    tr_ds = TensorDataset(to_t(X_tr), to_t(A_tr), to_t(Y_tr))
-    v_ds  = TensorDataset(to_t(X_v),  to_t(A_v),  to_t(Y_v))
-    te_ds = TensorDataset(to_t(X_te), to_t(A_te), to_t(Y_te))
+    tr_ds = WeatherDataset(feat_t, args.seq_len, tgt_idx, 0,                     n_train)
+    v_ds  = WeatherDataset(feat_t, args.seq_len, tgt_idx, n_train,               n_train + n_val)
+    te_ds = WeatherDataset(feat_t, args.seq_len, tgt_idx, n_train + n_val,       N)
 
     pin = (device.type == "cuda")
-    tr_dl = DataLoader(tr_ds, batch_size=args.batch, shuffle=True,  drop_last=True, pin_memory=pin, num_workers=0)
-    v_dl  = DataLoader(v_ds,  batch_size=args.batch, shuffle=False, pin_memory=pin, num_workers=0)
-    te_dl = DataLoader(te_ds, batch_size=args.batch, shuffle=False, pin_memory=pin, num_workers=0)
+    tr_dl = DataLoader(tr_ds, batch_size=args.batch, shuffle=True,  drop_last=True, pin_memory=pin, num_workers=args.workers)
+    v_dl  = DataLoader(v_ds,  batch_size=args.batch, shuffle=False, pin_memory=pin, num_workers=args.workers)
+    te_dl = DataLoader(te_ds, batch_size=args.batch, shuffle=False, pin_memory=pin, num_workers=args.workers)
 
     # 4. Model
     model = build_model(F_in, F_out, args.hidden, GRU_HIDDEN, NUM_GCN_LAYERS, DROPOUT, device)
@@ -400,14 +374,27 @@ def train(args):
 
         best_val = float("inf")
         no_improve = 0
+        start_epoch = 1
 
-        for epoch in range(1, args.epochs + 1):
+        # resume from checkpoint if requested
+        if args.resume and MODEL_PATH.exists():
+            ckpt = torch.load(MODEL_PATH, map_location=device, weights_only=False)
+            model.load_state_dict(ckpt["model_state"])
+            start_epoch = ckpt.get("epoch", 1) + 1
+            best_val    = ckpt.get("best_val", float("inf"))
+            print(f"  Resumed from epoch {start_epoch-1}  (best_val={best_val:.5f})")
+        elif args.resume:
+            print("  --resume: no checkpoint found, starting from scratch")
+
+        for epoch in range(start_epoch, args.epochs + 1):
             # ── train
             model.train()
             tr_loss = 0.0
             t0 = time.time()
-            for xb, ab, yb in tr_dl:
-                xb, ab, yb = xb.to(device), ab.to(device), yb.to(device)
+            for xb, yb in tr_dl:
+                xb, yb = xb.to(device), yb.to(device)
+                B, T = xb.shape[0], xb.shape[1]
+                ab = adj_t.to(device).unsqueeze(0).unsqueeze(0).expand(B, T, -1, -1)
                 opt.zero_grad()
                 pred = model(xb, ab)
                 loss = criterion(pred, yb)
@@ -421,8 +408,10 @@ def train(args):
             model.eval()
             val_loss = 0.0
             with torch.no_grad():
-                for xb, ab, yb in v_dl:
-                    xb, ab, yb = xb.to(device), ab.to(device), yb.to(device)
+                for xb, yb in v_dl:
+                    xb, yb = xb.to(device), yb.to(device)
+                    B, T = xb.shape[0], xb.shape[1]
+                    ab = adj_t.to(device).unsqueeze(0).unsqueeze(0).expand(B, T, -1, -1)
                     val_loss += criterion(model(xb, ab), yb).item()
             val_loss /= len(v_dl)
 
@@ -449,6 +438,7 @@ def train(args):
                     "num_gcn": NUM_GCN_LAYERS,
                     "dropout": DROPOUT,
                     "epoch": epoch,
+                    "best_val": best_val,
                 }, MODEL_PATH)
                 print(f"    ✓ saved best model (val={best_val:.5f})")
             else:
@@ -467,8 +457,10 @@ def train(args):
 
     all_pred, all_true = [], []
     with torch.no_grad():
-        for xb, ab, yb in te_dl:
-            xb, ab = xb.to(device), ab.to(device)
+        for xb, yb in te_dl:
+            xb = xb.to(device)
+            B, T = xb.shape[0], xb.shape[1]
+            ab = adj_t.to(device).unsqueeze(0).unsqueeze(0).expand(B, T, -1, -1)
             pred = model(xb, ab).cpu().numpy()
             all_pred.append(pred)
             all_true.append(yb.numpy())
@@ -503,13 +495,13 @@ def train(args):
         print("  INFERENCE  – predicting the next hour from the last window")
         print(f"{'─'*60}")
 
-        # last seq_len hours of features and adj
-        last_x   = feat_aligned[-args.seq_len:]       # (T, S, F)
-        last_adj = adj_all[-args.seq_len:]             # (T, S, S)
-        last_ts  = timestamps[-1]
+        # last seq_len hours of features; adj is static
+        last_x  = feat_aligned[-args.seq_len:]        # (T, S, F)
+        last_ts = str(all_hours[-1])
 
-        xb = torch.tensor(last_x[None], dtype=torch.float32).to(device)   # (1, T, S, F)
-        ab = torch.tensor(last_adj[None], dtype=torch.float32).to(device)
+        xb = torch.tensor(last_x[None],    dtype=torch.float32).to(device)   # (1, T, S, F)
+        ab = torch.tensor(adj_static[None], dtype=torch.float32) \
+                  .unsqueeze(1).expand(1, args.seq_len, -1, -1).to(device)    # (1, T, S, S)
 
         with torch.no_grad():
             pred = model(xb, ab).cpu().numpy()[0]   # (S, F_out)

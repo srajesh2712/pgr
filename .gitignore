@@ -31,3 +31,5 @@ experiment_outputs/
 *.nc
 *.png
 *.gif
+py-torch/courses/STAT41140-AI for Weather and Climate/homework4/data/hly2075.csv
+*.csv

@@ -88,9 +88,35 @@ class STGCN(nn.Module):
         return self.head(hn[-1]).reshape(B, S, -1)
 
 
+class TSAttn(nn.Module):
+    """Temporal-then-spatial: per-station GRU over history, then station self-attention
+    with a learned distance bias (one spatial mixing step instead of one per hour)."""
+    def __init__(self, in_dim, out_dim, n_stations, geom, emb_dim=8, n_layers=2, n_heads=4):
+        super().__init__()
+        self.emb = nn.Parameter(torch.randn(n_stations, emb_dim) * 0.1)
+        self.register_buffer("dist", geom[..., 0])                           # (S, S) in 100 km
+        self.alpha = nn.Parameter(torch.tensor(1.0))                         # distance penalty
+        self.gru = nn.GRU(in_dim + emb_dim, GRU_HIDDEN, num_layers=2, batch_first=True)
+        self.attn = nn.ModuleList(nn.TransformerEncoderLayer(GRU_HIDDEN, n_heads, 2 * GRU_HIDDEN,
+                                  dropout=0.0, batch_first=True, norm_first=True) for _ in range(n_layers))
+        self.head = nn.Sequential(nn.Linear(GRU_HIDDEN, GRU_HIDDEN // 2), nn.ReLU(),
+                                  nn.Linear(GRU_HIDDEN // 2, out_dim))
+
+    def forward(self, x, adj):                    # x (B, T, S, F) -> (B, S, out)
+        B, T, S, _ = x.shape
+        x = torch.cat([x, self.emb[None, None].expand(B, T, -1, -1)], -1)
+        _, hn = self.gru(x.permute(0, 2, 1, 3).reshape(B * S, T, -1))
+        h = hn[-1].reshape(B, S, -1)
+        bias = (-self.alpha.abs() * self.dist).to(h.dtype)                   # additive attention bias
+        for layer in self.attn:
+            h = layer(h, src_mask=bias)
+        return self.head(h)
+
+
 # ── Training ────────────────────────────────────────────────────────────────────
 
 def main():
+    torch.backends.mha.set_fastpath_enabled(False)                   # fast path NaNs with float masks in eval
     torch.manual_seed(SEED); np.random.seed(SEED)
     dev = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     d = load_data()
@@ -129,7 +155,7 @@ def main():
     dist = np.sqrt(dxk**2 + dyk**2) + 1e-6
     geom = np.stack([dist / 100, -dxk / dist, -dyk / dist], -1)          # unit vector from j to i
     geom[np.arange(S_), np.arange(S_), 1:] = 0
-    model = STGCN(len(IN_FEATS) + 6, len(TARGETS) * HORIZON, S_, torch.tensor(geom, dtype=torch.float32)).to(dev)
+    model = TSAttn(len(IN_FEATS) + 6, len(TARGETS) * HORIZON, S_, torch.tensor(geom, dtype=torch.float32)).to(dev)
     opt = torch.optim.Adam(model.parameters(), lr=LR, weight_decay=WD)
     n_params = sum(p.numel() for p in model.parameters())
     train_t = torch.tensor(d["split_idx"]["train"], device=dev)

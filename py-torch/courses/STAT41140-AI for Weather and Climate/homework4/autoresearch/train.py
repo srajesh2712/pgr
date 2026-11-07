@@ -112,6 +112,11 @@ def main():
     opt = torch.optim.Adam(model.parameters(), lr=LR, weight_decay=WD)
     n_params = sum(p.numel() for p in model.parameters())
     train_t = torch.tensor(d["split_idx"]["train"], device=dev)
+    # per-target weight = 1 / persistence MSE (normalised units) -> loss mirrors the metric
+    pm = M[train_t] & M[train_t + HORIZON]
+    pmse = (((Y[train_t + HORIZON] - Y[train_t]) ** 2) * pm).sum((0, 1)) / pm.sum((0, 1))
+    W = (1.0 / pmse) / (1.0 / pmse).mean()
+    print("target weights:", [f"{w:.2f}" for w in W.tolist()])
 
     print(f"device={dev}  params={n_params:,}  budget={TIME_BUDGET/60:.1f}min  horizon={HORIZON}h")
     t_start, step, ema = time.time(), 0, None
@@ -121,7 +126,7 @@ def main():
         y, m = Y[t + HORIZON], M[t + HORIZON]
         with torch.autocast("cuda", dtype=torch.bfloat16, enabled=dev.type == "cuda"):
             pred = forward(t)
-        loss = ((pred.float() - y) ** 2 * m).sum() / m.sum().clamp(min=1)  # masked MSE
+        loss = ((pred.float() - y) ** 2 * m * W).sum() / m.sum().clamp(min=1)  # weighted masked MSE
         opt.zero_grad(set_to_none=True)
         loss.backward()
         torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)

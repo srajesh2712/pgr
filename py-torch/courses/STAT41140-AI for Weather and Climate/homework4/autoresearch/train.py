@@ -87,13 +87,21 @@ def main():
     offs = torch.arange(-SEQ_LEN + 1, 1, device=dev)
     feats = torch.tensor(IN_FEATS, device=dev)
 
+    hod = torch.tensor(d["hour_of_day"], device=dev, dtype=torch.float32) * (2 * np.pi / 24)
+    doy = torch.tensor(d["day_of_year"], device=dev, dtype=torch.float32) * (2 * np.pi / 365.25)
+    CAL = torch.stack([hod.sin(), hod.cos(), doy.sin(), doy.cos()], -1)  # (H, 4)
+    S_ = X.shape[1]
+
     def window(t):                                                       # t (B,) long
-        return X[t[:, None] + offs][..., feats]                         # (B, T, S, F)
+        ti = t[:, None] + offs                                           # (B, T)
+        x = X[ti][..., feats]                                            # (B, T, S, F)
+        cal = torch.cat([CAL[ti], CAL[t + HORIZON][:, None, :2].expand(-1, len(offs), -1)], -1)
+        return torch.cat([x, cal[:, :, None, :].expand(-1, -1, S_, -1)], -1)
 
     def forward(t):                                                      # residual on persistence
         return model(window(t), adj) + Y[t]                             # (B, S, n_targets)
 
-    model = STGCN(len(IN_FEATS), len(TARGETS)).to(dev)
+    model = STGCN(len(IN_FEATS) + 6, len(TARGETS)).to(dev)
     opt = torch.optim.Adam(model.parameters(), lr=LR, weight_decay=WD)
     n_params = sum(p.numel() for p in model.parameters())
     train_t = torch.tensor(d["split_idx"]["train"], device=dev)

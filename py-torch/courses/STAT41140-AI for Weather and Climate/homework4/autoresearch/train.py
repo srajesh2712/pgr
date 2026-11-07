@@ -115,8 +115,9 @@ def main():
     while time.time() - t_start < TIME_BUDGET:
         t = train_t[torch.randint(len(train_t), (BATCH,), device=dev)]
         y, m = Y[t + HORIZON], M[t + HORIZON]
-        pred = forward(t)
-        loss = ((pred - y) ** 2 * m).sum() / m.sum().clamp(min=1)       # masked MSE
+        with torch.autocast("cuda", dtype=torch.bfloat16, enabled=dev.type == "cuda"):
+            pred = forward(t)
+        loss = ((pred.float() - y) ** 2 * m).sum() / m.sum().clamp(min=1)  # masked MSE
         opt.zero_grad(set_to_none=True)
         loss.backward()
         torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)

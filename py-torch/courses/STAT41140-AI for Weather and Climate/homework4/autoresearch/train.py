@@ -24,7 +24,7 @@ TIME_BUDGET = float(os.environ.get("TIME_BUDGET", 5)) * 60      # seconds
 SEED = int(os.environ.get("SEED", 0))
 
 # ── Hyperparameters (teammate's values) ─────────────────────────────────────────
-SEQ_LEN    = 24
+SEQ_LEN    = 12
 IN_FEATS   = list(range(10))     # 8 teammate features + wind_u, wind_v
 HIDDEN     = 64
 GRU_HIDDEN = 128
@@ -53,8 +53,10 @@ class GraphConv(nn.Module):
 
 
 class STGCN(nn.Module):
-    def __init__(self, in_dim, out_dim, n_stations, emb_dim=8):
+    def __init__(self, in_dim, out_dim, n_stations, geom, emb_dim=8):
         super().__init__()
+        self.register_buffer("geom", geom)                                  # (S, S, 3): dist/100, unit vec j->i
+        self.edge_mlp = nn.Sequential(nn.Linear(6, 16), nn.ReLU(), nn.Linear(16, 1))
         self.emb = nn.Parameter(torch.randn(n_stations, emb_dim) * 0.1)  # learned station identity
         self.E1 = nn.Parameter(torch.randn(n_stations, 10) * 0.1)          # adaptive adjacency
         self.E2 = nn.Parameter(torch.randn(n_stations, 10) * 0.1)
@@ -69,6 +71,14 @@ class STGCN(nn.Module):
         B, T, S, _ = x.shape
         x = torch.cat([x, self.emb[None, None].expand(B, T, -1, -1)], -1)
         adj = 0.5 * adj + 0.5 * torch.softmax(torch.relu(self.E1 @ self.E2.T), dim=1)
+        # dynamic wind-aware edges: score j->i from geometry + wind at source j
+        uv = x[..., 8:10]                                                   # (B, T, S, 2) wind_u, wind_v
+        uvj = uv[:, :, None, :, :].expand(-1, -1, S, -1, -1)                # [b,t,i,j] = wind at j
+        g = self.geom[None, None].expand(B, T, -1, -1, -1)
+        adv = (uvj * g[..., 1:3]).sum(-1, keepdim=True)                     # wind at j blowing toward i
+        logits = self.edge_mlp(torch.cat([g, uvj, adv], -1)).squeeze(-1)    # (B, T, S, S)
+        adj = 0.5 * adj + 0.5 * torch.softmax(logits, -1)                   # (B, T, S, S)
+        adj = adj.reshape(B * T, S, S)
         h = x.reshape(B * T, S, -1)
         for g in self.gcn:
             h = g(h, adj)
@@ -105,10 +115,21 @@ def main():
         cal = torch.cat([CAL[ti], CAL[t + HORIZON][:, None, :2].expand(-1, len(offs), -1)], -1)
         return torch.cat([x, cal[:, :, None, :].expand(-1, -1, S_, -1)], -1)
 
-    def forward(t):                                                      # residual on persistence
-        return model(window(t), adj) + Y[t]                             # (B, S, n_targets)
+    NT = len(TARGETS)
+    def forward_all(t):        # (B, S, HORIZON, NT): residual on persistence for t+1..t+HORIZON
+        out = model(window(t), adj).reshape(len(t), -1, HORIZON, NT)
+        return out + Y[t][:, :, None, :]
 
-    model = STGCN(len(IN_FEATS) + 6, len(TARGETS), S_).to(dev)
+    def forward(t):
+        return forward_all(t)[:, :, -1]                                  # t+HORIZON only (scored)
+
+    lat = np.deg2rad(d["lat"].astype(np.float32)); lon = np.deg2rad(d["lon"].astype(np.float32))
+    dxk = (lon[None, :] - lon[:, None]) * np.cos(lat.mean()) * 6371   # [i,j] = j minus i (east, km)
+    dyk = (lat[None, :] - lat[:, None]) * 6371
+    dist = np.sqrt(dxk**2 + dyk**2) + 1e-6
+    geom = np.stack([dist / 100, -dxk / dist, -dyk / dist], -1)          # unit vector from j to i
+    geom[np.arange(S_), np.arange(S_), 1:] = 0
+    model = STGCN(len(IN_FEATS) + 6, len(TARGETS) * HORIZON, S_, torch.tensor(geom, dtype=torch.float32)).to(dev)
     opt = torch.optim.Adam(model.parameters(), lr=LR, weight_decay=WD)
     n_params = sum(p.numel() for p in model.parameters())
     train_t = torch.tensor(d["split_idx"]["train"], device=dev)
@@ -123,10 +144,11 @@ def main():
     model.train()
     while time.time() - t_start < TIME_BUDGET:
         t = train_t[torch.randint(len(train_t), (BATCH,), device=dev)]
-        y, m = Y[t + HORIZON], M[t + HORIZON]
+        th = t[:, None] + torch.arange(1, HORIZON + 1, device=dev)        # (B, HORIZON)
+        y, m = Y[th].transpose(1, 2), M[th].transpose(1, 2)               # (B, S, HORIZON, NT)
         with torch.autocast("cuda", dtype=torch.bfloat16, enabled=dev.type == "cuda"):
-            pred = forward(t)
-        loss = ((pred.float() - y) ** 2 * m * W).sum() / m.sum().clamp(min=1)  # weighted masked MSE
+            pred = forward_all(t)
+        loss = ((pred.float() - y) ** 2 * m * W).sum() / m.sum().clamp(min=1)  # all lead times
         opt.zero_grad(set_to_none=True)
         loss.backward()
         torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)

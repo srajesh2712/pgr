@@ -3,7 +3,7 @@ train.py — the ONE file the autoresearch agent edits.
 
 Current version: teammate's ST-GCN (homework4/train-gnn.py) ported unchanged
 (same layers, sizes, optimiser, inputs) but predicting t+HORIZON and trained
-for a fixed wall-clock budget. This is the baseline to beat.
+for a fixed wall-clock budget with linear LR decay. This is the baseline to beat.
 
 Contract with prepare.py (do not break):
   - train for at most TIME_BUDGET minutes (env var, default 5) of wall-clock
@@ -106,6 +106,10 @@ def main():
         opt.zero_grad(set_to_none=True)
         loss.backward()
         torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
+        # linear LR decay to 0 over the time budget (time-budget analogue of the
+        # teammate's ReduceLROnPlateau; settles the final weights, cuts seed noise)
+        for g in opt.param_groups:
+            g["lr"] = LR * max(0.0, 1.0 - (time.time() - t_start) / TIME_BUDGET)
         opt.step()
         ema = loss.item() if ema is None else 0.98 * ema + 0.02 * loss.item()
         step += 1

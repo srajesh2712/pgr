@@ -87,7 +87,7 @@ def build_cache():
     dist_km = dist.loc[[key(n) for n in names], [key(n) for n in names]].to_numpy(np.float32)
 
     CACHE.parent.mkdir(exist_ok=True)
-    np.savez_compressed(CACHE, raw=raw, hours=hours.values.astype("datetime64[h]").astype(np.int64),
+    np.savez(CACHE, raw=raw, hours=hours.values.astype("datetime64[h]").astype(np.int64),
                         names=np.array(names), lat=np.array(lats), lon=np.array(lons), dist_km=dist_km)
 
 
@@ -135,7 +135,7 @@ def _range(hours, a, b):
     return np.where((hours >= np.datetime64(a, "h")) & (hours <= np.datetime64(pd.Timestamp(b), "h")))[0]
 
 
-def evaluate(predict_fn, data, split="val", batch=2048, verbose=True):
+def evaluate(predict_fn, data, split="val", batch=256, verbose=True):
     """
     predict_fn(t_idx: np.ndarray[int] of shape (B,)) -> np.ndarray (B, S, len(TARGETS))
         Predictions for hour t+HORIZON in PHYSICAL units, using only data at hours <= t.

@@ -27,7 +27,7 @@ A GNN that does not beat **0.820** has not learned anything beyond the daily cyc
 1. Read `results.tsv` and `git log --oneline -15` to see what has been tried.
 2. Pick ONE idea; edit `train.py`.
 3. `git commit train.py -m "<idea>"` (commit ONLY train.py)
-4. `PYTHON=/home/james/project/AI_weather/.venv/bin/python ./run.sh "<idea>"`
+4. `./run.sh "<idea>"` (run from this folder, exactly this form — it is the only form allowed to use the GPU)
 5. If it prints **KEEP**: leave the commit. If **DISCARD** or **CRASH**: `git reset --hard HEAD~1`.
    (`results.tsv` and `logs/` are git-ignored, so they survive the reset.)
 6. If CRASH from a simple bug (typo, shape), fix and retry once; otherwise move on.

@@ -21,7 +21,7 @@ import torch.nn as nn
 from prepare import HORIZON, TARGET_IDX, TARGETS, evaluate, load_data
 
 TIME_BUDGET = float(os.environ.get("TIME_BUDGET", 5)) * 60      # seconds
-SEED = 0
+SEED = int(os.environ.get("SEED", 0))
 
 # ── Hyperparameters (teammate's values) ─────────────────────────────────────────
 SEQ_LEN    = 24

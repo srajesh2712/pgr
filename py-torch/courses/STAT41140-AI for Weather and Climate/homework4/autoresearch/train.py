@@ -25,7 +25,7 @@ SEED = int(os.environ.get("SEED", 0))
 
 # ── Hyperparameters (teammate's values) ─────────────────────────────────────────
 SEQ_LEN    = 24
-IN_FEATS   = list(range(8))      # teammate's 8 NODE_FEATURES (no wind vector)
+IN_FEATS   = list(range(10))     # 8 teammate features + wind_u, wind_v
 HIDDEN     = 64
 GRU_HIDDEN = 128
 NUM_GCN    = 2

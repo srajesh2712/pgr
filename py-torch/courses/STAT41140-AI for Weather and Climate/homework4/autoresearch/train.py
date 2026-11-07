@@ -53,8 +53,10 @@ class GraphConv(nn.Module):
 
 
 class STGCN(nn.Module):
-    def __init__(self, in_dim, out_dim):
+    def __init__(self, in_dim, out_dim, n_stations, emb_dim=8):
         super().__init__()
+        self.emb = nn.Parameter(torch.randn(n_stations, emb_dim) * 0.1)  # learned station identity
+        in_dim = in_dim + emb_dim
         dims = [in_dim] + [HIDDEN] * NUM_GCN
         self.gcn = nn.ModuleList(GraphConv(a, b, DROPOUT) for a, b in zip(dims, dims[1:]))
         self.gru = nn.GRU(HIDDEN, GRU_HIDDEN, num_layers=2, batch_first=True, dropout=DROPOUT)
@@ -63,6 +65,7 @@ class STGCN(nn.Module):
 
     def forward(self, x, adj):                    # x (B, T, S, F) -> (B, S, out)
         B, T, S, _ = x.shape
+        x = torch.cat([x, self.emb[None, None].expand(B, T, -1, -1)], -1)
         h = x.reshape(B * T, S, -1)
         for g in self.gcn:
             h = g(h, adj)
@@ -101,7 +104,7 @@ def main():
     def forward(t):                                                      # residual on persistence
         return model(window(t), adj) + Y[t]                             # (B, S, n_targets)
 
-    model = STGCN(len(IN_FEATS) + 6, len(TARGETS)).to(dev)
+    model = STGCN(len(IN_FEATS) + 6, len(TARGETS), S_).to(dev)
     opt = torch.optim.Adam(model.parameters(), lr=LR, weight_decay=WD)
     n_params = sum(p.numel() for p in model.parameters())
     train_t = torch.tensor(d["split_idx"]["train"], device=dev)

@@ -35,7 +35,10 @@ rc=$?
 
 get() { grep "^$1:" "$LOG" | tail -1 | awk '{print $2}'; }
 SCORE=$(get val_score)
-if [ $rc -ne 0 ] || [ -z "$SCORE" ]; then
+if ! grep -q "^device=cuda" "$LOG"; then
+    STATUS="crash"; SCORE="nan"
+    echo "CRASH: ran on CPU, not GPU. Run ./run.sh as a standalone command (not chained) so the sandbox exemption applies."
+elif [ $rc -ne 0 ] || [ -z "$SCORE" ]; then
     STATUS="crash"; SCORE="nan"
     echo "CRASH (exit $rc). Last lines of $LOG:"; tail -20 "$LOG"
 else

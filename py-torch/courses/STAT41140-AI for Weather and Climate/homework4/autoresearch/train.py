@@ -90,6 +90,9 @@ def main():
     def window(t):                                                       # t (B,) long
         return X[t[:, None] + offs][..., feats]                         # (B, T, S, F)
 
+    def forward(t):                                                      # residual on persistence
+        return model(window(t), adj) + Y[t]                             # (B, S, n_targets)
+
     model = STGCN(len(IN_FEATS), len(TARGETS)).to(dev)
     opt = torch.optim.Adam(model.parameters(), lr=LR, weight_decay=WD)
     n_params = sum(p.numel() for p in model.parameters())
@@ -101,7 +104,7 @@ def main():
     while time.time() - t_start < TIME_BUDGET:
         t = train_t[torch.randint(len(train_t), (BATCH,), device=dev)]
         y, m = Y[t + HORIZON], M[t + HORIZON]
-        pred = model(window(t), adj)
+        pred = forward(t)
         loss = ((pred - y) ** 2 * m).sum() / m.sum().clamp(min=1)       # masked MSE
         opt.zero_grad(set_to_none=True)
         loss.backward()
@@ -121,7 +124,7 @@ def main():
     @torch.no_grad()
     def predict(t_np):
         t = torch.as_tensor(t_np, device=dev)
-        return (model(window(t), adj) * sd + mu).cpu().numpy()
+        return (forward(t) * sd + mu).cpu().numpy()
 
     score, rmse = evaluate(predict, d, "val")
     if os.environ.get("FINAL_TEST") == "1":                              # only for the final report

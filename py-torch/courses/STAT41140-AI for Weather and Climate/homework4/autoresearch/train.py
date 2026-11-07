@@ -61,7 +61,7 @@ class STGCN(nn.Module):
         in_dim = in_dim + emb_dim
         dims = [in_dim] + [HIDDEN] * NUM_GCN
         self.gcn = nn.ModuleList(GraphConv(a, b, DROPOUT) for a, b in zip(dims, dims[1:]))
-        self.gru = nn.GRU(HIDDEN, GRU_HIDDEN, num_layers=2, batch_first=True, dropout=DROPOUT)
+        self.gru = nn.GRU(HIDDEN + in_dim, GRU_HIDDEN, num_layers=2, batch_first=True, dropout=DROPOUT)
         self.head = nn.Sequential(nn.Linear(GRU_HIDDEN, GRU_HIDDEN // 2), nn.ReLU(),
                                   nn.Dropout(DROPOUT), nn.Linear(GRU_HIDDEN // 2, out_dim))
 
@@ -72,7 +72,8 @@ class STGCN(nn.Module):
         h = x.reshape(B * T, S, -1)
         for g in self.gcn:
             h = g(h, adj)
-        h = h.reshape(B, T, S, -1).permute(0, 2, 1, 3).reshape(B * S, T, -1)
+        h = torch.cat([h.reshape(B, T, S, -1), x], -1)             # skip: own-station raw inputs
+        h = h.permute(0, 2, 1, 3).reshape(B * S, T, -1)
         _, hn = self.gru(h)
         return self.head(hn[-1]).reshape(B, S, -1)
 

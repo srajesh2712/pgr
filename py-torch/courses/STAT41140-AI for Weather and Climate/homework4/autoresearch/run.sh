@@ -19,7 +19,7 @@ while [[ $# -gt 0 && "$1" == --* ]]; do
 done
 DESC="${1:-no description}"
 # A change is KEEP only if it beats the best by more than run-to-run noise (seed spread).
-MIN_DELTA=0
+MIN_DELTA=0.005   # ~1 std of seed noise (baseline seeds: 0.7766, 0.7870, 0.7827)
 DEFAULT_PY=/home/james/project/AI_weather/.venv/bin/python
 [ -x "$DEFAULT_PY" ] || DEFAULT_PY=python
 PY="${PYTHON:-$DEFAULT_PY}"

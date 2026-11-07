@@ -12,9 +12,11 @@ You are an autonomous research agent. Your goal: **minimise `val_score`** of `tr
 |---|---|
 | persistence | 1.000 |
 | persistence + climatological diurnal change (no learning) | 0.820 |
-| teammate ST-GCN (first `train.py`) | see first `baseline` row |
+| teammate ST-GCN + LR decay (3 seeds) | 0.777 / 0.787 / 0.783 (mean 0.782) |
 
 A GNN that does not beat **0.820** has not learned anything beyond the daily cycle.
+
+**Noise:** seed-to-seed spread is ~0.01 (std ~0.005). `run.sh` only KEEPs a change that beats the best by > 0.005. Treat gains < 0.01 as tentative.
 
 ## Rules
 1. Edit **only `train.py`**. Never edit `prepare.py`, `run.sh`, `baselines.py`, or this file.

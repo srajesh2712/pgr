@@ -56,6 +56,8 @@ class STGCN(nn.Module):
     def __init__(self, in_dim, out_dim, n_stations, emb_dim=8):
         super().__init__()
         self.emb = nn.Parameter(torch.randn(n_stations, emb_dim) * 0.1)  # learned station identity
+        self.E1 = nn.Parameter(torch.randn(n_stations, 10) * 0.1)          # adaptive adjacency
+        self.E2 = nn.Parameter(torch.randn(n_stations, 10) * 0.1)
         in_dim = in_dim + emb_dim
         dims = [in_dim] + [HIDDEN] * NUM_GCN
         self.gcn = nn.ModuleList(GraphConv(a, b, DROPOUT) for a, b in zip(dims, dims[1:]))
@@ -66,6 +68,7 @@ class STGCN(nn.Module):
     def forward(self, x, adj):                    # x (B, T, S, F) -> (B, S, out)
         B, T, S, _ = x.shape
         x = torch.cat([x, self.emb[None, None].expand(B, T, -1, -1)], -1)
+        adj = 0.5 * adj + 0.5 * torch.softmax(torch.relu(self.E1 @ self.E2.T), dim=1)
         h = x.reshape(B * T, S, -1)
         for g in self.gcn:
             h = g(h, adj)

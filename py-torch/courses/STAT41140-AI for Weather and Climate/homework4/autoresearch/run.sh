@@ -21,7 +21,7 @@ done
 DESC="${1:-no description}"
 RESULTS=results.tsv; [ "$HORIZON" = "6" ] || RESULTS="results_h${HORIZON}.tsv"   # one table per horizon
 # A change is KEEP only if it beats the best by more than run-to-run noise (seed spread).
-MIN_DELTA=0.005   # ~1 std of seed noise (baseline seeds: 0.7766, 0.7870, 0.7827)
+MIN_DELTA=0.002   # attn-arch seed std ~0.0005 (6h seeds 0.4544/0.4553/0.4548); was 0.005 for the noisier teammate arch
 DEFAULT_PY=/home/james/project/AI_weather/.venv/bin/python
 [ -x "$DEFAULT_PY" ] || DEFAULT_PY=python
 PY="${PYTHON:-$DEFAULT_PY}"

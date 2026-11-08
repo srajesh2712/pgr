@@ -7,14 +7,16 @@ cd "$(dirname "$0")"
 
 # Optional flags (flags, not env vars, so the command always starts with ./run.sh):
 #   --seed N      random seed (default 0)      --status S   force status label (e.g. baseline, noise)
+#   --final-test  also score the held-out test split -> final_test.tsv (final report only)
 #   --budget M    minutes (default 5)        --horizon H  forecast hours (default 6; H!=6 -> results_hH.tsv)
-SEED=0; STATUS_OVERRIDE=""; BUDGET="${TIME_BUDGET:-5}"; HORIZON=6
+SEED=0; STATUS_OVERRIDE=""; BUDGET="${TIME_BUDGET:-5}"; HORIZON=6; FINAL=0
 while [[ $# -gt 0 && "$1" == --* ]]; do
     case "$1" in
         --seed) SEED="$2"; shift 2 ;;
         --status) STATUS_OVERRIDE="$2"; shift 2 ;;
         --budget) BUDGET="$2"; shift 2 ;;
         --horizon) HORIZON="$2"; shift 2 ;;
+        --final-test) FINAL=1; shift ;;
         *) echo "unknown flag $1"; exit 2 ;;
     esac
 done
@@ -32,7 +34,7 @@ HARD_LIMIT=$(awk "BEGIN{print int($BUDGET*60 + 240)}")    # budget + data load/e
 
 [ -f "$RESULTS" ] || printf "commit\tval_score\trmse_temp\trmse_rhum\trmse_msl\trmse_wdsp\tparams\tstatus\tdescription\n" > "$RESULTS"
 
-timeout "${HARD_LIMIT}s" env TIME_BUDGET="$BUDGET" SEED="$SEED" HORIZON="$HORIZON" MPLCONFIGDIR="${TMPDIR:-/tmp}" "$PY" train.py > "$LOG" 2>&1
+timeout "${HARD_LIMIT}s" env TIME_BUDGET="$BUDGET" SEED="$SEED" HORIZON="$HORIZON" FINAL_TEST="$FINAL" MPLCONFIGDIR="${TMPDIR:-/tmp}" "$PY" train.py > "$LOG" 2>&1
 rc=$?
 
 get() { grep "^$1:" "$LOG" | tail -1 | awk '{print $2}'; }
@@ -50,3 +52,10 @@ else
 fi
 printf "%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n" "$COMMIT" "$SCORE" "$(get rmse_temp)" "$(get rmse_rhum)" \
     "$(get rmse_msl)" "$(get rmse_wdsp)" "$(get params)" "${STATUS_OVERRIDE:-$STATUS}" "$DESC" >> "$RESULTS"
+if [ "$FINAL" = "1" ] && [ "$SCORE" != "nan" ]; then         # held-out test numbers, reported once
+    [ -f final_test.tsv ] || printf "horizon\tbudget_min\tcommit\ttest_score\trmse_temp\trmse_rhum\trmse_msl\trmse_wdsp\tdescription\n" > final_test.tsv
+    T=$(grep "^test_score:" "$LOG" | awk '{print $2}')
+    R=$(grep -A4 -B0 "rmse=" "$LOG" | grep "rmse=" | tail -4 | sed 's/.*rmse= *\([0-9.]*\).*/\1/' | paste -sd'\t')
+    printf "%s\t%s\t%s\t%s\t%s\t%s\n" "$HORIZON" "$BUDGET" "$COMMIT" "$T" "$R" "$DESC" >> final_test.tsv
+    echo "TEST: test_score=$T"
+fi

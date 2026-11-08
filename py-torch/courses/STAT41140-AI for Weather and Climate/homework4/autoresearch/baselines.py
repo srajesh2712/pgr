@@ -9,6 +9,7 @@ import os
 import numpy as np
 from prepare import HORIZON, TARGET_IDX, TARGETS, evaluate, load_data
 
+SPLIT = os.environ.get("SPLIT", "val")                           # SPLIT=test for the final report
 d = load_data()
 raw = d["raw"][..., TARGET_IDX]                                  # (H, S, 4)
 tr = d["split_idx"]["train"]
@@ -25,7 +26,7 @@ clim = np.nan_to_num(clim, nan=np.nanmean(raw[tr]))
 rows = []
 def run(name, fn):
     print(f"\n== {name}")
-    score, rmse = evaluate(fn, d, "val")
+    score, rmse = evaluate(fn, d, SPLIT)
     rows.append((name, score, rmse))
 
 run("persistence", lambda t: np.nan_to_num(raw[t]))
@@ -34,6 +35,15 @@ run("persistence + climatological diurnal change",
     lambda t: np.where(np.isnan(raw[t]), clim[month[t], hour[t]], raw[t])
               + clim[month[t + HORIZON], hour[t + HORIZON]] - clim[month[t], hour[t]])
 
+if SPLIT == "test":
+    import sys
+    new = not os.path.exists("final_test.tsv")
+    with open("final_test.tsv", "a") as f:
+        if new:
+            f.write("horizon\tbudget_min\tcommit\ttest_score\trmse_temp\trmse_rhum\trmse_msl\trmse_wdsp\tdescription\n")
+        for name, score, r in rows:
+            f.write(f"{HORIZON}\t0\t-\t{score:.6f}\t" + "\t".join(f"{r[k]:.4f}" for k in TARGETS) + f"\t{name}\n")
+    sys.exit(0)
 path = "results.tsv" if HORIZON == 6 else f"results_h{HORIZON}.tsv"
 if not os.path.exists(path):
     with open(path, "w") as f:

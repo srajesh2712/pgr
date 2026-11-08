@@ -25,7 +25,7 @@ DATA_DIR   = HERE.parent / "data"
 DIST_CSV   = DATA_DIR / "edge_matrices" / "station_distances.csv"
 CACHE      = HERE / "cache" / "data.npz"
 
-HORIZON    = 6                                    # hours ahead
+HORIZON    = int(os.environ.get("HORIZON", 6))   # hours ahead (benchmark default 6; run.sh --horizon)
 MAX_LOOKBACK = 168                                # eval times start >= 1 week into split
 TARGETS    = ["temp", "rhum", "msl", "wdsp"]
 # Input channels in X (normalised). First 8 = teammate's NODE_FEATURES, then wind vector.

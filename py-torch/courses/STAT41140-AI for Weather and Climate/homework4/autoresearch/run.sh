@@ -7,17 +7,19 @@ cd "$(dirname "$0")"
 
 # Optional flags (flags, not env vars, so the command always starts with ./run.sh):
 #   --seed N      random seed (default 0)      --status S   force status label (e.g. baseline, noise)
-#   --budget M    minutes (default 5)
-SEED=0; STATUS_OVERRIDE=""; BUDGET="${TIME_BUDGET:-5}"
+#   --budget M    minutes (default 5)        --horizon H  forecast hours (default 6; H!=6 -> results_hH.tsv)
+SEED=0; STATUS_OVERRIDE=""; BUDGET="${TIME_BUDGET:-5}"; HORIZON=6
 while [[ $# -gt 0 && "$1" == --* ]]; do
     case "$1" in
         --seed) SEED="$2"; shift 2 ;;
         --status) STATUS_OVERRIDE="$2"; shift 2 ;;
         --budget) BUDGET="$2"; shift 2 ;;
+        --horizon) HORIZON="$2"; shift 2 ;;
         *) echo "unknown flag $1"; exit 2 ;;
     esac
 done
 DESC="${1:-no description}"
+RESULTS=results.tsv; [ "$HORIZON" = "6" ] || RESULTS="results_h${HORIZON}.tsv"   # one table per horizon
 # A change is KEEP only if it beats the best by more than run-to-run noise (seed spread).
 MIN_DELTA=0.005   # ~1 std of seed noise (baseline seeds: 0.7766, 0.7870, 0.7827)
 DEFAULT_PY=/home/james/project/AI_weather/.venv/bin/python
@@ -28,9 +30,9 @@ mkdir -p logs
 LOG="logs/$(date +%Y%m%d_%H%M%S)_${COMMIT}.log"
 HARD_LIMIT=$(awk "BEGIN{print int($BUDGET*60 + 240)}")    # budget + data load/eval slack
 
-[ -f results.tsv ] || printf "commit\tval_score\trmse_temp\trmse_rhum\trmse_msl\trmse_wdsp\tparams\tstatus\tdescription\n" > results.tsv
+[ -f "$RESULTS" ] || printf "commit\tval_score\trmse_temp\trmse_rhum\trmse_msl\trmse_wdsp\tparams\tstatus\tdescription\n" > "$RESULTS"
 
-timeout "${HARD_LIMIT}s" env TIME_BUDGET="$BUDGET" SEED="$SEED" MPLCONFIGDIR="${TMPDIR:-/tmp}" "$PY" train.py > "$LOG" 2>&1
+timeout "${HARD_LIMIT}s" env TIME_BUDGET="$BUDGET" SEED="$SEED" HORIZON="$HORIZON" MPLCONFIGDIR="${TMPDIR:-/tmp}" "$PY" train.py > "$LOG" 2>&1
 rc=$?
 
 get() { grep "^$1:" "$LOG" | tail -1 | awk '{print $2}'; }
@@ -47,4 +49,4 @@ else
     echo "$(echo $STATUS | tr a-z A-Z): val_score=$SCORE (best before: ${BEST:-none}, min_delta $MIN_DELTA)  log=$LOG"
 fi
 printf "%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n" "$COMMIT" "$SCORE" "$(get rmse_temp)" "$(get rmse_rhum)" \
-    "$(get rmse_msl)" "$(get rmse_wdsp)" "$(get params)" "${STATUS_OVERRIDE:-$STATUS}" "$DESC" >> results.tsv
+    "$(get rmse_msl)" "$(get rmse_wdsp)" "$(get params)" "${STATUS_OVERRIDE:-$STATUS}" "$DESC" >> "$RESULTS"

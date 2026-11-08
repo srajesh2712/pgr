@@ -34,7 +34,7 @@ run("persistence + climatological diurnal change",
     lambda t: np.where(np.isnan(raw[t]), clim[month[t], hour[t]], raw[t])
               + clim[month[t + HORIZON], hour[t + HORIZON]] - clim[month[t], hour[t]])
 
-path = "results.tsv"
+path = "results.tsv" if HORIZON == 6 else f"results_h{HORIZON}.tsv"
 if not os.path.exists(path):
     with open(path, "w") as f:
         f.write("commit\tval_score\trmse_temp\trmse_rhum\trmse_msl\trmse_wdsp\tparams\tstatus\tdescription\n")

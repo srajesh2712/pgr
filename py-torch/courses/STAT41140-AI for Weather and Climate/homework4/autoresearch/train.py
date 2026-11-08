@@ -91,7 +91,7 @@ class STGCN(nn.Module):
 class TSAttn(nn.Module):
     """Temporal-then-spatial: per-station GRU over history, then station self-attention
     with a learned distance bias (one spatial mixing step instead of one per hour)."""
-    def __init__(self, in_dim, out_dim, n_stations, geom, emb_dim=8, n_layers=2, n_heads=4):
+    def __init__(self, in_dim, out_dim, n_stations, geom, emb_dim=8, n_layers=3, n_heads=4):
         super().__init__()
         self.emb = nn.Parameter(torch.randn(n_stations, emb_dim) * 0.1)
         self.register_buffer("dist", geom[..., 0])                           # (S, S) in 100 km

@@ -24,7 +24,7 @@ TIME_BUDGET = float(os.environ.get("TIME_BUDGET", 5)) * 60      # seconds
 SEED = int(os.environ.get("SEED", 0))
 
 # ── Hyperparameters (teammate's values) ─────────────────────────────────────────
-SEQ_LEN    = 12
+SEQ_LEN    = 6
 IN_FEATS   = list(range(10))     # 8 teammate features + wind_u, wind_v
 HIDDEN     = 64
 GRU_HIDDEN = 128

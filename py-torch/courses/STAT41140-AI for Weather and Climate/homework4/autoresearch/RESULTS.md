@@ -55,7 +55,7 @@ See `figures/progress_h6.png`. Kept changes, in order:
 Did not help (within noise): wider or deeper models, LayerNorm, longer history (24 or 48 h), EMA weights, torch.compile / CUDA graphs, pressure-difference edges, wind-aware attention bias, missing-value flags.
 For h = 1, the 6 h architecture transferred directly (0.730). Adding a **third attention layer** and **6 h of history** brought it to 0.720.
 
-Full logs: `results.tsv` (6 h), `results_h1.tsv`, `final_test.tsv`, `notes.md`, `logs/`.
+Full log: [EXPERIMENTS.md](EXPERIMENTS.md). Raw files: `results.tsv` (6 h), `results_h1.tsv`, `final_test.tsv`, `notes.md`, `logs/`.
 
 ## Reproduce
 

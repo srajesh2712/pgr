@@ -44,7 +44,7 @@ elif [ $rc -ne 0 ] || [ -z "$SCORE" ]; then
     STATUS="crash"; SCORE="nan"
     echo "CRASH (exit $rc). Last lines of $LOG:"; tail -20 "$LOG"
 else
-    BEST=$(awk -F'\t' 'NR>1 && ($8=="keep" || $8=="baseline") && $2!="nan" {print $2}' results.tsv | sort -g | head -1)
+    BEST=$(awk -F'\t' 'NR>1 && ($8=="keep" || $8=="baseline") && $2!="nan" {print $2}' "$RESULTS" | sort -g | head -1)
     if [ -z "$BEST" ] || awk "BEGIN{exit !($SCORE < $BEST - $MIN_DELTA)}"; then STATUS="keep"; else STATUS="discard"; fi
     echo "$(echo $STATUS | tr a-z A-Z): val_score=$SCORE (best before: ${BEST:-none}, min_delta $MIN_DELTA)  log=$LOG"
 fi

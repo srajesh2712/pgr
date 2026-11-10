@@ -1,3 +1,6 @@
+
+Below steps are necessary to get the resource and submit a job 
+
 Request a compute nod : 
 
 salloc -A p201580 -t 00:05:00 -q default -N 1 -p gpu
@@ -13,3 +16,4 @@ non ideal  sbatch  sbatch|_on_ideal.sh
 
 squeueu --me 
 slurm-jobid .out 
+

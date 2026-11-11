@@ -1,5 +1,7 @@
 # Homework 4 — Spatio-Temporal GNN for Irish Weather Forecasting
 
+> **Autoresearch results (James):** a GRU + distance-biased attention model beats persistence by 57% at 6 h and 36% at 1 h on held-out test data. See [autoresearch/RESULTS.md](autoresearch/RESULTS.md) and the full log in [autoresearch/EXPERIMENTS.md](autoresearch/EXPERIMENTS.md).
+
 **Course:** STAT41140 — AI for Weather and Climate  
 **University:** University College Dublin (UCD)
 
